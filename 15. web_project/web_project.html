@@ -88,36 +88,43 @@
     </div>
 
     <script>
-        // Data faktor koreksi
+        // Data
         const correctionFactors = {
-            CU: {
-                "21.0": "0.9961", "21.1": "0.9957", "21.2": "0.9953", 
-                "21.3": "0.9949", "21.4": "0.9945", "21.5": "0.9941",
-            },
-            AL: {
-                "21.0": "0.9960", "21.1": "0.9956", "21.2": "0.9952",
-                "21.3": "0.9948", "21.4": "0.9944", "21.5": "0.9940",
-            },
-            TCU: {
-                "21.0": "0.9961", "21.1": "0.9957", "21.2": "0.9953",
-                "21.3": "0.9949", "21.4": "0.9945", "21.5": "0.9941",
-            }
+            CU: {"21.0":"0.9961","21.1":"0.9957","21.2":"0.9953","21.3":"0.9949","21.4":"0.9945","21.5":"0.9941"},
+            AL: {"21.0":"0.9960","21.1":"0.9956","21.2":"0.9952","21.3":"0.9948","21.4":"0.9944","21.5":"0.9940"},
+            TCU: {"21.0":"0.9961","21.1":"0.9957","21.2":"0.9953","21.3":"0.9949","21.4":"0.9945","21.5":"0.9941"}
         };
-
-        // Data Spek. Max
         const specMaxValues = {
-            CU: { "0.5": "36,0", "0.75": "24,5" },
-            AL: { "0.5": "-", "0.75": "-" },
-            TCU: { "0.5": "36,7", "0.75": "24,8" }
+            CU: {"0.5":"36,0","0.75":"24,5"},
+            AL: {"0.5":"-","0.75":"-"},
+            TCU: {"0.5":"36,7","0.75":"24,8"}
         };
 
-        // Ambil elemen dari DOM
+        // Ambil semua elemen dari DOM
+        const pembacaanAlatInput = document.getElementById('pembacaanAlat');
+        const panjangInput = document.getElementById('panjang');
         const suhuInput = document.getElementById('suhu');
         const faktorKoreksiInput = document.getElementById('faktorKoreksi');
         const konduktorSelect = document.getElementById('konduktor');
         const penampangSelect = document.getElementById('penampang');
         const spekMaxInput = document.getElementById('spekMax');
+        const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
 
+        // Fungsi Kalkulasi Utama
+        function hitungHasil() {
+            const pembacaan = parseFloat(pembacaanAlatInput.value);
+            const panjang = parseFloat(panjangInput.value);
+            const koreksi = parseFloat(faktorKoreksiInput.value);
+
+            // Pastikan semua nilai adalah angka dan panjang tidak nol
+            if (!isNaN(pembacaan) && !isNaN(panjang) && !isNaN(koreksi) && panjang !== 0) {
+                const hasil = (pembacaan / panjang) * koreksi;
+                hasilKalkulasiInput.value = hasil.toFixed(4); // Tampilkan hasil dengan 4 angka desimal
+            } else {
+                hasilKalkulasiInput.value = ''; // Kosongkan jika input tidak valid
+            }
+        }
+        
         function updateFaktorKoreksi() {
             const suhuValue = suhuInput.value;
             const konduktorValue = konduktorSelect.value;
@@ -128,6 +135,7 @@
             } else {
                 faktorKoreksiInput.value = '';
             }
+            hitungHasil(); // Panggil kalkulasi ulang setelah faktor koreksi diperbarui
         }
 
         function updateSpekMax() {
@@ -143,16 +151,20 @@
         }
 
         // Tambahkan event listener
+        pembacaanAlatInput.addEventListener('input', hitungHasil);
+        panjangInput.addEventListener('input', hitungHasil);
         suhuInput.addEventListener('input', updateFaktorKoreksi);
+
         konduktorSelect.addEventListener('change', () => {
             updateFaktorKoreksi();
             updateSpekMax();
         });
         penampangSelect.addEventListener('change', updateSpekMax);
 
-        // Panggil fungsi saat halaman pertama kali dimuat untuk mengisi nilai awal
+        // Panggil fungsi saat halaman dimuat untuk mengisi nilai awal
         updateFaktorKoreksi();
         updateSpekMax();
+        hitungHasil();
     </script>
 
 </body>
