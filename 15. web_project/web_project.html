@@ -62,7 +62,7 @@
 
             <div class="pt-2">
                 <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi</label>
-                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 font-bold text-lg text-center">
+                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center transition-colors duration-300">
             </div>
             
             <div class="pt-4 flex flex-wrap gap-2">
@@ -110,16 +110,31 @@
         const spekMaxInput = document.getElementById('spekMax');
         const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
 
-        // Fungsi Kalkulasi Utama
+        // Fungsi Kalkulasi Utama dan Pewarnaan
         function hitungHasil() {
             const pembacaan = parseFloat(pembacaanAlatInput.value);
             const panjang = parseFloat(panjangInput.value);
             const koreksi = parseFloat(faktorKoreksiInput.value);
 
-            // Pastikan semua nilai adalah angka dan panjang tidak nol
+            // Hapus kelas warna sebelumnya
+            hasilKalkulasiInput.classList.remove('text-green-600', 'text-red-600');
+
             if (!isNaN(pembacaan) && !isNaN(panjang) && !isNaN(koreksi) && panjang !== 0) {
                 const hasil = (pembacaan / panjang) * koreksi;
-                hasilKalkulasiInput.value = hasil.toFixed(4); // Tampilkan hasil dengan 4 angka desimal
+                hasilKalkulasiInput.value = hasil.toFixed(4);
+                
+                // Logika Pewarnaan
+                const spekMaxString = spekMaxInput.value.replace(',', '.'); // Ganti koma dengan titik
+                const spekMax = parseFloat(spekMaxString);
+
+                if (!isNaN(spekMax)) { // Hanya warnai jika Spek. Max adalah angka
+                    if (hasil < spekMax) {
+                        hasilKalkulasiInput.classList.add('text-green-600'); // Lolos: Hijau
+                    } else if (hasil > spekMax) {
+                        hasilKalkulasiInput.classList.add('text-red-600'); // Gagal: Merah
+                    }
+                }
+
             } else {
                 hasilKalkulasiInput.value = ''; // Kosongkan jika input tidak valid
             }
@@ -135,7 +150,7 @@
             } else {
                 faktorKoreksiInput.value = '';
             }
-            hitungHasil(); // Panggil kalkulasi ulang setelah faktor koreksi diperbarui
+            hitungHasil();
         }
 
         function updateSpekMax() {
@@ -148,6 +163,7 @@
             } else {
                 spekMaxInput.value = '';
             }
+            hitungHasil(); // Panggil hitungHasil untuk re-evaluasi warna
         }
 
         // Tambahkan event listener
@@ -161,10 +177,9 @@
         });
         penampangSelect.addEventListener('change', updateSpekMax);
 
-        // Panggil fungsi saat halaman dimuat untuk mengisi nilai awal
+        // Panggil fungsi saat halaman dimuat
         updateFaktorKoreksi();
         updateSpekMax();
-        hitungHasil();
     </script>
 
 </body>
