@@ -62,7 +62,8 @@
 
             <div class="pt-2">
                 <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi</label>
-                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center transition-colors duration-300">
+                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
+                 <p id="feedbackText" class="text-center text-sm font-medium mt-2"></p>
             </div>
             
             <div class="pt-4 flex flex-wrap gap-2">
@@ -109,34 +110,40 @@
         const penampangSelect = document.getElementById('penampang');
         const spekMaxInput = document.getElementById('spekMax');
         const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
+        const feedbackText = document.getElementById('feedbackText');
 
-        // Fungsi Kalkulasi Utama dan Pewarnaan
         function hitungHasil() {
+            // Reset tampilan setiap kali fungsi dipanggil
+            hasilKalkulasiInput.classList.remove('text-green-600', 'text-red-600');
+            feedbackText.textContent = '';
+            
             const pembacaan = parseFloat(pembacaanAlatInput.value);
             const panjang = parseFloat(panjangInput.value);
             const koreksi = parseFloat(faktorKoreksiInput.value);
 
-            // Hapus kelas warna sebelumnya
-            hasilKalkulasiInput.classList.remove('text-green-600', 'text-red-600');
-
             if (!isNaN(pembacaan) && !isNaN(panjang) && !isNaN(koreksi) && panjang !== 0) {
                 const hasil = (pembacaan / panjang) * koreksi;
                 hasilKalkulasiInput.value = hasil.toFixed(4);
-                
-                // Logika Pewarnaan
-                const spekMaxString = spekMaxInput.value.replace(',', '.'); // Ganti koma dengan titik
-                const spekMax = parseFloat(spekMaxString);
 
-                if (!isNaN(spekMax)) { // Hanya warnai jika Spek. Max adalah angka
+                // Logika perbandingan dengan Spek. Max
+                const spekMaxValueString = spekMaxInput.value.replace(',', '.');
+                const spekMax = parseFloat(spekMaxValueString);
+
+                if (!isNaN(spekMax)) {
                     if (hasil < spekMax) {
-                        hasilKalkulasiInput.classList.add('text-green-600'); // Lolos: Hijau
-                    } else if (hasil > spekMax) {
-                        hasilKalkulasiInput.classList.add('text-red-600'); // Gagal: Merah
+                        hasilKalkulasiInput.classList.add('text-green-600');
+                        feedbackText.textContent = "✅ Hasil pengujian memenuhi spesifikasi standar.";
+                        feedbackText.classList.remove('text-red-600');
+                        feedbackText.classList.add('text-green-600');
+                    } else {
+                        hasilKalkulasiInput.classList.add('text-red-600');
+                        feedbackText.textContent = "❌ Hasil pengujian tidak memenuhi spesifikasi standar.";
+                        feedbackText.classList.remove('text-green-600');
+                        feedbackText.classList.add('text-red-600');
                     }
                 }
-
             } else {
-                hasilKalkulasiInput.value = ''; // Kosongkan jika input tidak valid
+                hasilKalkulasiInput.value = '';
             }
         }
         
@@ -145,11 +152,7 @@
             const konduktorValue = konduktorSelect.value;
             const currentFactors = correctionFactors[konduktorValue];
             
-            if (currentFactors && currentFactors[suhuValue]) {
-                faktorKoreksiInput.value = currentFactors[suhuValue];
-            } else {
-                faktorKoreksiInput.value = '';
-            }
+            faktorKoreksiInput.value = (currentFactors && currentFactors[suhuValue]) ? currentFactors[suhuValue] : '';
             hitungHasil();
         }
 
@@ -158,12 +161,7 @@
             const penampangValue = penampangSelect.value;
             const currentSpec = specMaxValues[konduktorValue];
 
-            if (currentSpec && currentSpec[penampangValue]) {
-                spekMaxInput.value = currentSpec[penampangValue];
-            } else {
-                spekMaxInput.value = '';
-            }
-            hitungHasil(); // Panggil hitungHasil untuk re-evaluasi warna
+            spekMaxInput.value = (currentSpec && currentSpec[penampangValue]) ? currentSpec[penampangValue] : '';
         }
 
         // Tambahkan event listener
@@ -174,12 +172,17 @@
         konduktorSelect.addEventListener('change', () => {
             updateFaktorKoreksi();
             updateSpekMax();
+            hitungHasil(); // Panggil hitung untuk re-evaluasi dengan spek max baru
         });
-        penampangSelect.addEventListener('change', updateSpekMax);
+        penampangSelect.addEventListener('change', () => {
+            updateSpekMax();
+            hitungHasil(); // Panggil hitung untuk re-evaluasi dengan spek max baru
+        });
 
         // Panggil fungsi saat halaman dimuat
         updateFaktorKoreksi();
         updateSpekMax();
+        hitungHasil();
     </script>
 
 </body>
