@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id"> 
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,36 +132,39 @@
         const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
         const pesanHasil = document.getElementById('pesanHasil');
 
-        // ==== LOGIKA MODE GELAP/TERANG (VERSI BARU & LEBIH BAIK) ====
+        // ==== LOGIKA MODE GELAP/TERANG (VERSI DIPERBAIKI) ====
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
         const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-        const htmlEl = document.documentElement;
-
-        // Fungsi untuk mengatur tema
-        function setTheme(isDark) {
-            if (isDark) {
-                htmlEl.classList.add('dark');
+        
+        // Fungsi untuk mengaplikasikan tema dan menyimpan preferensi
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
                 themeToggleLightIcon.classList.remove('hidden');
                 themeToggleDarkIcon.classList.add('hidden');
                 localStorage.setItem('color-theme', 'dark');
             } else {
-                htmlEl.classList.remove('dark');
+                document.documentElement.classList.remove('dark');
                 themeToggleDarkIcon.classList.remove('hidden');
                 themeToggleLightIcon.classList.add('hidden');
                 localStorage.setItem('color-theme', 'light');
             }
+        };
+
+        // Cek tema saat halaman dimuat
+        const savedTheme = localStorage.getItem('color-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else {
+            applyTheme(prefersDark ? 'dark' : 'light');
         }
 
-        // Cek tema saat halaman pertama kali dimuat
-        const isInitiallyDark = localStorage.getItem('color-theme') === 'dark' || 
-                                (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        setTheme(isInitiallyDark);
-
         // Event listener untuk tombol toggle
-        themeToggleBtn.addEventListener('click', function() {
-            const isCurrentlyDark = htmlEl.classList.contains('dark');
-            setTheme(!isCurrentlyDark);
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = localStorage.getItem('color-theme') || (prefersDark ? 'dark' : 'light');
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
         });
         // ==== AKHIR LOGIKA MODE GELAP/TERANG ====
 
