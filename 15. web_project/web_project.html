@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalkulator Hambatan Konduktor IEC</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="app.js" defer></script>
     <style>
         body, .bg-white, .bg-gray-100 {
             transition: background-color 0.3s, color 0.3s;
@@ -28,7 +29,7 @@
 
         <div class="space-y-4">
             
-            <div class="flex gap-4">
+             <div class="flex gap-4">
                 <div class="w-1/2">
                     <label for="pembacaanAlat" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Pembacaan Alat</label>
                     <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -110,8 +111,9 @@
         </footer>
 
     </div>
-
-    <script>
+    
+    <script id="app-script">
+    // Seluruh skrip dibungkus agar berjalan setelah halaman siap
     document.addEventListener('DOMContentLoaded', () => {
 
         // Data
@@ -137,39 +139,31 @@
         const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
         const pesanHasil = document.getElementById('pesanHasil');
         
-        // Elemen untuk Mode Gelap/Terang
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
         const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
         const htmlEl = document.documentElement;
 
-        // ==== LOGIKA MODE GELAP/TERANG (STABIL) ====
+        // ==== LOGIKA MODE GELAP/TERANG ====
         const applyTheme = (theme) => {
-            if (theme === 'dark') {
-                htmlEl.classList.add('dark');
-                themeToggleLightIcon.classList.remove('hidden');
-                themeToggleDarkIcon.classList.add('hidden');
-            } else {
-                htmlEl.classList.remove('dark');
-                themeToggleDarkIcon.classList.remove('hidden');
-                themeToggleLightIcon.classList.add('hidden');
-            }
+            htmlEl.classList.remove('dark', 'light');
+            htmlEl.classList.add(theme);
+            
+            themeToggleLightIcon.classList.toggle('hidden', theme === 'light');
+            themeToggleDarkIcon.classList.toggle('hidden', theme === 'dark');
+            
+            localStorage.setItem('color-theme', theme);
         };
 
         themeToggleBtn.addEventListener('click', () => {
-            const isDark = htmlEl.classList.toggle('dark');
-            localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
-            applyTheme(isDark ? 'dark' : 'light');
+            const currentTheme = localStorage.getItem('color-theme') === 'dark' ? 'light' : 'dark';
+            applyTheme(currentTheme);
         });
 
         const initializeTheme = () => {
             const savedTheme = localStorage.getItem('color-theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (savedTheme) {
-                applyTheme(savedTheme);
-            } else {
-                applyTheme(prefersDark ? 'dark' : 'light');
-            }
+            applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
         };
 
         function validateNumericInput(event) {
@@ -239,7 +233,7 @@
             hitungHasil();
         }
 
-        // Tambahkan semua event listener di sini
+        // Tambahkan semua event listener
         pembacaanAlatInput.addEventListener('input', validateNumericInput);
         panjangInput.addEventListener('input', validateNumericInput);
         suhuInput.addEventListener('input', validateNumericInput);
@@ -254,7 +248,7 @@
         });
         penampangSelect.addEventListener('change', updateSpekMax);
 
-        // Panggil fungsi inisialisasi saat halaman dimuat
+        // Panggil fungsi inisialisasi
         initializeTheme();
         updateFaktorKoreksi();
         updateSpekMax();
