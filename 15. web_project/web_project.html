@@ -5,92 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalkulator Hambatan Konduktor IEC</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="app.js" defer></script>
     <style>
-        body, .bg-white, .bg-gray-100 {
+        body {
             transition: background-color 0.3s, color 0.3s;
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 min-h-screen p-4">
+<body class="bg-gray-100 min-h-screen p-4">
 
-    <div class="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 relative">
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
         
-        <div class="absolute top-4 right-4">
-            <button id="theme-toggle" type="button" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600">
-                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05A1 1 0 003.636 6.464l.707.707a1 1 0 001.414-1.414l-.707-.707zM3 11a1 1 0 100-2H2a1 1 0 100 2h1zM6.464 16.364l-.707.707a1 1 0 001.414 1.414l.707-.707a1 1 0 00-1.414-1.414z" fill-rule="evenodd"></path></svg>
-            </button>
-        </div>
-
-        <h1 class="text-xl font-bold text-center text-gray-800 dark:text-gray-100 pb-4 mb-6 border-b border-gray-200 dark:border-gray-700">
+        <h1 class="text-xl font-bold text-center text-gray-800 pb-4 mb-6 border-b border-gray-200">
             Kalkulator Hambatan Konduktor IEC
         </h1>
 
         <div class="space-y-4">
             
-             <div class="flex gap-4">
+            <div class="flex gap-4">
                 <div class="w-1/2">
-                    <label for="pembacaanAlat" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Pembacaan Alat</label>
-                    <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="pembacaanAlat" class="block text-sm font-bold text-gray-700">Pembacaan Alat</label>
+                    <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="w-1/2">
-                    <label for="panjang" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Panjang</label>
-                    <input type="text" inputmode="decimal" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang</label>
+                    <input type="text" inputmode="decimal" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
             </div>
 
             <div class="flex gap-4">
                 <div class="w-1/2">
-                    <label for="suhu" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Suhu</label>
-                    <input type="text" inputmode="decimal" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="suhu" class="block text-sm font-bold text-gray-700">Suhu</label>
+                    <input type="text" inputmode="decimal" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="w-1/2">
-                    <label for="faktorKoreksi" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Faktor Koreksi</label>
-                    <input type="text" name="faktorKoreksi" id="faktorKoreksi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="faktorKoreksi" class="block text-sm font-bold text-gray-700">Faktor Koreksi</label>
+                    <input type="text" name="faktorKoreksi" id="faktorKoreksi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
             </div>
 
             <div class="flex gap-4 items-end">
                 <div class="w-1/3">
-                    <label for="konduktor" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Konduktor</label>
-                    <select id="konduktor" name="konduktor" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="konduktor" class="block text-sm font-bold text-gray-700">Konduktor</label>
+                    <select id="konduktor" name="konduktor" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         <option>CU</option>
                         <option>AL</option>
                         <option>TCU</option>
                     </select>
                 </div>
                 <div class="w-1/3">
-                    <label for="penampang" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Penampang</label>
-                     <select id="penampang" name="penampang" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="penampang" class="block text-sm font-bold text-gray-700">Penampang</label>
+                     <select id="penampang" name="penampang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         <option value="0.5">0.5</option>
                         <option value="0.75">0.75</option>
                     </select>
                 </div>
                 <div class="w-1/3">
-                    <label for="spekMax" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Spek. Max</label>
-                    <input type="text" name="spekMax" id="spekMax" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="spekMax" class="block text-sm font-bold text-gray-700">Spek. Max</label>
+                    <input type="text" name="spekMax" id="spekMax" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
             </div>
 
             <div class="pt-2">
-                <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700 dark:text-gray-300">Hasil Kalkulasi</label>
-                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-200 dark:bg-gray-600 dark:text-gray-200 border border-gray-300 dark:border-gray-500 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
+                <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi</label>
+                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
             </div>
 
             <p id="pesanHasil" class="text-center text-sm h-5"></p>
             
             <div class="pt-4 flex flex-wrap gap-2">
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     IEC
                 </button>
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     ICEA
                 </button>
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     AS/NZS
                 </button>
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     SPLN
                 </button>
             </div>
@@ -106,14 +98,13 @@
 
         </div>
 
-        <footer class="text-center text-gray-500 dark:text-gray-400 text-sm mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <footer class="text-center text-gray-500 text-sm mt-6 pt-4 border-t border-gray-200">
             Williyanto Adi 2025
         </footer>
 
     </div>
-    
-    <script id="app-script">
-    // Seluruh skrip dibungkus agar berjalan setelah halaman siap
+
+    <script>
     document.addEventListener('DOMContentLoaded', () => {
 
         // Data
@@ -138,40 +129,13 @@
         const spekMaxInput = document.getElementById('spekMax');
         const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
         const pesanHasil = document.getElementById('pesanHasil');
-        
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-        const htmlEl = document.documentElement;
-
-        // ==== LOGIKA MODE GELAP/TERANG ====
-        const applyTheme = (theme) => {
-            htmlEl.classList.remove('dark', 'light');
-            htmlEl.classList.add(theme);
-            
-            themeToggleLightIcon.classList.toggle('hidden', theme === 'light');
-            themeToggleDarkIcon.classList.toggle('hidden', theme === 'dark');
-            
-            localStorage.setItem('color-theme', theme);
-        };
-
-        themeToggleBtn.addEventListener('click', () => {
-            const currentTheme = localStorage.getItem('color-theme') === 'dark' ? 'light' : 'dark';
-            applyTheme(currentTheme);
-        });
-
-        const initializeTheme = () => {
-            const savedTheme = localStorage.getItem('color-theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
-        };
 
         function validateNumericInput(event) {
             event.target.value = event.target.value.replace(/[^0-9.]/g, '');
         }
 
         function hitungHasil() {
-            hasilKalkulasiInput.classList.remove('text-green-600', 'text-red-600', 'dark:text-green-400', 'dark:text-red-400');
+            hasilKalkulasiInput.classList.remove('text-green-600', 'text-red-600');
             pesanHasil.className = 'text-center text-sm h-5';
             pesanHasil.innerText = '';
 
@@ -188,13 +152,13 @@
 
                 if (!isNaN(spekMax)) {
                     if (hasil < spekMax) {
-                        hasilKalkulasiInput.classList.add('text-green-600', 'dark:text-green-400');
+                        hasilKalkulasiInput.classList.add('text-green-600');
                         pesanHasil.innerText = 'Hasil pengujian memenuhi spesifikasi standar.';
-                        pesanHasil.classList.add('italic', 'text-green-600', 'dark:text-green-400');
+                        pesanHasil.classList.add('italic', 'text-green-600');
                     } else {
-                        hasilKalkulasiInput.classList.add('text-red-600', 'dark:text-red-400');
+                        hasilKalkulasiInput.classList.add('text-red-600');
                         pesanHasil.innerText = 'Hasil pengujian tidak memenuhi spesifikasi standar.';
-                        pesanHasil.classList.add('italic', 'text-red-600', 'dark:text-red-400');
+                        pesanHasil.classList.add('italic', 'text-red-600');
                     }
                 }
             } else {
@@ -249,7 +213,6 @@
         penampangSelect.addEventListener('change', updateSpekMax);
 
         // Panggil fungsi inisialisasi
-        initializeTheme();
         updateFaktorKoreksi();
         updateSpekMax();
     });
