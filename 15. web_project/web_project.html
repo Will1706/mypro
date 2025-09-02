@@ -27,14 +27,14 @@
                     <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="w-1/2">
-                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang</label>
+                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang (m)</label>
                     <input type="text" inputmode="decimal" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
             </div>
 
             <div class="flex gap-4">
                 <div class="w-1/2">
-                    <label for="suhu" class="block text-sm font-bold text-gray-700">Suhu</label>
+                    <label for="suhu" class="block text-sm font-bold text-gray-700">Suhu (°C)</label>
                     <input type="text" inputmode="decimal" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="w-1/2">
@@ -53,7 +53,7 @@
                     </select>
                 </div>
                 <div class="w-1/3">
-                    <label for="penampang" class="block text-sm font-bold text-gray-700">Penampang</label>
+                    <label for="penampang" class="block text-sm font-bold text-gray-700">Penampang (mm²)</label>
                      <select id="penampang" name="penampang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         <option value="0.5">0.5</option>
                         <option value="0.75">0.75</option>
@@ -66,30 +66,33 @@
             </div>
 
             <div class="pt-2">
-                <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi</label>
+                <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi (Ω/km)</label>
                 <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-200 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
             </div>
 
             <p id="pesanHasil" class="text-center text-sm h-5"></p>
             
             <div class="pt-4 flex flex-wrap gap-2">
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href="https://www.google.com" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     IEC
-                </button>
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                </a>
+                <a href="https://www.youtube.com" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     ICEA
-                </button>
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                </a>
+                <a href="https://www.wikipedia.org" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     AS/NZS
-                </button>
-                <button type="button" class="flex-1 min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                </a>
+                <a href="#" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     SPLN
-                </button>
+                </a>
             </div>
 
             <div class="pt-2 flex gap-2">
                 <button type="button" onclick="history.back()" class="flex-1 justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Kembali
+                </button>
+                <button type="button" id="hapusSemuaBtn" class="flex-1 justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    Hapus
                 </button>
                 <a href="/" class="flex-1 text-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Beranda
@@ -129,6 +132,7 @@
         const spekMaxInput = document.getElementById('spekMax');
         const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
         const pesanHasil = document.getElementById('pesanHasil');
+        const hapusSemuaBtn = document.getElementById('hapusSemuaBtn');
 
         function validateNumericInput(event) {
             event.target.value = event.target.value.replace(/[^0-9.]/g, '');
@@ -197,6 +201,13 @@
             hitungHasil();
         }
 
+        function hapusSemua() {
+            pembacaanAlatInput.value = '';
+            panjangInput.value = '';
+            suhuInput.value = '';
+            updateFaktorKoreksi(); // Memanggil ini akan otomatis membersihkan semua kolom turunan
+        }
+
         // Tambahkan semua event listener
         pembacaanAlatInput.addEventListener('input', validateNumericInput);
         panjangInput.addEventListener('input', validateNumericInput);
@@ -211,6 +222,7 @@
             updateSpekMax();
         });
         penampangSelect.addEventListener('change', updateSpekMax);
+        hapusSemuaBtn.addEventListener('click', hapusSemua);
 
         // Panggil fungsi inisialisasi
         updateFaktorKoreksi();
