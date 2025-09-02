@@ -19,18 +19,18 @@
             <div class="flex gap-4">
                 <div class="w-1/2">
                     <label for="pembacaanAlat" class="block text-sm font-bold text-gray-700">Pembacaan Alat</label>
-                    <input type="text" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="w-1/2">
                     <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang</label>
-                    <input type="text" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <input type="text" inputmode="decimal" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
             </div>
 
             <div class="flex gap-4">
                 <div class="w-1/2">
                     <label for="suhu" class="block text-sm font-bold text-gray-700">Suhu</label>
-                    <input type="text" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <input type="text" inputmode="decimal" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 </div>
                 <div class="w-1/2">
                     <label for="faktorKoreksi" class="block text-sm font-bold text-gray-700">Faktor Koreksi</label>
@@ -112,7 +112,7 @@
             TCU: {"0.5":"36,7","0.75":"24,8"}
         };
 
-        // Ambil semua elemen dari DOM
+        // Ambil elemen dari DOM
         const pembacaanAlatInput = document.getElementById('pembacaanAlat');
         const panjangInput = document.getElementById('panjang');
         const suhuInput = document.getElementById('suhu');
@@ -123,11 +123,15 @@
         const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
         const pesanHasil = document.getElementById('pesanHasil');
 
+        // Fungsi Validasi: Hanya izinkan angka dan titik
+        function validateNumericInput(event) {
+            event.target.value = event.target.value.replace(/[^0-9.]/g, '');
+        }
+
         // Fungsi Kalkulasi Utama
         function hitungHasil() {
-            // Reset style dan pesan setiap kali fungsi dipanggil
             hasilKalkulasiInput.classList.remove('text-green-600', 'text-red-600');
-            pesanHasil.className = 'text-center text-sm h-5'; // Reset kelas pesan
+            pesanHasil.className = 'text-center text-sm h-5';
             pesanHasil.innerText = '';
 
             const pembacaan = parseFloat(pembacaanAlatInput.value);
@@ -138,11 +142,10 @@
                 const hasil = (pembacaan / panjang) * koreksi;
                 hasilKalkulasiInput.value = hasil.toFixed(4);
 
-                // Logika pewarnaan dan pesan
                 const spekMaxString = spekMaxInput.value.replace(',', '.');
                 const spekMax = parseFloat(spekMaxString);
 
-                if (!isNaN(spekMax)) { // Hanya jalankan jika spekMax adalah angka
+                if (!isNaN(spekMax)) {
                     if (hasil < spekMax) {
                         hasilKalkulasiInput.classList.add('text-green-600');
                         pesanHasil.innerText = 'Hasil pengujian memenuhi spesifikasi standar.';
@@ -158,15 +161,21 @@
             }
         }
         
+        // Fungsi Update Faktor Koreksi (dengan logika 21 sama dengan 21.0)
         function updateFaktorKoreksi() {
-            const suhuValue = suhuInput.value;
-            const konduktorValue = konduktorSelect.value;
-            const currentFactors = correctionFactors[konduktorValue];
+            const suhuValueRaw = suhuInput.value;
+            const suhuNumber = parseFloat(suhuValueRaw);
             
-            if (currentFactors && currentFactors[suhuValue]) {
-                faktorKoreksiInput.value = currentFactors[suhuValue];
-            } else {
-                faktorKoreksiInput.value = '';
+            faktorKoreksiInput.value = ''; // Reset dulu
+            
+            if (!isNaN(suhuNumber)) {
+                const suhuKey = suhuNumber.toFixed(1); // Konversi 21 -> "21.0"
+                const konduktorValue = konduktorSelect.value;
+                const currentFactors = correctionFactors[konduktorValue];
+                
+                if (currentFactors && currentFactors[suhuKey]) {
+                    faktorKoreksiInput.value = currentFactors[suhuKey];
+                }
             }
             hitungHasil();
         }
@@ -185,6 +194,10 @@
         }
 
         // Tambahkan event listener
+        pembacaanAlatInput.addEventListener('input', validateNumericInput);
+        panjangInput.addEventListener('input', validateNumericInput);
+        suhuInput.addEventListener('input', validateNumericInput);
+
         pembacaanAlatInput.addEventListener('input', hitungHasil);
         panjangInput.addEventListener('input', hitungHasil);
         suhuInput.addEventListener('input', updateFaktorKoreksi);
