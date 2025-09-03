@@ -46,12 +46,18 @@
             display: flex;
             align-items: center;
         }
+        
+        /* --- PERBAIKAN DI SINI --- */
+        /* Mengembalikan border-top yang dihilangkan oleh Bootstrap */
+        .list-group-item + .list-group-item {
+            border-top-width: 1px;
+        }
+
         .list-group-item:hover {
             background-color: #e9f5ff;
             border-color: #0d6efd;
             transform: translateY(-3px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            /* --- PERBAIKAN DI SINI --- */
             position: relative;
             z-index: 2;
         }
