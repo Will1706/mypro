@@ -47,8 +47,6 @@
             align-items: center;
         }
         
-        /* --- PERBAIKAN DI SINI --- */
-        /* Mengembalikan border-top yang dihilangkan oleh Bootstrap */
         .list-group-item + .list-group-item {
             border-top-width: 1px;
         }
@@ -71,6 +69,10 @@
             font-size: 1.5rem;
             margin-right: 1rem;
             color: #0d6efd;
+        }
+
+        #additional-projects {
+            display: none; /* Proyek tambahan disembunyikan */
         }
     </style>
 </head>
@@ -297,6 +299,83 @@
                     <small class="text-muted">Mengintegrasikan gateway pembayaran ke dalam website.</small>
                 </div>
             </a>
+
+            <div id="additional-projects">
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-translate"></i>
+                    <div>
+                        <strong>Proyek 31: Aplikasi Penerjemah Bahasa</strong><br>
+                        <small class="text-muted">Menerjemahkan teks antar berbagai bahasa secara real-time.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-kanban"></i>
+                    <div>
+                        <strong>Proyek 32: Papan Kanban Manajemen Tugas</strong><br>
+                        <small class="text-muted">Aplikasi untuk mengatur alur kerja dan tugas tim.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-file-earmark-zip"></i>
+                    <div>
+                        <strong>Proyek 33: Alat Kompresi File Online</strong><br>
+                        <small class="text-muted">Mengurangi ukuran file gambar, PDF, atau dokumen lainnya.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-graph-down"></i>
+                    <div>
+                        <strong>Proyek 34: Pelacak Harga Saham</strong><br>
+                        <small class="text-muted">Memantau pergerakan harga saham dengan grafik interaktif.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-qr-code-scan"></i>
+                    <div>
+                        <strong>Proyek 35: Generator Kode QR</strong><br>
+                        <small class="text-muted">Membuat kode QR kustom untuk URL, teks, atau informasi kontak.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-clipboard-check"></i>
+                    <div>
+                        <strong>Proyek 36: Aplikasi Kuis Interaktif</strong><br>
+                        <small class="text-muted">Platform untuk membuat dan mengikuti kuis dengan skor.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-cloud-haze2"></i>
+                    <div>
+                        <strong>Proyek 37: Widget Cuaca</strong><br>
+                        <small class="text-muted">Menampilkan informasi cuaca berdasarkan lokasi pengguna.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-person-rolodex"></i>
+                    <div>
+                        <strong>Proyek 38: Sistem Manajemen Kontak</strong><br>
+                        <small class="text-muted">Menyimpan dan mengelola daftar kontak pribadi atau bisnis.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-diagram-3"></i>
+                    <div>
+                        <strong>Proyek 39: Alat Pembuat Diagram Alur</strong><br>
+                        <small class="text-muted">Aplikasi web untuk membuat diagram alur (flowchart) sederhana.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-stopwatch"></i>
+                    <div>
+                        <strong>Proyek 40: Aplikasi Pomodoro Timer</strong><br>
+                        <small class="text-muted">Membantu fokus belajar atau bekerja dengan teknik Pomodoro.</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button id="toggle-projects-btn" class="btn btn-primary">Tampilkan Lebih Banyak</button>
         </div>
 
         <footer class="text-center text-muted mt-5">
@@ -306,27 +385,39 @@
     </div>
     
     <script>
+        // Fungsi untuk jam digital
         function updateClock() {
             const now = new Date();
             const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
             const day = days[now.getDay()];
             const date = now.getDate();
             const month = months[now.getMonth()];
             const year = now.getFullYear();
-
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-
             const clockString = `${day}, ${date} ${month} ${year} - ${hours}:${minutes}:${seconds}`;
-            
             document.getElementById('live-clock').textContent = clockString;
         }
-
         setInterval(updateClock, 1000);
         updateClock();
+
+        // Fungsi untuk tombol tampilkan/sembunyikan
+        const toggleBtn = document.getElementById('toggle-projects-btn');
+        const additionalProjects = document.getElementById('additional-projects');
+
+        toggleBtn.addEventListener('click', function() {
+            const isHidden = additionalProjects.style.display === 'none' || additionalProjects.style.display === '';
+
+            if (isHidden) {
+                additionalProjects.style.display = 'block';
+                toggleBtn.textContent = 'Sembunyikan';
+            } else {
+                additionalProjects.style.display = 'none';
+                toggleBtn.textContent = 'Tampilkan Lebih Banyak';
+            }
+        });
     </script>
 
 </body>
