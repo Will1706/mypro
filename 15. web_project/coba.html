@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id" class=""> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Hambatan Konduktor</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Mengaplikasikan font Inter ke seluruh halaman */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+    <script>
+        // Skrip untuk mencegah FOUC (Flash of Unstyled Content) saat memuat tema
+        // Ini harus berada di <head> untuk berjalan sebelum body dirender
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="flex flex-col items-center justify-between min-h-screen p-5 bg-gray-100 dark:bg-slate-800 transition-colors duration-300">
+    
+    <div class="w-full max-w-sm text-center">
+        <h1 class="mb-4 text-3xl font-bold text-slate-700 dark:text-gray-100">
+            Kalkulator Hambatan Konduktor
+        </h1>
+        
+        <hr class="w-4/5 mx-auto my-6 border-t border-gray-300 dark:border-gray-600">
+
+        <div class="grid grid-cols-2 gap-4 mb-8 max-[320px]:grid-cols-1">
+            
+            <a href="hk_iec.html" class="group relative flex flex-col items-center justify-center p-5 text-white bg-[#2ecc71] rounded-xl shadow-md min-h-[100px] font-bold text-lg transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md overflow-hidden z-10 
+                                            before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-1 before:bg-white/70 dark:before:bg-white/30 before:rounded-sm before:transition-all before:duration-300 before:ease-out hover:before:w-full">
+                <img src="..//icon/logo_iec.png" alt="IEC Logo" class="w-16 h-16 mb-2 object-contain rounded-full shadow-lg bg-gradient-to-br from-[#2ecc71] to-[#27ae60] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:shadow-2xl">
+                <span>Standar IEC</span>
+            </a>
+
+            <a href="hk_icea.html" class="group relative flex flex-col items-center justify-center p-5 text-white bg-[#3498db] rounded-xl shadow-md min-h-[100px] font-bold text-lg transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md overflow-hidden z-10
+                                            before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-1 before:bg-white/70 dark:before:bg-white/30 before:rounded-sm before:transition-all before:duration-300 before:ease-out hover:before:w-full">
+                <img src="..//icon/logo_icea.png" alt="ICEA Logo" class="w-16 h-16 mb-2 object-contain rounded-full shadow-lg bg-gradient-to-br from-[#3498db] to-[#2980b9] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:shadow-2xl">
+                <span>Standar ICEA</span>
+            </a>
+
+            <a href="hk_spln.html" class="group relative flex flex-col items-center justify-center p-5 text-white bg-[#e67e22] rounded-xl shadow-md min-h-[100px] font-bold text-lg transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md overflow-hidden z-10
+                                            before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-1 before:bg-white/70 dark:before:bg-white/30 before:rounded-sm before:transition-all before:duration-300 before:ease-out hover:before:w-full">
+                <img src="..//icon/logo_spln.png" alt="SPLN Logo" class="w-16 h-16 mb-2 object-contain rounded-full shadow-lg bg-gradient-to-br from-[#e67e22] to-[#d35400] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:shadow-2xl">
+                <span>Standar SPLN</span>
+            </a>
+
+            <a href="hk_as.html" class="group relative flex flex-col items-center justify-center p-5 text-white bg-[#9b59b6] rounded-xl shadow-md min-h-[100px] font-bold text-lg transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md overflow-hidden z-10
+                                            before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-1 before:bg-white/70 dark:before:bg-white/30 before:rounded-sm before:transition-all before:duration-300 before:ease-out hover:before:w-full">
+                <img src="..//icon/logo_as.png" alt="AS/NZS Logo" class="w-16 h-16 mb-2 object-contain rounded-full shadow-lg bg-gradient-to-br from-[#9b59b6] to-[#8e44ad] transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:shadow-2xl">
+                <span>Standar AS</span>
+            </a>
+        </div>
+
+        <div class="flex items-center justify-center w-full gap-4 mt-5 max-[320px]:flex-col">
+            <a href="..//index.html" class="inline-flex items-center gap-2 font-semibold text-blue-500 transition-colors hover:text-blue-700 dark:text-purple-400 dark:hover:text-purple-300">
+                <i class="text-lg fa-solid fa-home"></i> Beranda
+            </a>
+            <button id="modeToggle" class="flex items-center gap-2 p-1 text-lg text-blue-500 transition-colors rounded-full cursor-pointer hover:bg-black/5 dark:text-purple-400 dark:hover:bg-white/10" aria-label="Toggle dark and light mode">
+                <i class="fa-solid fa-moon"></i>
+                <span id="modeText" class="text-base font-normal">Terang</span>
+            </button>
+        </div>
+
+        <hr class="w-4/5 mx-auto mt-5 mb-2.5 border-t border-gray-300 dark:border-gray-600">
+        
+        <div class="w-full mt-2 text-sm text-center text-slate-500 dark:text-slate-400">
+            Made by Williyanto Adi 2025
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modeToggleBtn = document.getElementById('modeToggle');
+            // Target elemen <html> untuk toggle kelas 'dark'
+            const htmlElement = document.documentElement; 
+            const modeIcon = modeToggleBtn.querySelector('i');
+            const modeText = document.getElementById('modeText');
+
+            // Fungsi untuk update ikon dan teks berdasarkan status dark mode
+            const updateModeUI = () => {
+                if (htmlElement.classList.contains('dark')) {
+                    modeIcon.classList.remove('fa-moon');
+                    modeIcon.classList.add('fa-sun');
+                    modeText.textContent = 'Mode Gelap';
+                } else {
+                    modeIcon.classList.remove('fa-sun');
+                    modeIcon.classList.add('fa-moon');
+                    modeText.textContent = 'Mode Terang';
+                }
+            };
+
+            // Inisialisasi UI saat halaman dimuat
+            updateModeUI();
+
+            modeToggleBtn.addEventListener('click', () => {
+                // Toggle kelas 'dark' pada elemen <html>
+                htmlElement.classList.toggle('dark');
+
+                // Simpan preferensi tema ke localStorage
+                if (htmlElement.classList.contains('dark')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+
+                // Update UI setelah perubahan
+                updateModeUI();
+            });
+        });
+    </script>
+</body>
+</html>
