@@ -14,14 +14,13 @@
         body {
             background-color: #f0f2f5;
             color: #333;
-            /* Padding disesuaikan untuk header + jam */
-            padding-top: 180px; 
+            /* Padding disesuaikan agar pas dengan header baru */
+            padding-top: 130px; 
         }
         .header-section {
-            /* --- PERUBAHAN CSS HEADER --- */
-            background-color: rgba(255, 255, 255, 0.7); /* Dibuat semi-transparan */
-            backdrop-filter: blur(10px); /* Efek frosted glass */
-            padding: 0.75rem 0; /* Padding dikecilkan agar header tidak terlalu besar */
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0; /* Padding header disesuaikan */
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             position: fixed;
             top: 0;
@@ -31,22 +30,14 @@
         .header-section h1 {
             color: #0d6efd;
             font-weight: 700;
-            font-size: 2rem; /* Ukuran font judul disesuaikan */
+            /* --- UKURAN JUDUL DIPERKECIL --- */
+            font-size: 1.8rem; 
         }
 
-        /* --- STYLE BARU UNTUK JAM --- */
         #live-clock-container {
-            position: fixed;
-            top: 95px; /* Posisinya di bawah header (sesuaikan jika perlu) */
-            width: 100%;
-            z-index: 999;
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            padding: 0.5rem 0;
-            text-align: center;
+            font-size: 0.9rem; /* Ukuran font jam disesuaikan */
             font-weight: 500;
-            color: #333;
-            border-bottom: 1px solid #dee2e6;
+            color: #555;
         }
 
         .list-group-item {
@@ -80,15 +71,12 @@
 
     <div class="header-section text-center">
         <div class="container">
-            <h1 class="display-5"><i class="bi bi-folder-fill me-3"></i>Daftar Proyek Saya</h1>
-            <p class="lead text-muted mb-0">Jelajahi karya-karya terbaru saya.</p>
+            <h1><i class="bi bi-folder-fill me-2"></i>Daftar Proyek Saya</h1>
+            <div id="live-clock-container">
+                <span id="live-clock"></span>
+            </div>
         </div>
     </div>
-
-    <div id="live-clock-container">
-        <span id="live-clock"></span>
-    </div>
-
 
     <div class="container mb-5">
         <div class="list-group">
@@ -330,10 +318,7 @@
             document.getElementById('live-clock').textContent = clockString;
         }
 
-        // Memanggil fungsi setiap detik
         setInterval(updateClock, 1000);
-
-        // Memanggil fungsi saat halaman pertama kali dimuat
         updateClock();
     </script>
 
