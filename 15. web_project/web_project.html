@@ -14,13 +14,12 @@
         body {
             background-color: #f0f2f5;
             color: #333;
-            /* Padding disesuaikan agar pas dengan header baru */
             padding-top: 130px; 
         }
         .header-section {
             background-color: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
-            padding: 1rem 0; /* Padding header disesuaikan */
+            padding: 1rem 0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             position: fixed;
             top: 0;
@@ -30,12 +29,11 @@
         .header-section h1 {
             color: #0d6efd;
             font-weight: 700;
-            /* --- UKURAN JUDUL DIPERKECIL --- */
             font-size: 1.8rem; 
         }
 
         #live-clock-container {
-            font-size: 0.9rem; /* Ukuran font jam disesuaikan */
+            font-size: 0.9rem;
             font-weight: 500;
             color: #555;
         }
@@ -53,6 +51,9 @@
             border-color: #0d6efd;
             transform: translateY(-3px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            /* --- PERBAIKAN DI SINI --- */
+            position: relative;
+            z-index: 2;
         }
         .list-group-item strong {
             color: #0d6efd;
@@ -94,7 +95,7 @@
                     <small class="text-muted">Aplikasi Android untuk melihat prakiraan cuaca real-time.</small>
                 </div>
             </a>
-            <a href="..//17. web streaming video/web_streaming.html"  class="list-group-item list-group-item-action">
+             <a href="..//17. web streaming video/web_streaming.html"  class="list-group-item list-group-item-action">
                 <i class="bi bi-github"></i>
                 <div>
                     <strong>Proyek 3: Library JavaScript Utilities</strong><br>
