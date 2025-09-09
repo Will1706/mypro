@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
@@ -60,47 +60,41 @@
             display: none;
         }
 
-        /* Sembunyikan footer khusus cetak pada tampilan biasa */
         #print-footer {
             display: none;
         }
 
-        /* --- CSS BARU UNTUK FUNGSI CETAK --- */
+        /* --- CSS CETAK DIPERBARUI --- */
         @media print {
             body {
                 background-color: white !important;
-                /* Menambahkan margin rata kiri-kanan pada halaman */
-                padding: 0 1.5cm; 
-                -webkit-print-color-adjust: exact; /* Memastikan warna tercetak di Chrome */
+                padding: 2cm 1.5cm; /* Tambah padding atas-bawah dan tetap ada kiri-kanan */
+                -webkit-print-color-adjust: exact;
             }
             .card {
                 box-shadow: none !important;
-                border: 1px solid #ddd !important; /* Beri border tipis agar terlihat rapi */
+                border: 1px solid #ddd !important;
             }
             .main-container {
                 margin: 0 !important;
                 padding: 0 !important;
             }
 
-            /* Sembunyikan semua elemen yang tidak perlu dicetak */
             .col-md-5, #add-allocation-btn, .action-buttons, #resetBtn, #hitungBtn, footer, #printBtn {
                 display: none !important;
             }
-            /* Pastikan kolom hasil mengambil lebar penuh dalam area padding */
             .col-md-7 {
                 width: 100% !important;
                 flex: 0 0 100% !important;
                 max-width: 100% !important;
             }
             
-            /* Tampilkan dan atur posisi footer khusus cetak */
+            /* Footer tidak lagi 'fixed', tapi normal dengan jarak dan garis atas */
             #print-footer {
                 display: block !important;
-                position: fixed;
-                bottom: 1cm;
-                left: 0;
-                right: 0;
-                text-align: center;
+                margin-top: 2rem;
+                padding-top: 1rem;
+                border-top: 1px solid #ccc;
                 font-size: 0.8em;
             }
         }
@@ -179,6 +173,7 @@
 
                             <div class="col-md-7">
                                  <h5 class="text-center mb-0" id="hasil-alokasi-title">Hasil Alokasi</h5>
+
                                  <div class="card bg-light my-3">
                                     <div class="card-body p-2">
                                         <div class="row text-center">
@@ -220,7 +215,7 @@
         <p class="mb-0">Williyanto Adi 2025</p>
     </footer>
 
-    <div id="print-footer" class="text-muted">
+    <div id="print-footer" class="text-center text-muted">
         Williyanto Adi 2025
     </div>
 
@@ -229,7 +224,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // ... (Tidak ada perubahan pada JavaScript) ...
+        // ... Tidak ada perubahan pada JavaScript ...
         function formatCurrency(value) {
             let numStr = String(value).replace(/[^,\d]/g, '').toString();
             return new Intl.NumberFormat('id-ID').format(numStr);
