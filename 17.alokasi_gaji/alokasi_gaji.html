@@ -26,7 +26,6 @@
             margin: 1.5rem auto;
         }
         
-        /* --- PERUBAHAN WARNA SISA MENJADI HIJAU --- */
         #sisaGaji.is-valid, #sisaGaji.is-warning { 
             background-color: #d1e7dd; /* Hijau */
             font-weight: bold; 
@@ -64,7 +63,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="gajiBulanan" class="form-label">Total Gaji Bulanan (Rp)</label>
-                                    <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" value="8.800.000">
+                                    <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" value="10.000.000">
                                 </div>
                                 
                                 <div class="mb-3">
@@ -232,14 +231,13 @@
             }
 
             const sisa = totalGaji - totalAlokasi;
-            if (sisa > 0.01) { // Menghindari sisa sangat kecil karena floating point
+            if (sisa > 0.01) {
                 dataAlokasi.push({ nama: 'Sisa', jumlah: sisa });
             }
-
-            // --- LOGIKA WARNA GRAFIK BARU ---
+            
             const labels = [], dataValues = [], finalColors = [];
-            const expenseColors = ['#e74c3c', '#c0392b', '#ff6b6b', '#ff8e71', '#d35400']; // Palet Merah
-            const sisaColor = '#28a745'; // Warna Hijau
+            const expenseColors = ['#e74c3c', '#c0392b', '#ff6b6b', '#ff8e71', '#d35400'];
+            const sisaColor = '#28a745';
 
             dataAlokasi.forEach((item, index) => {
                 const persen = (item.jumlah / totalGaji) * 100;
@@ -253,18 +251,27 @@
                 }
             });
             
+            // --- BAGIAN KODE YANG DIUBAH ---
             let hasilHTML = `<ul class="list-group list-group-flush">`;
             dataAlokasi.forEach(item => {
-                 hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.nama} <span class="badge bg-primary rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
+                let badgeColorClass = 'bg-danger'; // Default merah untuk pengeluaran
+                if (item.nama === 'Sisa') {
+                    badgeColorClass = 'bg-success'; // Hijau khusus untuk Sisa
+                }
+                 hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.nama} <span class="badge ${badgeColorClass} rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
             });
+            // --- AKHIR BAGIAN KODE YANG DIUBAH ---
+
             hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center active"><strong>Total Gaji</strong> <strong>${formatRupiah(totalGaji)}</strong></li></ul>`;
             hasilDiv.innerHTML = hasilHTML;
             updateChart(labels, dataValues, finalColors);
         }
 
         function updateChart(labels, data, colors) {
-            if (alokasiChart) alokasiChart.destroy();
-            const ctx = canvas.getContext('d');
+            if (alokasiChart) {
+                alokasiChart.destroy();
+            }
+            const ctx = canvas.getContext('2d');
             alokasiChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
