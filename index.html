@@ -70,6 +70,11 @@
                 border-top-left-radius: 0;
             }
         }
+
+        /* --- CSS BARU UNTUK MENGHILANGKAN "Rp" SECARA PAKSA --- */
+        .input-group > .input-group-text:not(:first-child):not(:last-child) {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -194,6 +199,7 @@
                 <span class="input-group-text">
                     <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Kategori">
                 </span>
+                <span class="input-group-text">Rp</span>
                 <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formatCurrency(value)}">
                 <button class="btn btn-outline-danger remove-allocation-btn" type="button"><i class="bi bi-trash-fill"></i></button>
             `;
