@@ -63,7 +63,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="gajiBulanan" class="form-label">Total Gaji Bulanan (Rp)</label>
-                                    <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" value="0">
+                                    <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" value="">
                                 </div>
                                 
                                 <div class="mb-3">
@@ -310,7 +310,6 @@
         }
 
         function initializeApp() {
-            // --- NILAI GAJI DEFAULT DIUBAH DI SINI ---
             gajiInput.value = formatCurrency('0');
 
             const currentMonth = new Date().getMonth();
@@ -326,7 +325,6 @@
             calculateAndDisplay();
         }
 
-        // --- Event Listeners ---
         addAllocationBtn.addEventListener('click', () => createAllocationRow());
         gajiInput.addEventListener('input', handleCurrencyInput);
         gajiInput.addEventListener('input', updateSisa);
