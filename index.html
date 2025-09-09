@@ -122,8 +122,7 @@
                                 </div>
 
                                 <div class="input-group mb-3 fw-bold">
-                                    <span class="input-group-text" style="width: 120px;">SISA</span>
-                                    <span class="input-group-text">Rp</span>
+                                    <span class="input-group-text">SISA</span>
                                     <input type="text" class="form-control" id="sisaGaji" readonly>
                                 </div>
 
@@ -188,11 +187,9 @@
             hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText}`;
         }
 
-        // --- FUNGSI YANG DIUBAH ---
         function createAllocationRow(name = '', value = '') {
             const div = document.createElement('div');
             div.className = 'input-group mb-2 allocation-row';
-            // Baris <span class="input-group-text">Rp</span> telah dihapus dari sini
             div.innerHTML = `
                 <span class="input-group-text">
                     <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Kategori">
