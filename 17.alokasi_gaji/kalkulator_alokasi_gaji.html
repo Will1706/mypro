@@ -35,21 +35,26 @@
         }
         
         #sisaGaji.is-valid, #sisaGaji.is-warning { 
-            background-color: #d1e7dd; /* Hijau */
+            background-color: #d1e7dd;
             font-weight: bold; 
         }
         #sisaGaji.is-invalid { 
-            background-color: #f8d7da; /* Merah (untuk sisa minus) */
+            background-color: #f8d7da;
             font-weight: bold; 
         }
         
-        /* CSS Disederhanakan */
+        /* --- CSS BARU UNTUK PLACEHOLDER --- */
+        ::placeholder {
+            font-style: italic;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
         .allocation-number {
-            width: 45px; /* Sedikit diperlebar */
+            width: 45px;
         }
         .category-name-input {
-            /* Input nama kini adalah input standar, tidak perlu style khusus */
-            min-width: 100px; /* Lebar minimum agar tidak terlalu sempit */
+            min-width: 100px;
         }
 
         .input-group > .input-group-text:not(:first-child):not(:last-child) {
@@ -73,7 +78,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="gajiBulanan" class="form-label">Total Gaji Bulanan (Rp)</label>
-                                    <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" value="">
+                                    <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" placeholder="Masukkan di sini">
                                 </div>
                                 
                                 <div class="mb-3">
@@ -181,15 +186,18 @@
             });
         }
 
-        // --- FUNGSI DIPERBAIKI ---
+        // --- FUNGSI DIUBAH UNTUK MENGGUNAKAN PLACEHOLDER ---
         function createAllocationRow(name = '', value = '') {
             const div = document.createElement('div');
             div.className = 'input-group mb-2 allocation-row';
-            // Struktur HTML disederhanakan agar input nama muncul
+            
+            // value disetel kosong jika tidak ada, agar placeholder muncul
+            const formattedValue = value ? formatCurrency(value) : '';
+
             div.innerHTML = `
                 <span class="input-group-text allocation-number"></span>
-                <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Alokasi">
-                <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formatCurrency(value)}">
+                <input type="text" class="form-control category-name-input" value="${name}" placeholder="Masukkan di sini">
+                <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formattedValue}" placeholder="masukkan nilai">
                 <button class="btn btn-outline-danger remove-allocation-btn" type="button"><i class="bi bi-trash-fill"></i></button>
             `;
             allocationContainer.appendChild(div);
@@ -232,7 +240,7 @@
             sisaGajiInput.value = new Intl.NumberFormat('id-ID').format(sisa);
 
             sisaGajiInput.classList.remove('is-valid', 'is-invalid', 'is-warning');
-            if (sisa === 0) sisaGajiInput.classList.add('is-valid');
+            if (sisa === 0 && gajiInput.value) sisaGajiInput.classList.add('is-valid');
             else if (sisa < 0) sisaGajiInput.classList.add('is-invalid');
             else if (sisa > 0) sisaGajiInput.classList.add('is-warning');
         }
@@ -324,21 +332,24 @@
         
         function resetAllocations() {
             allocationContainer.innerHTML = '';
-            createAllocationRow('', '');
+            createAllocationRow();
             updateRowNumbers();
             updateSisa();
             calculateAndDisplay();
         }
 
+        // --- FUNGSI INISIALISASI DIUBAH UNTUK MENGGUNAKAN PLACEHOLDER ---
         function initializeApp() {
-            gajiInput.value = formatCurrency('0');
+            // Kosongkan nilai gaji agar placeholder muncul
+            gajiInput.value = '';
 
             const currentMonth = new Date().getMonth();
             bulanSelect.value = currentMonth;
             
             allocationContainer.innerHTML = ''; 
             for (let i = 1; i <= 5; i++) {
-                createAllocationRow(`Alokasi ${i}`, '');
+                // Panggil tanpa argumen agar menggunakan nilai default kosong
+                createAllocationRow();
             }
             
             updateHasilTitle();
