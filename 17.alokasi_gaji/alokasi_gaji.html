@@ -292,29 +292,24 @@
             });
         }
         
-        // --- FUNGSI RESET ALOKASI YANG BARU ---
         function resetAllocations() {
-            // Hapus semua baris alokasi yang ada
             allocationContainer.innerHTML = '';
-            // Buat satu baris alokasi kosong
             createAllocationRow('', '');
-
-            // Perbarui sisa dan grafik
             updateSisa();
             calculateAndDisplay();
         }
 
-        // Fungsi untuk inisialisasi awal
+        // --- FUNGSI INISIALISASI YANG DIUBAH ---
         function initializeApp() {
             gajiInput.value = formatCurrency('10000000');
             const currentMonth = new Date().getMonth();
             bulanSelect.value = currentMonth;
             
             allocationContainer.innerHTML = ''; // Pastikan kosong dulu
-            createAllocationRow('Makan & Kebutuhan Pokok', '2500000');
-            createAllocationRow('Tagihan Rutin', '1000000');
-            createAllocationRow('Transportasi', '700000');
-            createAllocationRow('Investasi', '1500000');
+            // Buat 5 baris alokasi default yang kosong
+            for (let i = 1; i <= 5; i++) {
+                createAllocationRow(`Alokasi ${i}`, '');
+            }
             
             updateHasilTitle();
             updateSisa();
@@ -328,7 +323,7 @@
         gajiInput.addEventListener('input', updateSisa);
         hitungBtn.addEventListener('click', calculateAndDisplay);
         bulanSelect.addEventListener('change', updateHasilTitle);
-        resetBtn.addEventListener('click', resetAllocations); // Listener Reset memanggil fungsi baru
+        resetBtn.addEventListener('click', resetAllocations);
 
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
