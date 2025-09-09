@@ -60,24 +60,16 @@
             display: none;
         }
 
-        /* Notifikasi Simpan */
-        #save-toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1050;
-            transition: opacity 0.5s ease-in-out;
-        }
-
         #print-footer {
             display: none;
         }
 
+        /* --- CSS CETAK DIPERBARUI --- */
         @media print {
             body {
                 background-color: white !important;
-                padding: 2cm 1.5cm;
+                /* Margin kiri-kanan diperkecil dari 1.5cm menjadi 1cm */
+                padding: 1.5cm 1cm; 
                 -webkit-print-color-adjust: exact;
             }
             .card {
@@ -181,6 +173,7 @@
 
                             <div class="col-md-7">
                                  <h5 class="text-center mb-0" id="hasil-alokasi-title">Hasil Alokasi</h5>
+
                                  <div class="card bg-light my-3">
                                     <div class="card-body p-2">
                                         <div class="row text-center">
@@ -240,7 +233,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // --- Deklarasi Variabel ---
+        // ... (Tidak ada perubahan pada JavaScript) ...
+        function formatCurrency(value) {
+            let numStr = String(value).replace(/[^,\d]/g, '').toString();
+            return new Intl.NumberFormat('id-ID').format(numStr);
+        }
+        function parseCurrency(value) {
+            return parseFloat(String(value).replace(/\./g, '')) || 0;
+        }
+
+        const summaryGaji = document.getElementById('summary-gaji');
+        const summaryAlokasi = document.getElementById('summary-alokasi');
+        const summarySisa = document.getElementById('summary-sisa');
+        const printBtn = document.getElementById('printBtn');
         const gajiInput = document.getElementById('gajiBulanan');
         const bulanSelect = document.getElementById('bulan');
         const tahunSelect = document.getElementById('tahun');
@@ -253,25 +258,11 @@
         const sisaGajiInput = document.getElementById('sisaGaji');
         const allocationContainer = document.getElementById('allocation-container');
         const addAllocationBtn = document.getElementById('add-allocation-btn');
-        const summaryGaji = document.getElementById('summary-gaji');
-        const summaryAlokasi = document.getElementById('summary-alokasi');
-        const summarySisa = document.getElementById('summary-sisa');
-        const printBtn = document.getElementById('printBtn');
         const saveToastEl = document.getElementById('save-toast');
         const saveToast = new bootstrap.Toast(saveToastEl);
 
         let alokasiChart;
 
-        // --- Fungsi Helper ---
-        function formatCurrency(value) {
-            let numStr = String(value).replace(/[^,\d]/g, '').toString();
-            return new Intl.NumberFormat('id-ID').format(numStr);
-        }
-        function parseCurrency(value) {
-            return parseFloat(String(value).replace(/\./g, '')) || 0;
-        }
-
-        // --- FUNGSI BARU: LOCAL STORAGE ---
         function saveData() {
             const year = tahunSelect.value;
             const month = bulanSelect.value;
@@ -281,7 +272,7 @@
             document.querySelectorAll('.allocation-row').forEach(row => {
                 const name = row.querySelector('.category-name-input').value.trim();
                 const amount = parseCurrency(row.querySelector('.allocation-amount').value);
-                if(name || amount > 0) { // Simpan meskipun hanya nama atau nominal yang terisi
+                if(name || amount > 0) {
                     allocations.push({ name, amount });
                 }
             });
@@ -292,7 +283,7 @@
             };
             
             localStorage.setItem(key, JSON.stringify(dataToSave));
-            saveToast.show(); // Tampilkan notifikasi
+            saveToast.show();
         }
 
         function loadData() {
@@ -301,7 +292,7 @@
             const key = `budget_${year}-${month}`;
             const savedData = localStorage.getItem(key);
 
-            allocationContainer.innerHTML = ''; // Selalu kosongkan dulu
+            allocationContainer.innerHTML = '';
 
             if (savedData) {
                 const data = JSON.parse(savedData);
@@ -311,10 +302,10 @@
                         createAllocationRow(item.name, item.amount);
                     });
                 } else {
-                    createDefaultRows(); // Jika ada data tapi alokasi kosong
+                    createDefaultRows();
                 }
             } else {
-                gajiInput.value = ''; // Kosongkan gaji jika tidak ada data
+                gajiInput.value = '';
                 createDefaultRows();
             }
             
@@ -327,7 +318,6 @@
             loadData();
         }
 
-        // --- Fungsi UI & Kalkulasi ---
         function updateHasilTitle() {
             const selectedMonthText = bulanSelect.options[bulanSelect.selectedIndex].text;
             const selectedYearText = tahunSelect.options[tahunSelect.selectedIndex].text;
@@ -451,7 +441,7 @@
             hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center active"><strong>Total Gaji</strong> <strong>${formatRupiah(totalGaji)}</strong></li></ul>`;
             hasilDiv.innerHTML = hasilHTML;
             updateChart(labels, dataValues, finalColors);
-            saveData(); // Simpan data setiap kali grafik berhasil dibuat
+            saveData();
         }
 
         function updateChart(labels, data, colors) {
@@ -474,11 +464,13 @@
         function resetAllocations() {
             allocationContainer.innerHTML = '';
             createDefaultRows();
+            updateRowNumbers();
             updateSisa();
             calculateAndDisplay();
         }
 
         function initializeApp() {
+            gajiInput.value = '';
             const today = new Date();
             const currentMonth = today.getMonth();
             const currentYear = today.getFullYear();
@@ -492,10 +484,9 @@
             }
             tahunSelect.value = currentYear;
             
-            handleDateChange(); // Panggil fungsi ini untuk memuat data awal
+            handleDateChange();
         }
 
-        // --- Event Listeners ---
         printBtn.addEventListener('click', () => window.print());
         addAllocationBtn.addEventListener('click', () => createAllocationRow());
         gajiInput.addEventListener('input', handleCurrencyInput);
