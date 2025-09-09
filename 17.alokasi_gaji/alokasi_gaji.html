@@ -102,12 +102,18 @@
                                     <input type="text" class="form-control" id="sisaGaji" readonly>
                                 </div>
 
-                                <button id="hitungBtn" class="btn btn-primary w-100">Buat/Perbarui Grafik</button>
+                                <div class="d-grid gap-2 d-sm-flex">
+                                    <button id="hitungBtn" class="btn btn-primary w-100">Buat/Perbarui Grafik</button>
+                                    <button id="resetBtn" class="btn btn-outline-secondary w-100 mt-2 mt-sm-0" type="button">
+                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Alokasi
+                                    </button>
+                                </div>
+
                                 <div id="alert-total" class="alert alert-danger mt-3 d-none" role="alert"></div>
                             </div>
 
                             <div class="col-md-7 border-start">
-                                 <h5 class="text-center mb-0">Hasil Alokasi</h5>
+                                 <h5 class="text-center mb-0" id="hasil-alokasi-title">Hasil Alokasi</h5>
                                 <div id="chart-container">
                                     <canvas id="chartAlokasi"></canvas>
                                 </div>
@@ -140,7 +146,9 @@
 
         const gajiInput = document.getElementById('gajiBulanan');
         const bulanSelect = document.getElementById('bulan');
+        const hasilAlokasiTitle = document.getElementById('hasil-alokasi-title');
         const hitungBtn = document.getElementById('hitungBtn');
+        const resetBtn = document.getElementById('resetBtn');
         const hasilDiv = document.getElementById('hasilAlokasi');
         const alertTotalDiv = document.getElementById('alert-total');
         const canvas = document.getElementById('chartAlokasi');
@@ -149,6 +157,11 @@
         const addAllocationBtn = document.getElementById('add-allocation-btn');
 
         let alokasiChart;
+
+        function updateHasilTitle() {
+            const selectedMonthText = bulanSelect.options[bulanSelect.selectedIndex].text;
+            hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText}`;
+        }
 
         function createAllocationRow(name = '', value = '') {
             const div = document.createElement('div');
@@ -236,7 +249,7 @@
             }
             
             const labels = [], dataValues = [], finalColors = [];
-            const expenseColors = ['#e74c3c', '#c0392b', '#ff6b6b', '#ff8e71', '#d35400'];
+            const vibrantColors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#C7C7C7','#8D62ED','#5AD3D1','#FF8080','#6A8FFF','#FFD700'];
             const sisaColor = '#28a745';
 
             dataAlokasi.forEach((item, index) => {
@@ -247,21 +260,18 @@
                 if (item.nama === 'Sisa') {
                     finalColors.push(sisaColor);
                 } else {
-                    finalColors.push(expenseColors[index % expenseColors.length]);
+                    finalColors.push(vibrantColors[index % vibrantColors.length]);
                 }
             });
             
-            // --- BAGIAN KODE YANG DIUBAH ---
             let hasilHTML = `<ul class="list-group list-group-flush">`;
             dataAlokasi.forEach(item => {
-                let badgeColorClass = 'bg-danger'; // Default merah untuk pengeluaran
+                let badgeColorClass = 'bg-danger'; 
                 if (item.nama === 'Sisa') {
-                    badgeColorClass = 'bg-success'; // Hijau khusus untuk Sisa
+                    badgeColorClass = 'bg-success'; 
                 }
                  hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.nama} <span class="badge ${badgeColorClass} rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
             });
-            // --- AKHIR BAGIAN KODE YANG DIUBAH ---
-
             hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center active"><strong>Total Gaji</strong> <strong>${formatRupiah(totalGaji)}</strong></li></ul>`;
             hasilDiv.innerHTML = hasilHTML;
             updateChart(labels, dataValues, finalColors);
@@ -282,24 +292,45 @@
             });
         }
         
-        addAllocationBtn.addEventListener('click', () => createAllocationRow());
-        gajiInput.addEventListener('input', handleCurrencyInput);
-        gajiInput.addEventListener('input', updateSisa);
-        hitungBtn.addEventListener('click', calculateAndDisplay);
+        // --- FUNGSI RESET ALOKASI YANG BARU ---
+        function resetAllocations() {
+            // Hapus semua baris alokasi yang ada
+            allocationContainer.innerHTML = '';
+            // Buat satu baris alokasi kosong
+            createAllocationRow('', '');
 
-        document.addEventListener('DOMContentLoaded', () => {
+            // Perbarui sisa dan grafik
+            updateSisa();
+            calculateAndDisplay();
+        }
+
+        // Fungsi untuk inisialisasi awal
+        function initializeApp() {
+            gajiInput.value = formatCurrency('10000000');
             const currentMonth = new Date().getMonth();
             bulanSelect.value = currentMonth;
             
-            createAllocationRow('Makan & Kebutuhan Pokok', '1600000');
+            allocationContainer.innerHTML = ''; // Pastikan kosong dulu
+            createAllocationRow('Makan & Kebutuhan Pokok', '2500000');
             createAllocationRow('Tagihan Rutin', '1000000');
-            createAllocationRow('Biaya Tempat Tinggal', '620000');
-            createAllocationRow('Investasi & Dana Pensiun', '2000000');
+            createAllocationRow('Transportasi', '700000');
+            createAllocationRow('Investasi', '1500000');
             
-            gajiInput.value = formatCurrency(gajiInput.value);
+            updateHasilTitle();
             updateSisa();
             calculateAndDisplay();
-        });
+        }
+
+        // --- Event Listeners ---
+        addAllocationBtn.addEventListener('click', () => createAllocationRow());
+
+        gajiInput.addEventListener('input', handleCurrencyInput);
+        gajiInput.addEventListener('input', updateSisa);
+        hitungBtn.addEventListener('click', calculateAndDisplay);
+        bulanSelect.addEventListener('change', updateHasilTitle);
+        resetBtn.addEventListener('click', resetAllocations); // Listener Reset memanggil fungsi baru
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 
 </body>
