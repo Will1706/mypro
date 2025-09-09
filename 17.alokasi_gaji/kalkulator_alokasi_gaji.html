@@ -60,15 +60,24 @@
             display: none;
         }
 
+        /* Notifikasi Simpan */
+        #save-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            transition: opacity 0.5s ease-in-out;
+        }
+
         #print-footer {
             display: none;
         }
 
-        /* --- CSS CETAK DIPERBARUI --- */
         @media print {
             body {
                 background-color: white !important;
-                padding: 2cm 1.5cm; /* Tambah padding atas-bawah dan tetap ada kiri-kanan */
+                padding: 2cm 1.5cm;
                 -webkit-print-color-adjust: exact;
             }
             .card {
@@ -80,7 +89,7 @@
                 padding: 0 !important;
             }
 
-            .col-md-5, #add-allocation-btn, .action-buttons, #resetBtn, #hitungBtn, footer, #printBtn {
+            .col-md-5, #add-allocation-btn, .action-buttons, #resetBtn, #hitungBtn, footer, #printBtn, #save-toast {
                 display: none !important;
             }
             .col-md-7 {
@@ -89,7 +98,6 @@
                 max-width: 100% !important;
             }
             
-            /* Footer tidak lagi 'fixed', tapi normal dengan jarak dan garis atas */
             #print-footer {
                 display: block !important;
                 margin-top: 2rem;
@@ -119,7 +127,7 @@
                                     <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" placeholder="Masukkan di sini">
                                 </div>
                                 
-                                <div class="row">
+                                <div class="row mb-3">
                                     <div class="col-7">
                                         <label for="bulan" class="form-label">Bulan</label>
                                         <select class="form-select" id="bulan">
@@ -145,7 +153,7 @@
                                 </div>
 
 
-                                <hr class="mt-3">
+                                <hr>
                                 <p class="mb-2"><strong>Alokasi Anggaran (dalam Rupiah)</strong></p>
                                 
                                 <div id="allocation-container"></div>
@@ -162,7 +170,7 @@
                                 </div>
 
                                 <div class="d-grid gap-2 d-sm-flex action-buttons">
-                                    <button id="hitungBtn" class="btn btn-primary w-100">Buat/Perbarui Grafik</button>
+                                    <button id="hitungBtn" class="btn btn-primary w-100"><i class="bi bi-calculator-fill me-2"></i>Buat Grafik & Simpan</button>
                                     <button id="resetBtn" class="btn btn-danger w-100 mt-2 mt-sm-0" type="button">
                                         <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Alokasi
                                     </button>
@@ -173,7 +181,6 @@
 
                             <div class="col-md-7">
                                  <h5 class="text-center mb-0" id="hasil-alokasi-title">Hasil Alokasi</h5>
-
                                  <div class="card bg-light my-3">
                                     <div class="card-body p-2">
                                         <div class="row text-center">
@@ -219,24 +226,21 @@
         Williyanto Adi 2025
     </div>
 
+    <div id="save-toast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle-fill me-2"></i>Data berhasil disimpan!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // ... Tidak ada perubahan pada JavaScript ...
-        function formatCurrency(value) {
-            let numStr = String(value).replace(/[^,\d]/g, '').toString();
-            return new Intl.NumberFormat('id-ID').format(numStr);
-        }
-        function parseCurrency(value) {
-            return parseFloat(String(value).replace(/\./g, '')) || 0;
-        }
-
-        const summaryGaji = document.getElementById('summary-gaji');
-        const summaryAlokasi = document.getElementById('summary-alokasi');
-        const summarySisa = document.getElementById('summary-sisa');
-        const printBtn = document.getElementById('printBtn');
+        // --- Deklarasi Variabel ---
         const gajiInput = document.getElementById('gajiBulanan');
         const bulanSelect = document.getElementById('bulan');
         const tahunSelect = document.getElementById('tahun');
@@ -249,9 +253,81 @@
         const sisaGajiInput = document.getElementById('sisaGaji');
         const allocationContainer = document.getElementById('allocation-container');
         const addAllocationBtn = document.getElementById('add-allocation-btn');
+        const summaryGaji = document.getElementById('summary-gaji');
+        const summaryAlokasi = document.getElementById('summary-alokasi');
+        const summarySisa = document.getElementById('summary-sisa');
+        const printBtn = document.getElementById('printBtn');
+        const saveToastEl = document.getElementById('save-toast');
+        const saveToast = new bootstrap.Toast(saveToastEl);
 
         let alokasiChart;
 
+        // --- Fungsi Helper ---
+        function formatCurrency(value) {
+            let numStr = String(value).replace(/[^,\d]/g, '').toString();
+            return new Intl.NumberFormat('id-ID').format(numStr);
+        }
+        function parseCurrency(value) {
+            return parseFloat(String(value).replace(/\./g, '')) || 0;
+        }
+
+        // --- FUNGSI BARU: LOCAL STORAGE ---
+        function saveData() {
+            const year = tahunSelect.value;
+            const month = bulanSelect.value;
+            const key = `budget_${year}-${month}`;
+
+            const allocations = [];
+            document.querySelectorAll('.allocation-row').forEach(row => {
+                const name = row.querySelector('.category-name-input').value.trim();
+                const amount = parseCurrency(row.querySelector('.allocation-amount').value);
+                if(name || amount > 0) { // Simpan meskipun hanya nama atau nominal yang terisi
+                    allocations.push({ name, amount });
+                }
+            });
+
+            const dataToSave = {
+                salary: parseCurrency(gajiInput.value),
+                allocations: allocations
+            };
+            
+            localStorage.setItem(key, JSON.stringify(dataToSave));
+            saveToast.show(); // Tampilkan notifikasi
+        }
+
+        function loadData() {
+            const year = tahunSelect.value;
+            const month = bulanSelect.value;
+            const key = `budget_${year}-${month}`;
+            const savedData = localStorage.getItem(key);
+
+            allocationContainer.innerHTML = ''; // Selalu kosongkan dulu
+
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                gajiInput.value = formatCurrency(data.salary);
+                if (data.allocations && data.allocations.length > 0) {
+                    data.allocations.forEach(item => {
+                        createAllocationRow(item.name, item.amount);
+                    });
+                } else {
+                    createDefaultRows(); // Jika ada data tapi alokasi kosong
+                }
+            } else {
+                gajiInput.value = ''; // Kosongkan gaji jika tidak ada data
+                createDefaultRows();
+            }
+            
+            updateSisa();
+            calculateAndDisplay();
+        }
+
+        function handleDateChange() {
+            updateHasilTitle();
+            loadData();
+        }
+
+        // --- Fungsi UI & Kalkulasi ---
         function updateHasilTitle() {
             const selectedMonthText = bulanSelect.options[bulanSelect.selectedIndex].text;
             const selectedYearText = tahunSelect.options[tahunSelect.selectedIndex].text;
@@ -291,11 +367,7 @@
         }
         
         function handleCurrencyInput(e) {
-            const cursorPosition = e.target.selectionStart;
-            const originalLength = e.target.value.length;
             e.target.value = formatCurrency(e.target.value);
-            const newLength = e.target.value.length;
-            e.target.setSelectionRange(cursorPosition + (newLength - originalLength), cursorPosition + (newLength - originalLength));
         }
 
         function formatRupiah(angka) {
@@ -311,7 +383,7 @@
 
             sisaGajiInput.value = new Intl.NumberFormat('id-ID').format(sisa);
             sisaGajiInput.classList.remove('is-valid', 'is-invalid', 'is-warning');
-            if (sisa === 0 && gajiInput.value) sisaGajiInput.classList.add('is-valid');
+            if (sisa === 0 && gajiInput.value && parseCurrency(gajiInput.value) > 0) sisaGajiInput.classList.add('is-valid');
             else if (sisa < 0) sisaGajiInput.classList.add('is-invalid');
             else if (sisa > 0) sisaGajiInput.classList.add('is-warning');
 
@@ -353,7 +425,7 @@
             const sisa = totalGaji - totalAlokasi;
             if (sisa > 0.01) dataAlokasi.push({ nama: 'Sisa', jumlah: sisa });
             
-            if (dataAlokasi.length === 0) {
+            if (dataAlokasi.length === 0 && sisa <= 0.01) {
                  if(alokasiChart) alokasiChart.destroy();
                 hasilDiv.innerHTML = '<p class="text-center text-muted">Tidak ada data alokasi untuk ditampilkan.</p>';
                 return;
@@ -379,6 +451,7 @@
             hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center active"><strong>Total Gaji</strong> <strong>${formatRupiah(totalGaji)}</strong></li></ul>`;
             hasilDiv.innerHTML = hasilHTML;
             updateChart(labels, dataValues, finalColors);
+            saveData(); // Simpan data setiap kali grafik berhasil dibuat
         }
 
         function updateChart(labels, data, colors) {
@@ -394,16 +467,18 @@
             });
         }
         
+        function createDefaultRows() {
+            for (let i = 1; i <= 5; i++) createAllocationRow();
+        }
+        
         function resetAllocations() {
             allocationContainer.innerHTML = '';
-            for (let i = 1; i <= 5; i++) createAllocationRow();
-            updateRowNumbers();
+            createDefaultRows();
             updateSisa();
             calculateAndDisplay();
         }
 
         function initializeApp() {
-            gajiInput.value = '';
             const today = new Date();
             const currentMonth = today.getMonth();
             const currentYear = today.getFullYear();
@@ -416,20 +491,18 @@
                 tahunSelect.appendChild(option);
             }
             tahunSelect.value = currentYear;
-            allocationContainer.innerHTML = ''; 
-            for (let i = 1; i <= 5; i++) createAllocationRow();
-            updateHasilTitle();
-            updateSisa();
-            calculateAndDisplay();
+            
+            handleDateChange(); // Panggil fungsi ini untuk memuat data awal
         }
 
+        // --- Event Listeners ---
         printBtn.addEventListener('click', () => window.print());
         addAllocationBtn.addEventListener('click', () => createAllocationRow());
         gajiInput.addEventListener('input', handleCurrencyInput);
         gajiInput.addEventListener('input', updateSisa);
         hitungBtn.addEventListener('click', calculateAndDisplay);
-        bulanSelect.addEventListener('change', updateHasilTitle);
-        tahunSelect.addEventListener('change', updateHasilTitle);
+        bulanSelect.addEventListener('change', handleDateChange);
+        tahunSelect.addEventListener('change', handleDateChange);
         resetBtn.addEventListener('click', resetAllocations);
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
