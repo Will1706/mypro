@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
@@ -58,6 +58,31 @@
 
         .input-group > .input-group-text:not(:first-child):not(:last-child) {
             display: none;
+        }
+
+        /* --- CSS BARU UNTUK FUNGSI CETAK --- */
+        @media print {
+            body {
+                background-color: white !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            /* Sembunyikan semua elemen yang tidak perlu dicetak */
+            .col-md-5, #add-allocation-btn, .action-buttons, #resetBtn, #hitungBtn, footer, #printBtn {
+                display: none !important;
+            }
+            /* Pastikan kolom hasil mengambil lebar penuh */
+            .col-md-7 {
+                width: 100% !important;
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+            .main-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
         }
     </style>
 </head>
@@ -122,7 +147,7 @@
                                     <input type="text" class="form-control" id="sisaGaji" readonly>
                                 </div>
 
-                                <div class="d-grid gap-2 d-sm-flex">
+                                <div class="d-grid gap-2 d-sm-flex action-buttons">
                                     <button id="hitungBtn" class="btn btn-primary w-100">Buat/Perbarui Grafik</button>
                                     <button id="resetBtn" class="btn btn-danger w-100 mt-2 mt-sm-0" type="button">
                                         <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Alokasi
@@ -134,6 +159,32 @@
 
                             <div class="col-md-7">
                                  <h5 class="text-center mb-0" id="hasil-alokasi-title">Hasil Alokasi</h5>
+
+                                 <div class="card bg-light my-3">
+                                    <div class="card-body p-2">
+                                        <div class="row text-center">
+                                            <div class="col">
+                                                <small class="text-muted">Total Gaji</small>
+                                                <h6 class="mb-0" id="summary-gaji">Rp 0</h6>
+                                            </div>
+                                            <div class="col">
+                                                <small class="text-muted">Total Alokasi</small>
+                                                <h6 class="mb-0 text-danger" id="summary-alokasi">Rp 0</h6>
+                                            </div>
+                                            <div class="col">
+                                                <small class="text-muted">Sisa</small>
+                                                <h6 class="mb-0 text-success" id="summary-sisa">Rp 0</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                                 
+                                 <div class="d-grid mb-3">
+                                    <button id="printBtn" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-printer-fill me-2"></i>Cetak Laporan
+                                    </button>
+                                 </div>
+
                                 <div id="chart-container">
                                     <canvas id="chartAlokasi"></canvas>
                                 </div>
@@ -150,7 +201,6 @@
         <p class="mb-0">Williyanto Adi 2025</p>
     </footer>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -162,6 +212,12 @@
         function parseCurrency(value) {
             return parseFloat(String(value).replace(/\./g, '')) || 0;
         }
+
+        // Elemen baru
+        const summaryGaji = document.getElementById('summary-gaji');
+        const summaryAlokasi = document.getElementById('summary-alokasi');
+        const summarySisa = document.getElementById('summary-sisa');
+        const printBtn = document.getElementById('printBtn');
 
         const gajiInput = document.getElementById('gajiBulanan');
         const bulanSelect = document.getElementById('bulan');
@@ -188,18 +244,14 @@
             const rows = document.querySelectorAll('.allocation-row');
             rows.forEach((row, index) => {
                 const numberSpan = row.querySelector('.allocation-number');
-                if (numberSpan) {
-                    numberSpan.textContent = index + 1;
-                }
+                if (numberSpan) numberSpan.textContent = index + 1;
             });
         }
 
         function createAllocationRow(name = '', value = '') {
             const div = document.createElement('div');
             div.className = 'input-group mb-2 allocation-row';
-            
             const formattedValue = value ? formatCurrency(value) : '';
-
             div.innerHTML = `
                 <span class="input-group-text allocation-number"></span>
                 <input type="text" class="form-control category-name-input" value="${name}" placeholder="Masukkan di sini">
@@ -207,11 +259,9 @@
                 <button class="btn btn-outline-danger remove-allocation-btn" type="button"><i class="bi bi-trash-fill"></i></button>
             `;
             allocationContainer.appendChild(div);
-
             const newCurrencyInput = div.querySelector('.currency-input');
             const newLiveUpdateInput = div.querySelector('.live-update');
             const removeBtn = div.querySelector('.remove-allocation-btn');
-            
             newCurrencyInput.addEventListener('input', handleCurrencyInput);
             newLiveUpdateInput.addEventListener('input', updateSisa);
             removeBtn.addEventListener('click', () => {
@@ -234,21 +284,25 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
         }
 
+        // FUNGSI UPDATE SISA KINI JUGA MEMPERBARUI SUMMARY BOX
         function updateSisa() {
             const totalGaji = parseCurrency(gajiInput.value);
             const allocationInputs = document.querySelectorAll('.allocation-amount');
             let totalAlokasi = 0;
-            allocationInputs.forEach(input => {
-                totalAlokasi += parseCurrency(input.value);
-            });
-
+            allocationInputs.forEach(input => totalAlokasi += parseCurrency(input.value));
             const sisa = totalGaji - totalAlokasi;
-            sisaGajiInput.value = new Intl.NumberFormat('id-ID').format(sisa);
 
+            // Update Sisa Input
+            sisaGajiInput.value = new Intl.NumberFormat('id-ID').format(sisa);
             sisaGajiInput.classList.remove('is-valid', 'is-invalid', 'is-warning');
             if (sisa === 0 && gajiInput.value) sisaGajiInput.classList.add('is-valid');
             else if (sisa < 0) sisaGajiInput.classList.add('is-invalid');
             else if (sisa > 0) sisaGajiInput.classList.add('is-warning');
+
+            // Update Summary Box
+            summaryGaji.innerText = formatRupiah(totalGaji);
+            summaryAlokasi.innerText = formatRupiah(totalAlokasi);
+            summarySisa.innerText = formatRupiah(sisa);
         }
 
         function calculateAndDisplay() {
@@ -261,15 +315,11 @@
 
             let dataAlokasi = [];
             let totalAlokasi = 0;
-
             document.querySelectorAll('.allocation-row').forEach((row, index) => {
                 let name = row.querySelector('.category-name-input').value.trim();
                 const amount = parseCurrency(row.querySelector('.allocation-amount').value);
-
                 if (amount > 0) {
-                    if (!name) {
-                        name = `Alokasi ${index + 1}`;
-                    }
+                    if (!name) name = `Alokasi ${index + 1}`;
                     dataAlokasi.push({ nama: name, jumlah: amount });
                     totalAlokasi += amount;
                 }
@@ -286,9 +336,7 @@
             }
 
             const sisa = totalGaji - totalAlokasi;
-            if (sisa > 0.01) {
-                dataAlokasi.push({ nama: 'Sisa', jumlah: sisa });
-            }
+            if (sisa > 0.01) dataAlokasi.push({ nama: 'Sisa', jumlah: sisa });
             
             if (dataAlokasi.length === 0) {
                  if(alokasiChart) alokasiChart.destroy();
@@ -299,25 +347,18 @@
             const labels = [], dataValues = [], finalColors = [];
             const vibrantColors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#C7C7C7','#8D62ED','#5AD3D1','#FF8080','#6A8FFF','#FFD700'];
             const sisaColor = '#28a745';
-
             dataAlokasi.forEach((item, index) => {
                 const persen = (item.jumlah / totalGaji) * 100;
                 labels.push(`${item.nama} (${persen.toFixed(1)}%)`);
                 dataValues.push(persen);
-                
-                if (item.nama === 'Sisa') {
-                    finalColors.push(sisaColor);
-                } else {
-                    finalColors.push(vibrantColors[index % vibrantColors.length]);
-                }
+                if (item.nama === 'Sisa') finalColors.push(sisaColor);
+                else finalColors.push(vibrantColors[index % vibrantColors.length]);
             });
             
             let hasilHTML = `<ul class="list-group list-group-flush">`;
             dataAlokasi.forEach(item => {
                 let badgeColorClass = 'bg-danger'; 
-                if (item.nama === 'Sisa') {
-                    badgeColorClass = 'bg-success'; 
-                }
+                if (item.nama === 'Sisa') badgeColorClass = 'bg-success';
                  hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.nama} <span class="badge ${badgeColorClass} rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
             });
             hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center active"><strong>Total Gaji</strong> <strong>${formatRupiah(totalGaji)}</strong></li></ul>`;
@@ -326,9 +367,7 @@
         }
 
         function updateChart(labels, data, colors) {
-            if (alokasiChart) {
-                alokasiChart.destroy();
-            }
+            if (alokasiChart) alokasiChart.destroy();
             const ctx = canvas.getContext('2d');
             alokasiChart = new Chart(ctx, {
                 type: 'doughnut',
@@ -342,9 +381,7 @@
         
         function resetAllocations() {
             allocationContainer.innerHTML = '';
-            for (let i = 1; i <= 5; i++) {
-                createAllocationRow();
-            }
+            for (let i = 1; i <= 5; i++) createAllocationRow();
             updateRowNumbers();
             updateSisa();
             calculateAndDisplay();
@@ -352,13 +389,10 @@
 
         function initializeApp() {
             gajiInput.value = '';
-
             const today = new Date();
             const currentMonth = today.getMonth();
             const currentYear = today.getFullYear();
-            
             bulanSelect.value = currentMonth;
-            
             tahunSelect.innerHTML = '';
             for (let year = currentYear + 2; year >= currentYear - 5; year--) {
                 const option = document.createElement('option');
@@ -367,16 +401,15 @@
                 tahunSelect.appendChild(option);
             }
             tahunSelect.value = currentYear;
-            
             allocationContainer.innerHTML = ''; 
-            for (let i = 1; i <= 5; i++) {
-                createAllocationRow();
-            }
-            
+            for (let i = 1; i <= 5; i++) createAllocationRow();
             updateHasilTitle();
             updateSisa();
             calculateAndDisplay();
         }
+
+        // --- Event Listeners ---
+        printBtn.addEventListener('click', () => window.print()); // Listener untuk tombol cetak
 
         addAllocationBtn.addEventListener('click', () => createAllocationRow());
         gajiInput.addEventListener('input', handleCurrencyInput);
