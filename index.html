@@ -46,10 +46,28 @@
             border-bottom: 2px solid #0d6efd;
         }
 
-        /* --- CSS BARU UNTUK TAMPILAN MOBILE --- */
         @media (max-width: 576px) {
+            .allocation-row {
+                flex-wrap: wrap; 
+            }
+            .allocation-row > .input-group-text:first-child {
+                flex-basis: 100%;
+                border-bottom: 0;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                margin-bottom: -1px; 
+            }
             .category-name-input {
-                width: 120px; /* Lebar kolom nama diperkecil di mobile */
+                width: 100%; 
+            }
+
+            .allocation-row > .allocation-amount {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                flex-grow: 1 !important; 
+            }
+            .allocation-row > .remove-allocation-btn {
+                border-top-left-radius: 0;
             }
         }
     </style>
@@ -170,14 +188,15 @@
             hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText}`;
         }
 
+        // --- FUNGSI YANG DIUBAH ---
         function createAllocationRow(name = '', value = '') {
             const div = document.createElement('div');
             div.className = 'input-group mb-2 allocation-row';
+            // Baris <span class="input-group-text">Rp</span> telah dihapus dari sini
             div.innerHTML = `
                 <span class="input-group-text">
                     <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Kategori">
                 </span>
-                <span class="input-group-text">Rp</span>
                 <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formatCurrency(value)}">
                 <button class="btn btn-outline-danger remove-allocation-btn" type="button"><i class="bi bi-trash-fill"></i></button>
             `;
