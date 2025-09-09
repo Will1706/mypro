@@ -25,16 +25,22 @@
             max-width: 400px;
             margin: 1.5rem auto;
         }
-        #sisaGaji.is-valid { background-color: #d1e7dd; font-weight: bold; }
-        #sisaGaji.is-invalid { background-color: #f8d7da; font-weight: bold; }
-        #sisaGaji.is-warning { background-color: #fff3cd; font-weight: bold; }
         
-        /* PENYESUAIAN LEBAR KOLOM NAMA */
+        /* --- PERUBAHAN WARNA SISA MENJADI HIJAU --- */
+        #sisaGaji.is-valid, #sisaGaji.is-warning { 
+            background-color: #d1e7dd; /* Hijau */
+            font-weight: bold; 
+        }
+        #sisaGaji.is-invalid { 
+            background-color: #f8d7da; /* Merah (untuk sisa minus) */
+            font-weight: bold; 
+        }
+        
         .category-name-input {
             border: none;
             background-color: transparent;
             font-weight: 500;
-            width: 150px; /* Diperlebar dari 105px */
+            width: 150px;
         }
         .category-name-input:focus {
             outline: none;
@@ -83,8 +89,7 @@
                                 <hr>
                                 <p class="mb-2"><strong>Alokasi Anggaran (dalam Rupiah)</strong></p>
                                 
-                                <div id="allocation-container">
-                                    </div>
+                                <div id="allocation-container"></div>
 
                                 <div class="d-grid mb-3">
                                     <button class="btn btn-outline-primary" type="button" id="add-allocation-btn">
@@ -122,15 +127,13 @@
         </div>
     </footer>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // === FUNGSI FORMAT MATA UANG ===
         function formatCurrency(value) {
-            let number_string = String(value).replace(/[^,\d]/g, '').toString();
-            return new Intl.NumberFormat('id-ID').format(number_string);
+            let numStr = String(value).replace(/[^,\d]/g, '').toString();
+            return new Intl.NumberFormat('id-ID').format(numStr);
         }
         function parseCurrency(value) {
             return parseFloat(String(value).replace(/\./g, '')) || 0;
@@ -197,7 +200,7 @@
             sisaGajiInput.value = new Intl.NumberFormat('id-ID').format(sisa);
 
             sisaGajiInput.classList.remove('is-valid', 'is-invalid', 'is-warning');
-            if (sisa === 0 && totalGaji > 0) sisaGajiInput.classList.add('is-valid');
+            if (sisa === 0) sisaGajiInput.classList.add('is-valid');
             else if (sisa < 0) sisaGajiInput.classList.add('is-invalid');
             else if (sisa > 0) sisaGajiInput.classList.add('is-warning');
         }
@@ -229,28 +232,39 @@
             }
 
             const sisa = totalGaji - totalAlokasi;
-            if (sisa > 0) {
+            if (sisa > 0.01) { // Menghindari sisa sangat kecil karena floating point
                 dataAlokasi.push({ nama: 'Sisa', jumlah: sisa });
             }
 
-            let hasilHTML = `<ul class="list-group list-group-flush">`;
-            const labels = [], dataValues = [], backgroundColors = ['#ff6384','#36a2eb','#ffce56','#4bc0c0','#9966ff','#ff9f40','#c9cbcf'];
-            
-            dataAlokasi.forEach(item => {
+            // --- LOGIKA WARNA GRAFIK BARU ---
+            const labels = [], dataValues = [], finalColors = [];
+            const expenseColors = ['#e74c3c', '#c0392b', '#ff6b6b', '#ff8e71', '#d35400']; // Palet Merah
+            const sisaColor = '#28a745'; // Warna Hijau
+
+            dataAlokasi.forEach((item, index) => {
                 const persen = (item.jumlah / totalGaji) * 100;
                 labels.push(`${item.nama} (${persen.toFixed(1)}%)`);
                 dataValues.push(persen);
-                hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.nama} <span class="badge bg-primary rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
+                
+                if (item.nama === 'Sisa') {
+                    finalColors.push(sisaColor);
+                } else {
+                    finalColors.push(expenseColors[index % expenseColors.length]);
+                }
             });
-
+            
+            let hasilHTML = `<ul class="list-group list-group-flush">`;
+            dataAlokasi.forEach(item => {
+                 hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.nama} <span class="badge bg-primary rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
+            });
             hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center active"><strong>Total Gaji</strong> <strong>${formatRupiah(totalGaji)}</strong></li></ul>`;
             hasilDiv.innerHTML = hasilHTML;
-            updateChart(labels, dataValues, backgroundColors.slice(0, dataAlokasi.length));
+            updateChart(labels, dataValues, finalColors);
         }
 
         function updateChart(labels, data, colors) {
             if (alokasiChart) alokasiChart.destroy();
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext('d');
             alokasiChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -261,21 +275,18 @@
             });
         }
         
-        // === Event Listeners ===
         addAllocationBtn.addEventListener('click', () => createAllocationRow());
-
         gajiInput.addEventListener('input', handleCurrencyInput);
         gajiInput.addEventListener('input', updateSisa);
         hitungBtn.addEventListener('click', calculateAndDisplay);
 
-        // Inisialisasi halaman
         document.addEventListener('DOMContentLoaded', () => {
             const currentMonth = new Date().getMonth();
             bulanSelect.value = currentMonth;
             
             createAllocationRow('Makan & Kebutuhan Pokok', '1600000');
-            createAllocationRow('Tagihan Rutin (Listrik, Air)', '1000000');
-            createAllocationRow('Biaya Tempat Tinggal (Kost)', '620000');
+            createAllocationRow('Tagihan Rutin', '1000000');
+            createAllocationRow('Biaya Tempat Tinggal', '620000');
             createAllocationRow('Investasi & Dana Pensiun', '2000000');
             
             gajiInput.value = formatCurrency(gajiInput.value);
