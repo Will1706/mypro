@@ -13,9 +13,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
+        html, body {
+            height: 100%;
+        }
         body {
+            display: flex;
+            flex-direction: column;
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
+        }
+        .main-container {
+            flex: 1;
         }
         .card-header {
             background-color: #0d6efd;
@@ -35,40 +43,13 @@
             font-weight: bold; 
         }
         
+        /* CSS Disederhanakan */
+        .allocation-number {
+            width: 45px; /* Sedikit diperlebar */
+        }
         .category-name-input {
-            border: none;
-            background-color: transparent;
-            font-weight: 500;
-            width: 150px;
-        }
-        .category-name-input:focus {
-            outline: none;
-            border-bottom: 2px solid #0d6efd;
-        }
-
-        @media (max-width: 576px) {
-            .allocation-row {
-                flex-wrap: wrap; 
-            }
-            .allocation-row > .input-group-text:first-child {
-                flex-basis: 100%;
-                border-bottom: 0;
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-                margin-bottom: -1px; 
-            }
-            .category-name-input {
-                width: 100%; 
-            }
-
-            .allocation-row > .allocation-amount {
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
-                flex-grow: 1 !important; 
-            }
-            .allocation-row > .remove-allocation-btn {
-                border-top-left-radius: 0;
-            }
+            /* Input nama kini adalah input standar, tidak perlu style khusus */
+            min-width: 100px; /* Lebar minimum agar tidak terlalu sempit */
         }
 
         .input-group > .input-group-text:not(:first-child):not(:last-child) {
@@ -78,7 +59,7 @@
 </head>
 <body>
 
-    <div class="container my-5">
+    <div class="container my-5 main-container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow-sm">
@@ -158,6 +139,7 @@
         <p class="mb-0">Williyanto Adi 2025</p>
     </footer>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -184,30 +166,29 @@
 
         let alokasiChart;
 
-        // FUNGSI BARU UNTUK MEMPERBARUI NOMOR URUT
+        function updateHasilTitle() {
+            const selectedMonthText = bulanSelect.options[bulanSelect.selectedIndex].text;
+            hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText}`;
+        }
+
         function updateRowNumbers() {
-            const allRows = document.querySelectorAll('.allocation-row');
-            allRows.forEach((row, index) => {
-                const numberSpan = row.querySelector('.row-number');
+            const rows = document.querySelectorAll('.allocation-row');
+            rows.forEach((row, index) => {
+                const numberSpan = row.querySelector('.allocation-number');
                 if (numberSpan) {
                     numberSpan.textContent = index + 1;
                 }
             });
         }
 
-        function updateHasilTitle() {
-            const selectedMonthText = bulanSelect.options[bulanSelect.selectedIndex].text;
-            hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText}`;
-        }
-
+        // --- FUNGSI DIPERBAIKI ---
         function createAllocationRow(name = '', value = '') {
             const div = document.createElement('div');
             div.className = 'input-group mb-2 allocation-row';
+            // Struktur HTML disederhanakan agar input nama muncul
             div.innerHTML = `
-                <span class="input-group-text row-number"></span>
-                <span class="input-group-text">
-                    <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Kategori">
-                </span>
+                <span class="input-group-text allocation-number"></span>
+                <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Alokasi">
                 <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formatCurrency(value)}">
                 <button class="btn btn-outline-danger remove-allocation-btn" type="button"><i class="bi bi-trash-fill"></i></button>
             `;
@@ -222,8 +203,9 @@
             removeBtn.addEventListener('click', () => {
                 div.remove();
                 updateSisa();
-                updateRowNumbers(); // Perbarui nomor setelah menghapus
+                updateRowNumbers();
             });
+            updateRowNumbers();
         }
         
         function handleCurrencyInput(e) {
@@ -362,14 +344,9 @@
             updateHasilTitle();
             updateSisa();
             calculateAndDisplay();
-            updateRowNumbers(); // Panggil saat inisialisasi
         }
 
-        addAllocationBtn.addEventListener('click', () => {
-            createAllocationRow();
-            updateRowNumbers(); // Perbarui nomor setelah menambah
-        });
-
+        addAllocationBtn.addEventListener('click', () => createAllocationRow());
         gajiInput.addEventListener('input', handleCurrencyInput);
         gajiInput.addEventListener('input', updateSisa);
         hitungBtn.addEventListener('click', calculateAndDisplay);
