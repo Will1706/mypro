@@ -43,7 +43,6 @@
             font-weight: bold; 
         }
         
-        /* --- CSS BARU UNTUK PLACEHOLDER --- */
         ::placeholder {
             font-style: italic;
             font-size: 0.9em;
@@ -81,26 +80,33 @@
                                     <input type="text" inputmode="numeric" class="form-control live-update currency-input" id="gajiBulanan" placeholder="Masukkan di sini">
                                 </div>
                                 
-                                <div class="mb-3">
-                                    <label for="bulan" class="form-label">Bulan</label>
-                                    <select class="form-select" id="bulan">
-                                        <option value="0">Januari</option>
-                                        <option value="1">Februari</option>
-                                        <option value="2">Maret</option>
-                                        <option value="3">April</option>
-                                        <option value="4">Mei</option>
-                                        <option value="5">Juni</option>
-                                        <option value="6">Juli</option>
-                                        <option value="7">Agustus</option>
-                                        <option value="8">September</option>
-                                        <option value="9">Oktober</option>
-                                        <option value="10">November</option>
-                                        <option value="11">Desember</option>
-                                    </select>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <label for="bulan" class="form-label">Bulan</label>
+                                        <select class="form-select" id="bulan">
+                                            <option value="0">Januari</option>
+                                            <option value="1">Februari</option>
+                                            <option value="2">Maret</option>
+                                            <option value="3">April</option>
+                                            <option value="4">Mei</option>
+                                            <option value="5">Juni</option>
+                                            <option value="6">Juli</option>
+                                            <option value="7">Agustus</option>
+                                            <option value="8">September</option>
+                                            <option value="9">Oktober</option>
+                                            <option value="10">November</option>
+                                            <option value="11">Desember</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-5">
+                                        <label for="tahun" class="form-label">Tahun</label>
+                                        <select class="form-select" id="tahun">
+                                        </select>
+                                    </div>
                                 </div>
 
 
-                                <hr>
+                                <hr class="mt-3">
                                 <p class="mb-2"><strong>Alokasi Anggaran (dalam Rupiah)</strong></p>
                                 
                                 <div id="allocation-container"></div>
@@ -159,6 +165,7 @@
 
         const gajiInput = document.getElementById('gajiBulanan');
         const bulanSelect = document.getElementById('bulan');
+        const tahunSelect = document.getElementById('tahun');
         const hasilAlokasiTitle = document.getElementById('hasil-alokasi-title');
         const hitungBtn = document.getElementById('hitungBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -173,7 +180,8 @@
 
         function updateHasilTitle() {
             const selectedMonthText = bulanSelect.options[bulanSelect.selectedIndex].text;
-            hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText}`;
+            const selectedYearText = tahunSelect.options[tahunSelect.selectedIndex].text;
+            hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText} ${selectedYearText}`;
         }
 
         function updateRowNumbers() {
@@ -186,12 +194,10 @@
             });
         }
 
-        // --- FUNGSI DIUBAH UNTUK MENGGUNAKAN PLACEHOLDER ---
         function createAllocationRow(name = '', value = '') {
             const div = document.createElement('div');
             div.className = 'input-group mb-2 allocation-row';
             
-            // value disetel kosong jika tidak ada, agar placeholder muncul
             const formattedValue = value ? formatCurrency(value) : '';
 
             div.innerHTML = `
@@ -245,6 +251,7 @@
             else if (sisa > 0) sisaGajiInput.classList.add('is-warning');
         }
 
+        // --- FUNGSI DENGAN LOGIKA BARU ---
         function calculateAndDisplay() {
             const totalGaji = parseCurrency(gajiInput.value);
             if (totalGaji <= 0) {
@@ -256,10 +263,15 @@
             let dataAlokasi = [];
             let totalAlokasi = 0;
 
-            document.querySelectorAll('.allocation-row').forEach(row => {
-                const name = row.querySelector('.category-name-input').value.trim();
+            document.querySelectorAll('.allocation-row').forEach((row, index) => {
+                let name = row.querySelector('.category-name-input').value.trim();
                 const amount = parseCurrency(row.querySelector('.allocation-amount').value);
-                if (name && amount > 0) {
+
+                // Logika baru: jika ada nominal tapi tidak ada nama, buat nama default
+                if (amount > 0) {
+                    if (!name) {
+                        name = `Alokasi ${index + 1}`;
+                    }
                     dataAlokasi.push({ nama: name, jumlah: amount });
                     totalAlokasi += amount;
                 }
@@ -338,17 +350,26 @@
             calculateAndDisplay();
         }
 
-        // --- FUNGSI INISIALISASI DIUBAH UNTUK MENGGUNAKAN PLACEHOLDER ---
         function initializeApp() {
-            // Kosongkan nilai gaji agar placeholder muncul
             gajiInput.value = '';
 
-            const currentMonth = new Date().getMonth();
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
             bulanSelect.value = currentMonth;
+            
+            tahunSelect.innerHTML = '';
+            for (let year = currentYear + 2; year >= currentYear - 5; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                tahunSelect.appendChild(option);
+            }
+            tahunSelect.value = currentYear;
             
             allocationContainer.innerHTML = ''; 
             for (let i = 1; i <= 5; i++) {
-                // Panggil tanpa argumen agar menggunakan nilai default kosong
                 createAllocationRow();
             }
             
@@ -362,6 +383,7 @@
         gajiInput.addEventListener('input', updateSisa);
         hitungBtn.addEventListener('click', calculateAndDisplay);
         bulanSelect.addEventListener('change', updateHasilTitle);
+        tahunSelect.addEventListener('change', updateHasilTitle);
         resetBtn.addEventListener('click', resetAllocations);
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
