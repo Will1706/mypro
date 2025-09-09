@@ -146,10 +146,6 @@
                                     <canvas id="chartAlokasi"></canvas>
                                 </div>
                                 <div id="hasilAlokasi" class="mt-3"></div>
-
-                                <div class="text-center text-muted mt-5">
-                                    <p class="mb-0 small">Williyanto Adi 2025</p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -158,12 +154,14 @@
         </div>
     </div> 
 
+    <footer class="py-4 text-center text-muted">
+        <p class="mb-0">Williyanto Adi 2025</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // ... (Tidak ada perubahan pada JavaScript) ...
         function formatCurrency(value) {
             let numStr = String(value).replace(/[^,\d]/g, '').toString();
             return new Intl.NumberFormat('id-ID').format(numStr);
@@ -186,6 +184,17 @@
 
         let alokasiChart;
 
+        // FUNGSI BARU UNTUK MEMPERBARUI NOMOR URUT
+        function updateRowNumbers() {
+            const allRows = document.querySelectorAll('.allocation-row');
+            allRows.forEach((row, index) => {
+                const numberSpan = row.querySelector('.row-number');
+                if (numberSpan) {
+                    numberSpan.textContent = index + 1;
+                }
+            });
+        }
+
         function updateHasilTitle() {
             const selectedMonthText = bulanSelect.options[bulanSelect.selectedIndex].text;
             hasilAlokasiTitle.innerText = `Hasil Alokasi - ${selectedMonthText}`;
@@ -195,6 +204,7 @@
             const div = document.createElement('div');
             div.className = 'input-group mb-2 allocation-row';
             div.innerHTML = `
+                <span class="input-group-text row-number"></span>
                 <span class="input-group-text">
                     <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Kategori">
                 </span>
@@ -212,6 +222,7 @@
             removeBtn.addEventListener('click', () => {
                 div.remove();
                 updateSisa();
+                updateRowNumbers(); // Perbarui nomor setelah menghapus
             });
         }
         
@@ -332,6 +343,7 @@
         function resetAllocations() {
             allocationContainer.innerHTML = '';
             createAllocationRow('', '');
+            updateRowNumbers();
             updateSisa();
             calculateAndDisplay();
         }
@@ -350,9 +362,14 @@
             updateHasilTitle();
             updateSisa();
             calculateAndDisplay();
+            updateRowNumbers(); // Panggil saat inisialisasi
         }
 
-        addAllocationBtn.addEventListener('click', () => createAllocationRow());
+        addAllocationBtn.addEventListener('click', () => {
+            createAllocationRow();
+            updateRowNumbers(); // Perbarui nomor setelah menambah
+        });
+
         gajiInput.addEventListener('input', handleCurrencyInput);
         gajiInput.addEventListener('input', updateSisa);
         hitungBtn.addEventListener('click', calculateAndDisplay);
