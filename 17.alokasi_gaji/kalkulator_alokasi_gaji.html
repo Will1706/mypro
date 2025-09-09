@@ -251,7 +251,6 @@
             else if (sisa > 0) sisaGajiInput.classList.add('is-warning');
         }
 
-        // --- FUNGSI DENGAN LOGIKA BARU ---
         function calculateAndDisplay() {
             const totalGaji = parseCurrency(gajiInput.value);
             if (totalGaji <= 0) {
@@ -267,7 +266,6 @@
                 let name = row.querySelector('.category-name-input').value.trim();
                 const amount = parseCurrency(row.querySelector('.allocation-amount').value);
 
-                // Logika baru: jika ada nominal tapi tidak ada nama, buat nama default
                 if (amount > 0) {
                     if (!name) {
                         name = `Alokasi ${index + 1}`;
@@ -342,9 +340,12 @@
             });
         }
         
+        // --- FUNGSI RESET ALOKASI DIUBAH DI SINI ---
         function resetAllocations() {
             allocationContainer.innerHTML = '';
-            createAllocationRow();
+            for (let i = 1; i <= 5; i++) {
+                createAllocationRow(); // Panggil 5 kali
+            }
             updateRowNumbers();
             updateSisa();
             calculateAndDisplay();
