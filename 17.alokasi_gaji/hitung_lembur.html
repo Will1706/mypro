@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Upah Lembur Berdasarkan Shift</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .calculator-card {
+            max-width: 500px;
+            margin: 5rem auto;
+            border-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card-header{
+            background-color: #0d6efd;
+            color: white;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+        .btn-calculate {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .btn-calculate:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        #hasilUpahLembur {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #198754;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card calculator-card">
+            <div class="card-header text-center py-3">
+                <h1 class="h3 mb-0">💵 Kalkulator Upah Lembur (Rule Shift)</h1>
+            </div>
+            <div class="card-body p-4">
+                <form id="kalkulatorLembur">
+                    <div class="mb-3">
+                        <label for="upahPerJam" class="form-label">Upah per Jam (Rp)</label>
+                        <input type="text" class="form-control" id="upahPerJam" placeholder="Contoh: 50.000" required inputmode="numeric">
+                    </div>
+                     <div class="mb-3">
+                        <label for="pilihShift" class="form-label">Pilih Jenis Lembur</label>
+                        <select class="form-select" id="pilihShift">
+                            <option value="shift1" selected>Lembur Shift 1</option>
+                            <option value="shift2">Lembur Shift 2</option>
+                            <option value="shift3">Lembur Shift 3</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="jamLembur" class="form-label">Total Jam Lembur</label>
+                        <input type="number" step="0.5" class="form-control" id="jamLembur" placeholder="Contoh: 8.5" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-calculate text-white">Hitung Total Upah</button>
+                    </div>
+                </form>
+                <div class="mt-4 text-center">
+                    <h3>Total Upah Lembur Anda:</h3>
+                    <p id="hasilUpahLembur">Rp 0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <script>
+        const upahPerJamInput = document.getElementById('upahPerJam');
+
+        // Fungsi untuk format angka dengan titik
+        function formatNumber(n) {
+          // Menghapus semua karakter non-digit kecuali koma jika ada
+          const cleanValue = n.toString().replace(/[^0-9,]/g, '');
+          // Mengganti koma dengan titik untuk konsistensi desimal (jika perlu)
+          const normalizedValue = cleanValue.replace(',', '.');
+          const parts = normalizedValue.split('.');
+          parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+          return parts.join(',');
+        }
+
+        // Event listener untuk memformat input saat pengguna mengetik
+        upahPerJamInput.addEventListener('input', function(e) {
+            let cursorPosition = e.target.selectionStart;
+            let originalLength = e.target.value.length;
+            
+            e.target.value = formatNumber(e.target.value);
+            
+            let newLength = e.target.value.length;
+            // Menyesuaikan posisi kursor setelah format
+            cursorPosition += (newLength - originalLength);
+            e.target.setSelectionRange(cursorPosition, cursorPosition);
+        });
+
+        document.getElementById('kalkulatorLembur').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Mengambil nilai upah dan menghapus titik sebelum kalkulasi
+            const upahPerJamString = upahPerJamInput.value;
+            const upahPerJam = parseFloat(upahPerJamString.replace(/\./g, ''));
+
+            const totalJamLembur = parseFloat(document.getElementById('jamLembur').value);
+            const shift = document.getElementById('pilihShift').value;
+            
+            if (isNaN(upahPerJam) || isNaN(totalJamLembur)) {
+                alert("Mohon masukkan angka yang valid.");
+                return;
+            }
+
+            let totalUpahLembur = 0;
+            let sisaJam = totalJamLembur;
+
+            switch (shift) {
+                case 'shift1':
+                    if (sisaJam > 0) {
+                        const jamKali2 = Math.min(sisaJam, 7);
+                        totalUpahLembur += jamKali2 * upahPerJam * 2;
+                        sisaJam -= jamKali2;
+                    }
+                    if (sisaJam > 0) {
+                        const jamKali3 = Math.min(sisaJam, 0.5);
+                        totalUpahLembur += jamKali3 * upahPerJam * 3;
+                        sisaJam -= jamKali3;
+                    }
+                    if (sisaJam > 0) {
+                        totalUpahLembur += sisaJam * upahPerJam * 3;
+                    }
+                    break;
+                    
+                case 'shift2':
+                    if (sisaJam > 0) {
+                        const jamKali1_5 = Math.min(sisaJam, 1);
+                        totalUpahLembur += jamKali1_5 * upahPerJam * 1.5;
+                        sisaJam -= jamKali1_5;
+                    }
+                    if (sisaJam > 0) {
+                        const jamKali2 = Math.min(sisaJam, 7);
+                        totalUpahLembur += jamKali2 * upahPerJam * 2;
+                        sisaJam -= jamKali2;
+                    }
+                    if (sisaJam > 0) {
+                        totalUpahLembur += sisaJam * upahPerJam * 2;
+                    }
+                    break;
+
+                case 'shift3':
+                    totalUpahLembur = totalJamLembur * upahPerJam * 2;
+                    break;
+            }
+
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            });
+
+            document.getElementById('hasilUpahLembur').innerText = formatter.format(totalUpahLembur);
+        });
+    </script>
+</body>
+</html>

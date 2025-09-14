@@ -295,8 +295,8 @@
             const formattedValue = value ? formatCurrency(value) : '';
             div.innerHTML = `
                 <span class="input-group-text allocation-number"></span>
-                <input type="text" class="form-control category-name-input" value="${name}" placeholder="Masukkan di sini">
-                <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formattedValue}" placeholder="masukkan nilai">
+                <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Alokasi">
+                <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formattedValue}" placeholder="Nilai Anggaran">
                 <button class="btn btn-outline-danger remove-allocation-btn" type="button"><i class="bi bi-trash-fill"></i></button>
             `;
             allocationContainer.appendChild(div);
