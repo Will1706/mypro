@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 | Halaman Tidak Ada</title>
+  <link rel="icon" type="image/png" href="./dangerhv.png" />
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <style>
+    body {
+      background: linear-gradient(120deg, #232526 0%, #0f2027 100%);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .container-404 {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      text-align: center;
+      z-index: 2;
+    }
+    .big-404 {
+      font-size: 7.5rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      line-height: 1;
+      color: #ff7675;
+      text-shadow:
+        0 0 16px #fff,
+        0 0 40px #ff7675,
+        0 0 60px #d63031;
+      margin-bottom: 10px;
+      position: relative;
+      animation: shake 1.7s cubic-bezier(.36,.07,.19,.97) infinite;
+      user-select: none;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate(-2px, 2px) rotate(-1deg);}
+      20%, 80% { transform: translate(2px, -2px) rotate(1deg);}
+      30%, 50%, 70% { transform: translate(-1px, 1px) rotate(-1deg);}
+      40%, 60% { transform: translate(1px, -1px) rotate(1deg);}
+    }
+    .emoji {
+      font-size: 3rem;
+      animation: bounce 1.3s infinite alternate;
+      margin-bottom: 12px;
+      display: inline-block;
+      user-select: none;
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0);}
+      100% { transform: translateY(-15px);}
+    }
+    .desc-404 {
+      font-size: 1.2rem;
+      color: #dff9fb;
+      max-width: 340px;
+      margin: 0 auto 24px auto;
+      line-height: 1.5em;
+      text-shadow: 0 0 7px #2229;
+    }
+    .broken-link {
+      display: inline-block;
+      font-size: 1.5rem;
+      background: #2d3436;
+      color: #ff7675;
+      border-radius: 11px;
+      padding: 8px 18px;
+      margin-bottom: 16px;
+      margin-top: 4px;
+      box-shadow: 0 2px 10px #0003;
+      user-select: text;
+    }
+    .back-btn {
+      display: inline-block;
+      background: linear-gradient(120deg, #00b894, #00cec9 85%);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 32px;
+      font-size: 1.08em;
+      font-weight: 600;
+      box-shadow: 0 2px 13px 0 #00cec933;
+      transition: background 0.19s, box-shadow 0.19s, transform 0.18s;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: linear-gradient(120deg, #00cec9, #00b894 85%);
+      box-shadow: 0 6px 26px 0 #00cec955;
+      color: #fff;
+      transform: scale(1.045) translateY(-1px);
+      text-decoration: none;
+    }
+    .footer-404 {
+      width: 100%;
+      text-align: center;
+      padding: 15px 0 17px;
+      color: #dff9fb;
+      font-size: 0.98em;
+      letter-spacing: 1.3px;
+      font-weight: 600;
+      background: rgba(0,0,0,0.10);
+      border-top: 1.2px solid #00cec933;
+    }
+    .bg-broken-cable {
+      position: absolute;
+      pointer-events: none;
+      top: 54%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      width: 260px;
+      opacity: 0.18;
+      filter: blur(0.5px);
+      user-select: none;
+    }
+    @media (max-width: 600px) {
+      .big-404 { font-size: 3.9rem;}
+      .emoji { font-size: 2rem;}
+      .bg-broken-cable { width: 140px;}
+      .desc-404 { font-size: 1em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container-404">
+    <img src="..//icons/danger_hv.png" alt="Broken Cable" class="bg-broken-cable" loading="lazy">
+    <div class="emoji">🔌</div>
+    <div class="big-404">404</div>
+    <div class="broken-link"><i class="fas fa-unlink"></i> Project Tidak Ada</div>
+    <div class="desc-404">
+      Sepertinya kamu menjelajah ke project yang belum tersedia.<br>
+      <span style="font-size:0.97em; color:#fdcb6e;">Coba kembali ke beranda, atau pilih project yang sudah ada..</span>
+    </div>
+    <a href="/1.kalkulator_hambatan_konduktor/index_kalkulator_hambatan.html" class="back-btn"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+  </div>
+  <div class="footer-404">
+    Made by Williyanto Adi 2025
+  </div>
+</body>
+</html>
