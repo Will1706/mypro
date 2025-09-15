@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Hambatan Konduktor AS/NZS Full</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
+        
+        <h1 class="text-xl font-bold text-center text-gray-800 pb-4 mb-6 border-b border-gray-200">
+            Kalkulator Hambatan Konduktor AS/NZS Full
+        </h1>
+
+        <div class="space-y-4">
+            
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label for="pembacaanAlat" class="block text-sm font-bold text-gray-700">Pembacaan Alat (mΩ)</label>
+                    <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan mΩ">
+                </div>
+                <div class="w-1/2">
+                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang (m)</label>
+                    <input type="text" inputmode="decimal" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan meter">
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label for="suhu" class="block text-sm font-bold text-gray-700">Suhu (°C)</label>
+                    <input type="text" inputmode="decimal" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan °C">
+                </div>
+                <div class="w-1/2">
+                    <label for="faktorKoreksi" class="block text-sm font-bold text-gray-700">Faktor Koreksi</label>
+                    <input type="text" name="faktorKoreksi" id="faktorKoreksi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-end">
+                <div class="w-1/3">
+                    <label for="konduktor" class="block text-sm font-bold text-gray-700">Konduktor</label>
+                    <select id="konduktor" name="konduktor" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option>CU</option>
+                        <option>AL</option>
+                        <option>TCU</option>
+                    </select>
+                </div>
+                <div class="w-1/3">
+                    <label for="penampang" class="block text-sm font-bold text-gray-700">Penampang</label>
+                     <select id="penampang" name="penampang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+<option value="0,5">0,5 mm²</option>
+<option value="0,75">0,75 mm²</option>
+<option value="1,0">1,0 mm²</option>
+<option value="1,5">1,5 mm²</option>
+<option value="2,5">2,5 mm²</option>
+<option value="4">4 mm²</option>
+<option value="6">6 mm²</option>
+<option value="10">10 mm²</option>
+<option value="16">16 mm²</option>
+<option value="25">25 mm²</option>
+<option value="35">35 mm²</option>
+<option value="50">50 mm²</option>
+<option value="70">70 mm²</option>
+<option value="95">95 mm²</option>
+<option value="120">120 mm²</option>
+<option value="150">150 mm²</option>
+<option value="185">185 mm²</option>
+<option value="240">240 mm²</option>
+<option value="300">300 mm²</option>
+<option value="400">400 mm²</option>
+<option value="500">500 mm²</option>
+<option value="630">630 mm²</option>
+<option value="800">800 mm²</option>
+<option value="960">960 mm²</option>
+<option value="1000">1000 mm²</option>
+<option value="1200">1200 mm²</option>
+<option value="1600">1600 mm²</option>
+<option value="2000">2000 mm²</option>
+                    </select>
+                </div>
+                <div class="w-1/3">
+                    <label for="spekMax" class="block text-sm font-bold text-gray-700">Spek. Acuan</label>
+                    <input type="text" name="spekMax" id="spekMax" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi (Ω/km)</label>
+                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
+            </div>
+
+            <p id="pesanHasil" class="text-center text-sm h-5"></p>
+            
+            <p id="spekDetail" class="text-center text-gray-600 text-xs">
+                spek jika single core : <strong class="font-bold"><span id="specSingleCore">-</span></strong> | spek jika multi core : <strong class="font-bold"><span id="specMultiCore">-</span></strong>
+            </p>
+            
+            <div class="pt-4 flex flex-wrap gap-2">
+                 <a href="..//kalkulator_hambatan/iec_trial_tailwind_v2_full.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    IEC
+                </a>
+                <a href="..//kalkulator_hambatan/icea_trial_tailwind_v2_full.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    ICEA
+                </a>
+                <a href="..//kalkulator_hambatan/as_trial_tailwind_v2_full.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    AS/NZS
+                </a>
+                <a href="..//kalkulator_hambatan/spln_trial_tailwind_v2_full.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                    SPLN
+                </a>
+            </div>
+
+            <div class="pt-2 flex gap-2">
+                <button type="button" onclick="history.back()" class="flex-1 justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Kembali
+                </button>
+                <button type="button" id="hapusBtn" class="flex-1 justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Hapus
+                </button>
+                <a href="/" class="flex-1 text-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Beranda
+                </a>
+            </div>
+
+        </div>
+
+        <footer class="text-center text-gray-500 text-sm mt-6 pt-4 border-t border-gray-200">
+            Williyanto Adi 2025
+        </footer>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Data
+        const correctionFactors = {
+            CU: {
+                "5.0": "1.064", "6.0": "1.059", "7.0": "1.055", "8.0": "1.050", "9.0": "1.046", "10.0": "1.042", "11.0": "1.037", "12.0": "1.033", "13.0": "1.029", "14.0": "1.025", "15.0": "1.020", "16.0": "1.016", "17.0": "1.012", "18.0": "1.008", "19.0": "1.004", "20.0": "1.000", "21.0": "0.996", "22.0": "0.992", "23.0": "0.988", "24.0": "0.984", "25.0": "0.980", "26.0": "0.977", "27.0": "0.973", "28.0": "0.969", "29.0": "0.965", "30.0": "0.962", "31.0": "0.958", "32.0": "0.954", "33.0": "0.951", "34.0": "0.947", "35.0": "0.943", "36.0": "0.940", "37.0": "0.936", "38.0": "0.933", "39.0": "0.929", "40.0": "0.926", "45.0": "0.909", "50.0": "0.893", "55.0": "0.877", "60.0": "0.862", "65.0": "0.847", "70.0": "0.833", "75.0": "0.820", "80.0": "0.806", "85.0": "0.794", "90.0": "0.781"
+            },
+            AL: {
+                "5.0": "1.064", "6.0": "1.059", "7.0": "1.055", "8.0": "1.050", "9.0": "1.046", "10.0": "1.042", "11.0": "1.037", "12.0": "1.033", "13.0": "1.029", "14.0": "1.025", "15.0": "1.020", "16.0": "1.016", "17.0": "1.012", "18.0": "1.008", "19.0": "1.004", "20.0": "1.000", "21.0": "0.996", "22.0": "0.992", "23.0": "0.988", "24.0": "0.984", "25.0": "0.980", "26.0": "0.977", "27.0": "0.973", "28.0": "0.969", "29.0": "0.965", "30.0": "0.962", "31.0": "0.958", "32.0": "0.954", "33.0": "0.951", "34.0": "0.947", "35.0": "0.943", "36.0": "0.940", "37.0": "0.936", "38.0": "0.933", "39.0": "0.929", "40.0": "0.926", "45.0": "0.909", "50.0": "0.893", "55.0": "0.877", "60.0": "0.862", "65.0": "0.847", "70.0": "0.833", "75.0": "0.820", "80.0": "0.806", "85.0": "0.794", "90.0": "0.781"
+            },
+            TCU: {
+                "5.0": "1.064", "6.0": "1.059", "7.0": "1.055", "8.0": "1.050", "9.0": "1.046", "10.0": "1.042", "11.0": "1.037", "12.0": "1.033", "13.0": "1.029", "14.0": "1.025", "15.0": "1.020", "16.0": "1.016", "17.0": "1.012", "18.0": "1.008", "19.0": "1.004", "20.0": "1.000", "21.0": "0.996", "22.0": "0.992", "23.0": "0.988", "24.0": "0.984", "25.0": "0.980", "26.0": "0.977", "27.0": "0.973", "28.0": "0.969", "29.0": "0.965", "30.0": "0.962", "31.0": "0.958", "32.0": "0.954", "33.0": "0.951", "34.0": "0.947", "35.0": "0.943", "36.0": "0.940", "37.0": "0.936", "38.0": "0.933", "39.0": "0.929", "40.0": "0.926", "45.0": "0.909", "50.0": "0.893", "55.0": "0.877", "60.0": "0.862", "65.0": "0.847", "70.0": "0.833", "75.0": "0.820", "80.0": "0.806", "85.0": "0.794", "90.0": "0.781"
+            }
+        };
+
+        const specValues = {
+            CU: {
+                acuan: {   
+                    "0,5": "38,4",
+                    "0,75": "25,3",
+                    "1,0": "21,2",
+                    "1,5": "13,6",
+                    "2,5": "7,41",
+                    "4": "4,61",
+                    "6": "3,08",
+                    "10": "1,83",
+                    "16": "1,15",
+                    "25": "0,727",
+                    "35": "0,524",
+                    "50": "0,387",
+                    "70": "0,268",
+                    "95": "0,193",
+                    "120": "0,153",
+                    "150": "0,124",
+                    "185": "0,0991",
+                    "240": "0,0754",
+                    "300": "0,0601",
+                    "400": "0,0470",
+                    "500": "0,0366",
+                    "630": "0,0283",
+                    "800": "0,0221",
+                    "960": "0,0189",
+                    "1000": "0,0176",
+                    "1200": "0,0151",
+                    "1600": "0,0113",
+                    "2000": "0,0090"
+                    },
+
+                single_core: { "0,5": "39,6", "0,75": "26,1", "1,0": "21,9", "1,5": "14,0", "2,5": "7,64", "4": "4,75", "6": "3,18", "10": "1,89", "16": "1,19", "25": "0,749", "35": "0,540", "50": "0,399", "70": "0,276", "95": "0,199", "120": "0,158", "150": "0,128", "185": "0,102", "240": "0,0777", "300": "0,0620", "400": "0,0485", "500": "0,0377", "630": "0,0292", "800": "0,0228", "1000": "0,0195", "1200": "0,0181", "1400": "0,0156", "1600": "0,0116", "1800": "0,0093" },
+                multi_core:  { "0,5": "39,6", "0,75": "26,1", "1,0": "21,9", "1,5": "14", "2,5": "7,64", "4": "4,75", "6": "3,18", "10": "1,89", "16": "1,19", "25": "0,749", "35": "0,540", "50": "0,399", "70": "0,276", "95": "0,199", "120": "0,158", "150": "0,128", "185": "0,102", "240": "0,0777", "300": "0,0620", "400": "0,0485", "500": "0,0373", "630": "0,0289", "800": "0,0228", "1000": "0,0195", "1200": "0,0181", "1400": "0,0156", "1600": "0,0116", "1800": "0,0093" }
+            },
+            AL: {
+                acuan: {   
+                    "0,5": "-",
+                    "0,75": "-",
+                    "1,0": "-",
+                    "1,5": "-",
+                    "2,5": "-",
+                    "4": "7,41",
+                    "6": "4,61",
+                    "10": "3,08",
+                    "16": "1,91",
+                    "25": "1,20",
+                    "35": "0,868",
+                    "50": "0,641",
+                    "70": "0,443",
+                    "95": "0,320",
+                    "120": "0,253",
+                    "150": "0,206",
+                    "185": "0,164",
+                    "240": "0,125",
+                    "300": "0,100",
+                    "400": "0,0778",
+                    "500": "0,0605",
+                    "630": "0,0469",
+                    "800": "0,0367",
+                    "960": "-",
+                    "1000": "0,0291",
+                    "1200": "-",
+                    "1600": "-",
+                    "2000": "-" 
+                    },
+                single_core: { "0,5": "n/a", "0,75": "n/a", "1": "n/a", "1,5": "n/a", "2,5": "n/a", "4": "7,41", "6": "4,61", "10": "3,08", "16": "1,91", "25": "1,20", "35": "0,868", "50": "0,641", "70": "0,443", "95": "0,320", "120": "0,253", "150": "0,206", "185": "0,164", "240": "0,125", "300": "0,100", "400": "0,0778", "500": "0,0605", "630": "0,0469", "800": "0,0367", "1000": "n/a", "1200": "0,0291", "1400": "n/a", "1600": "n/a", "1800": "n/a" },
+                multi_core:  { "0,5": "n/a", "0,75": "n/a", "1": "n/a", "1,5": "n/a", "2,5": "n/a", "4": "7,41", "6": "4,61", "10": "3,08", "16": "1,91", "25": "1,20", "35": "0,868", "50": "0,641", "70": "0,443", "95": "0,320", "120": "0,253", "150": "0,206", "185": "0,164", "240": "0,125", "300": "0,100", "400": "0,0778", "500": "0,0617", "630": "0,0478", "800": "0,0367", "1000": "n/a", "1200": "0,0291", "1400": "n/a", "1600": "n/a", "1800": "n/a" }
+            },
+            TCU: {
+                acuan: {   
+                    "0,5": "39,6",
+                    "0,75": "26,0",
+                    "1,0": "21,6",
+                    "1,5": "13,8",
+                    "2,5": "7,56",
+                    "4": "4,70",
+                    "6": "3,11",
+                    "10": "1,84",
+                    "16": "1,16",
+                    "25": "0,734",
+                    "35": "0,529",
+                    "50": "0,391",
+                    "70": "0,270",
+                    "95": "0,195",
+                    "120": "0,154",
+                    "150": "0,126",
+                    "185": "0,100",
+                    "240": "0,0762",
+                    "300": "0,0607",
+                    "400": "0,0475",
+                    "500": "0,0369",
+                    "630": "0,0286",
+                    "800": "0,0224",
+                    "960": "0,0189",
+                    "1000": "0,0177",
+                    "1200": "0,0151",
+                    "1600": "0,0113",
+                    "2000": "0,0090" 
+                },
+                
+                single_core: { "0,5": "40,8", "0,75": "26,8", "1": "22,3", "1,5": "14,2", "2,5": "7,79", "4": "4,85", "6": "3,21", "10": "1,90", "16": "1,20", "25": "0,757", "35": "0,545", "50": "0,403", "70": "0,278", "95": "0,201", "120": "0,159", "150": "0,130", "185": "0,103", "240": "0,0786", "300": "0,0626", "400": "0,0490", "500": "0,0380", "630": "0,0295", "800": "0,0231", "1000": "0,0195", "1200": "0,0182", "1400": "0,0156", "1600": "0,0116", "1800": "0,0093" },
+                multi_core:  { "0,5": "40,8", "0,75": "26,8", "1": "22,3", "1,5": "14,2", "2,5": "7,79", "4": "4,85", "6": "3,21", "10": "1,90", "16": "1,20", "25": "0,757", "35": "0,545", "50": "0,403", "70": "0,278", "95": "0,201", "120": "0,159", "150": "0,130", "185": "0,103", "240": "0,0786", "300": "0,0626", "400": "0,0490", "500": "0,0376", "630": "0,0292", "800": "0,0231", "1000": "0,0195", "1200": "0,0182", "1400": "0,0156", "1600": "0,0116", "1800": "0,0093" }
+            }
+        };
+
+        // Ambil elemen dari DOM
+        const pembacaanAlatInput = document.getElementById('pembacaanAlat');
+        const panjangInput = document.getElementById('panjang');
+        const suhuInput = document.getElementById('suhu');
+        const faktorKoreksiInput = document.getElementById('faktorKoreksi');
+        const konduktorSelect = document.getElementById('konduktor');
+        const penampangSelect = document.getElementById('penampang');
+        const spekMaxInput = document.getElementById('spekMax');
+        const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
+        const pesanHasil = document.getElementById('pesanHasil');
+        const hapusBtn = document.getElementById('hapusBtn');
+        const specSingleCoreSpan = document.getElementById('specSingleCore');
+        const specMultiCoreSpan = document.getElementById('specMultiCore');
+
+        function validateNumericInput(event) {
+            event.target.value = event.target.value.replace(/[^0-9.]/g, '');
+        }
+
+        function hitungHasil() {
+            hasilKalkulasiInput.classList.remove('text-green-500', 'text-red-500');
+            pesanHasil.className = 'text-center text-sm h-5';
+            pesanHasil.innerText = '';
+            const pembacaan = parseFloat(pembacaanAlatInput.value);
+            const panjang = parseFloat(panjangInput.value);
+            const koreksi = parseFloat(faktorKoreksiInput.value);
+            
+            if (!isNaN(pembacaan) && !isNaN(panjang) && !isNaN(koreksi) && panjang !== 0) {
+                const hasil = (pembacaan / panjang) * koreksi;
+                hasilKalkulasiInput.value = hasil.toFixed(4);
+                
+                const spekMaxString = spekMaxInput.value.replace(',', '.');
+                const spekMax = parseFloat(spekMaxString);
+
+                if (!isNaN(spekMax)) {
+                    if (hasil < spekMax) {
+                        hasilKalkulasiInput.classList.add('text-green-500');
+                        pesanHasil.innerText = 'Hasil pengujian memenuhi spesifikasi standar.';
+                        pesanHasil.classList.add('italic', 'text-green-500');
+                    } else {
+                        hasilKalkulasiInput.classList.add('text-red-500');
+                        pesanHasil.innerText = 'Hasil pengujian tidak memenuhi spesifikasi standar.';
+                        pesanHasil.classList.add('italic', 'text-red-500');
+                    }
+                }
+            } else {
+                hasilKalkulasiInput.value = '';
+            }
+        }
+        
+        function updateFaktorKoreksi() {
+            const suhuValueRaw = suhuInput.value;
+            const suhuNumber = parseFloat(suhuValueRaw);
+            faktorKoreksiInput.value = '';
+            if (!isNaN(suhuNumber)) {
+                const suhuKey = suhuNumber.toFixed(1);
+                const konduktorValue = konduktorSelect.value;
+                const currentFactors = correctionFactors[konduktorValue];
+                if (currentFactors && currentFactors[suhuKey]) {
+                    faktorKoreksiInput.value = currentFactors[suhuKey];
+                }
+            }
+            hitungHasil();
+        }
+
+        function updateSpecs() {
+            const konduktorValue = konduktorSelect.value;
+            const penampangValue = penampangSelect.value;
+            
+            const specs = specValues[konduktorValue];
+            if (specs) {
+                const acuanSpec = specs.acuan[penampangValue] || 'n/a';
+                const singleCoreSpec = specs.single_core[penampangValue] || 'n/a';
+                const multiCoreSpec = specs.multi_core[penampangValue] || 'n/a';
+
+                specSingleCoreSpan.innerText = singleCoreSpec;
+                specMultiCoreSpan.innerText = multiCoreSpec;
+                spekMaxInput.value = acuanSpec;
+            } else {
+                specSingleCoreSpan.innerText = '-';
+                specMultiCoreSpan.innerText = '-';
+                spekMaxInput.value = '';
+            }
+            hitungHasil();
+        }
+
+        function hapus() {
+            pembacaanAlatInput.value = '';
+            panjangInput.value = '';
+            suhuInput.value = '';
+            updateFaktorKoreksi(); 
+        }
+
+        // Tambahkan semua event listener
+        pembacaanAlatInput.addEventListener('input', validateNumericInput);
+        panjangInput.addEventListener('input', validateNumericInput);
+        suhuInput.addEventListener('input', validateNumericInput);
+        
+        pembacaanAlatInput.addEventListener('input', hitungHasil);
+        panjangInput.addEventListener('input', hitungHasil);
+        suhuInput.addEventListener('input', updateFaktorKoreksi);
+        
+        konduktorSelect.addEventListener('change', () => {
+            updateFaktorKoreksi();
+            updateSpecs();
+        });
+        penampangSelect.addEventListener('change', updateSpecs);
+        
+        hapusBtn.addEventListener('click', hapus);
+
+        // Panggil fungsi inisialisasi saat halaman dimuat
+        updateFaktorKoreksi();
+        updateSpecs();
+    });
+    </script>
+
+</body>
+</html>

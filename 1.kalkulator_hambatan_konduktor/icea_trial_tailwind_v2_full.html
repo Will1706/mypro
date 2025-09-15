@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Hambatan Konduktor ICEA Full</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
+        
+        <h1 class="text-xl font-bold text-center text-gray-800 pb-4 mb-6 border-b border-gray-200">
+            Kalkulator Hambatan Konduktor ICEA Full
+        </h1>
+
+        <div class="space-y-4">
+            
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label for="pembacaanAlat" class="block text-sm font-bold text-gray-700">Pembacaan Alat (mΩ)</label>
+                    <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan mΩ">
+                </div>
+                <div class="w-1/2">
+                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang (F)</label>
+                    <input type="text" inputmode="decimal" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan feet">
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label for="suhu" class="block text-sm font-bold text-gray-700">Suhu (°C)</label>
+                    <input type="text" inputmode="decimal" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan °C">
+                </div>
+                <div class="w-1/2">
+                    <label for="faktorKoreksi" class="block text-sm font-bold text-gray-700">Faktor Koreksi</label>
+                    <input type="text" name="faktorKoreksi" id="faktorKoreksi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div class="flex gap-4 items-end">
+                <div class="w-1/3">
+                    <label for="konduktor" class="block text-sm font-bold text-gray-700">Konduktor</label>
+                    <select id="konduktor" name="konduktor" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option>CU</option>
+                        <option>AL</option>
+                    </select>
+                </div>
+                <div class="w-1/3">
+                    <label for="penampang" class="block text-sm font-bold text-gray-700">Penampang</label>
+                     <select id="penampang" name="penampang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="8">8 AWG</option>
+                        <option value="7">7 AWG</option>
+                        <option value="6">6 AWG</option>
+                        <option value="5">5 AWG</option>
+                        <option value="4">4 AWG</option>
+                        <option value="3">3 AWG</option>
+                        <option value="2">2 AWG</option>
+                        <option value="1">1 AWG</option>
+                        <option value="1/0">1/0 AWG</option>
+                        <option value="2/0">2/0 AWG</option>
+                        <option value="3/0">3/0 AWG</option>
+                        <option value="4/0">4/0 AWG</option>
+                        <option value="250">250 KCMIL</option>
+                        <option value="300">300 KCMIL</option>
+                        <option value="350">350 KCMIL</option>
+                        <option value="400">400 KCMIL</option>
+                        <option value="450">450 KCMIL</option>
+                        <option value="500">500 KCMIL</option>
+                        <option value="550">550 KCMIL</option>
+                        <option value="600">600 KCMIL</option>
+                        <option value="650">650 KCMIL</option>
+                        <option value="700">700 KCMIL</option>
+                        <option value="750">750 KCMIL</option>
+                        <option value="800">800 KCMIL</option>
+                        <option value="900">900 KCMIL</option>
+                        <option value="1000">1000 KCMIL</option>
+                        <option value="1100">1100 KCMIL</option>
+                        <option value="1200">1200 KCMIL</option>
+                        <option value="1250">1250 KCMIL</option>
+                        <option value="1300">1300 KCMIL</option>
+                        <option value="1400">1400 KCMIL</option>
+                        <option value="1500">1500 KCMIL</option>
+                        <option value="1600">1600 KCMIL</option>
+                        <option value="1700">1700 KCMIL</option>
+                        <option value="1750">1750 KCMIL</option>
+                        <option value="1800">1800 KCMIL</option>
+                        <option value="1900">1900 KCMIL</option>
+                        <option value="2000">2000 KCMIL</option>
+                        <option value="2500">2500 KCMIL</option>
+                        <option value="3000">3000 KCMIL</option>
+                    </select>
+                </div>
+                <div class="w-1/3">
+                    <label for="spekMax" class="block text-sm font-bold text-gray-700">Spek. Max</label>
+                    <input type="text" name="spekMax" id="spekMax" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi (Ω/kfeet)</label>
+                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
+            </div>
+
+            <p id="pesanHasil" class="text-center text-sm h-5"></p>
+            <p id="spekTabel" class="text-center text-sm text-gray-600"></p>
+            
+            <div class="pt-4 flex flex-wrap gap-2">
+                 <a href="https://www.google.com" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    IEC
+                </a>
+                <a href="https://www.youtube.com" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    ICEA
+                </a>
+                <a href="https://www.wikipedia.org" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    AS/NZS
+                </a>
+                <a href="#" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                    SPLN
+                </a>
+            </div>
+
+            <div class="pt-2 flex gap-2">
+                <button type="button" onclick="history.back()" class="flex-1 justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Kembali
+                </button>
+                <button type="button" id="hapusBtn" class="flex-1 justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Hapus
+                </button>
+                <a href="/" class="flex-1 text-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Beranda
+                </a>
+            </div>
+
+        </div>
+
+        <footer class="text-center text-gray-500 text-sm mt-6 pt-4 border-t border-gray-200">
+            Williyanto Adi 2025
+        </footer>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Data
+        const correctionFactors = {
+            CU: {
+                "0": "1.107",
+                "1": "1.102",
+                "2": "1.098",
+                "3": "1.093",
+                "4": "1.089",
+                "5": "1.084",
+                "6": "1.079",
+                "7": "1.075",
+                "8": "1.070",
+                "9": "1.066",
+                "10": "1.061",
+                "11": "1.057",
+                "12": "1.053",
+                "13": "1.048",
+                "14": "1.044",
+                "15": "1.040",
+                "16": "1.036",
+                "17": "1.032",
+                "18": "1.028",
+                "19": "1.024",
+                "20": "1.020",
+                "21": "1.016",
+                "22": "1.012",
+                "23": "1.008",
+                "24": "1.004",
+                "25": "1.000",
+                "26": "0.996",
+                "27": "0.992",
+                "28": "0.987",
+                "29": "0.985",
+                "30": "0.981",
+                "31": "0.977",
+                "32": "0.974",
+                "33": "0.970",
+                "34": "0.967",
+                "35": "0.963",
+                "36": "0.959",
+                "37": "0.956",
+                "38": "0.952",
+                "39": "0.948",
+                "40": "0.944"
+            },
+            AL: {    
+                "0": "1.110",
+                "1": "1.105",
+                "2": "1.100",
+                "3": "1.095",
+                "4": "1.090",
+                "5": "1.085",
+                "6": "1.081",
+                "7": "1.076",
+                "8": "1.072",
+                "9": "1.067",
+                "10": "1.063",
+                "11": "1.059",
+                "12": "1.054",
+                "13": "1.050",
+                "14": "1.045",
+                "15": "1.041",
+                "16": "1.037",
+                "17": "1.033",
+                "18": "1.028",
+                "19": "1.024",
+                "20": "1.020",
+                "21": "1.016",
+                "22": "1.012",
+                "23": "1.018",
+                "24": "1.014",
+                "25": "1.000",
+                "26": "0.996",
+                "27": "0.992",
+                "28": "0.989",
+                "29": "0.985",
+                "30": "0.981",
+                "31": "0.977",
+                "32": "0.973",
+                "33": "0.970",
+                "34": "0.966",
+                "35": "0.962",
+                "36": "0.955",
+                "37": "0.947",
+                "38": "0.940",
+                "39": "0.932",
+                "40": "0.944"
+            }
+        };
+        const specMaxValues = {
+            CU: {
+                "8": "0,66504",
+                "7": "0,52938",
+                "6": "0,41922",
+                "5": "0,33150",
+                "4": "0,26316",
+                "3": "0,20910",
+                "2": "0,16524",
+                "1": "0,13158",
+                "1/0": "0,10404",
+                "2/0": "0,08262",
+                "3/0": "0,06548",
+                "4/0": "0,05202",
+                "250": "0,04396",
+                "300": "0,03672",
+                "350": "0,03142",
+                "400": "0,02744",
+                "450": "0,02448",
+                "500": "0,02203",
+                "550": "0,01999",
+                "600": "0,01836",
+                "650": "0,01693",
+                "700": "0,01571",
+                "750": "0,01469",
+                "800": "0,01377",
+                "900": "0,01224",
+                "1000": "0,01102",
+                "1100": "0,01001",
+                "1200": "0,00917",
+                "1250": "0,00880",
+                "1300": "0,00847",
+                "1400": "0,00786",
+                "1500": "0,00733",
+                "1600": "0,00687",
+                "1700": "0,00647",
+                "1750": "0,00628",
+                "1800": "0,00611",
+                "1900": "0,00579",
+                "2000": "0,00550",
+                "2500": "0,00445",
+                "3000": "0,00370"
+            },
+            AL: {
+                "8": "1,09140",
+                "7": "0,86802",
+                "6": "0,68850",
+                "5": "0,54468",
+                "4": "0,43248",
+                "3": "0,34272",
+                "2": "0,27132",
+                "1": "0,21522",
+                "1/0": "0,17136",
+                "2/0": "0,13566",
+                "3/0": "0,10710",
+                "4/0": "0,08527",
+                "250": "0,07211",
+                "300": "0,06018",
+                "350": "0,05151",
+                "400": "0,04508",
+                "450": "0,04009",
+                "500": "0,03611",
+                "550": "0,03274",
+                "600": "0,03009",
+                "650": "0,02774",
+                "700": "0,02581",
+                "750": "0,02407",
+                "800": "0,02254",
+                "900": "0,01999",
+                "1000": "0,01805",
+                "1100": "0,01642",
+                "1200": "0,01499",
+                "1250": "0,01438",
+                "1300": "0,01387",
+                "1400": "0,01285",
+                "1500": "0,01204",
+                "1600": "0,01132",
+                "1700": "0,01061",
+                "1750": "0,01030",
+                "1800": "0,01002",
+                "1900": "0,00950",
+                "2000": "0,00903",
+                "2500": "0,00729",
+                "3000": "0,00608"
+            }
+        };
+        // Data baru untuk Spek Sesuai Tabel
+        const specSesuaiTabelValues = {
+            CU: {
+                "8": "0,652",
+                "7": "0,519",
+                "6": "0,411",
+                "5": "0,325",
+                "4": "0,258",
+                "3": "0,205",
+                "2": "0,162",
+                "1": "0,129",
+                "1/0": "0,102",
+                "2/0": "0,0810",
+                "3/0": "0,0642",
+                "4/0": "0,0510",
+                "250": "0,0431",
+                "300": "0,0360",
+                "350": "0,0308",
+                "400": "0,0269",
+                "450": "0,0240",
+                "500": "0,0216",
+                "550": "0,0196",
+                "600": "0,0180",
+                "650": "0,0166",
+                "700": "0,0154",
+                "750": "0,0144",
+                "800": "0,0135",
+                "900": "0,0120",
+                "1000": "0,0108",
+                "1100": "0,00981",
+                "1200": "0,00899",
+                "1250": "0,00863",
+                "1300": "0,00830",
+                "1400": "0,00771",
+                "1500": "0,00719",
+                "1600": "0,00674",
+                "1700": "0,00634",
+                "1750": "0,00616",
+                "1800": "0,00599",
+                "1900": "0,00568",
+                "2000": "0,00539",
+                "2500": "0,00436",
+                "3000": "0,00363"
+            },
+            AL: {
+                "8": "1,07",
+                "7": "0,851",
+                "6": "0,675",
+                "5": "0,534",
+                "4": "0,424",
+                "3": "0,336",
+                "2": "0,266",
+                "1": "0,211",
+                "1/0": "0,168",
+                "2/0": "0,133",
+                "3/0": "0,105",
+                "4/0": "0,0836",
+                "250": "0,0707",
+                "300": "0,0590",
+                "350": "0,0505",
+                "400": "0,0442",
+                "450": "0,0393",
+                "500": "0,0354",
+                "550": "0,0321",
+                "600": "0,0295",
+                "650": "0,0272",
+                "700": "0,0253",
+                "750": "0,0236",
+                "800": "0,0221",
+                "900": "0,0196",
+                "1000": "0,0177",
+                "1100": "0,0161",
+                "1200": "0,0147",
+                "1250": "0,0141",
+                "1300": "0,0136",
+                "1400": "0,0126",
+                "1500": "0,0118",
+                "1600": "0,0111",
+                "1700": "0,0104",
+                "1750": "0,0101",
+                "1800": "0,00982",
+                "1900": "0,00931",
+                "2000": "0,00885",
+                "2500": "0,00715",
+                "3000": "0,00596"
+            }
+        };
+
+        // Ambil elemen dari DOM
+        const pembacaanAlatInput = document.getElementById('pembacaanAlat');
+        const panjangInput = document.getElementById('panjang');
+        const suhuInput = document.getElementById('suhu');
+        const faktorKoreksiInput = document.getElementById('faktorKoreksi');
+        const konduktorSelect = document.getElementById('konduktor');
+        const penampangSelect = document.getElementById('penampang');
+        const spekMaxInput = document.getElementById('spekMax');
+        const hasilKalkulasiInput = document.getElementById('hasilKalkulasi');
+        const pesanHasil = document.getElementById('pesanHasil');
+        // Ambil elemen baru dari DOM
+        const spekTabel = document.getElementById('spekTabel');
+        const hapusBtn = document.getElementById('hapusBtn');
+
+        function validateNumericInput(event) {
+            event.target.value = event.target.value.replace(/[^0-9.]/g, '');
+        }
+
+        function hitungHasil() {
+            hasilKalkulasiInput.classList.remove('text-green-500', 'text-red-500');
+            pesanHasil.className = 'text-center text-sm h-5';
+            pesanHasil.innerText = '';
+            const pembacaan = parseFloat(pembacaanAlatInput.value);
+            const panjang = parseFloat(panjangInput.value);
+            const koreksi = parseFloat(faktorKoreksiInput.value);
+            if (!isNaN(pembacaan) && !isNaN(panjang) && !isNaN(koreksi) && panjang !== 0) {
+                const hasil = (pembacaan / panjang) * koreksi;
+                hasilKalkulasiInput.value = hasil.toFixed(4);
+                const spekMaxString = spekMaxInput.value.replace(',', '.');
+                const spekMax = parseFloat(spekMaxString);
+                if (!isNaN(spekMax)) {
+                    if (hasil < spekMax) {
+                        hasilKalkulasiInput.classList.add('text-green-500');
+                        pesanHasil.innerText = 'Hasil pengujian memenuhi spesifikasi standar.';
+                        pesanHasil.classList.add('italic', 'text-green-500');
+                    } else {
+                        hasilKalkulasiInput.classList.add('text-red-500');
+                        pesanHasil.innerText = 'Hasil pengujian tidak memenuhi spesifikasi standar.';
+                        pesanHasil.classList.add('italic', 'text-red-500');
+                    }
+                }
+            } else {
+                hasilKalkulasiInput.value = '';
+            }
+        }
+        
+        function updateFaktorKoreksi() {
+            const suhuValueRaw = suhuInput.value;
+            const suhuNumber = parseFloat(suhuValueRaw);
+            faktorKoreksiInput.value = '';
+            if (!isNaN(suhuNumber)) {
+                const suhuKey = String(Math.round(suhuNumber));
+                const konduktorValue = konduktorSelect.value;
+                const currentFactors = correctionFactors[konduktorValue];
+                if (currentFactors && currentFactors[suhuKey]) {
+                    faktorKoreksiInput.value = currentFactors[suhuKey];
+                }
+            }
+            hitungHasil();
+        }
+
+        function updateSpekMax() {
+            const konduktorValue = konduktorSelect.value;
+            const penampangValue = penampangSelect.value;
+            const currentSpec = specMaxValues[konduktorValue];
+            if (currentSpec && currentSpec[penampangValue]) {
+                spekMaxInput.value = currentSpec[penampangValue];
+            } else {
+                spekMaxInput.value = '';
+            }
+            hitungHasil();
+        }
+
+        // Fungsi baru untuk update spek sesuai tabel
+        function updateSpekTabel() {
+            const konduktorValue = konduktorSelect.value;
+            const penampangValue = penampangSelect.value;
+            const currentData = specSesuaiTabelValues[konduktorValue];
+
+            if (currentData && currentData[penampangValue]) {
+                // Menggunakan innerHTML untuk bisa memformat teks tebal (bold)
+                spekTabel.innerHTML = `spek sesuai tabel : <b>${currentData[penampangValue]}</b>`;
+            } else {
+                spekTabel.innerHTML = '';
+            }
+        }
+
+        function hapus() {
+            pembacaanAlatInput.value = '';
+            panjangInput.value = '';
+            suhuInput.value = '';
+            updateFaktorKoreksi();
+        }
+
+        // Tambahkan semua event listener
+        pembacaanAlatInput.addEventListener('input', validateNumericInput);
+        panjangInput.addEventListener('input', validateNumericInput);
+        suhuInput.addEventListener('input', validateNumericInput);
+        pembacaanAlatInput.addEventListener('input', hitungHasil);
+        panjangInput.addEventListener('input', hitungHasil);
+        suhuInput.addEventListener('input', updateFaktorKoreksi);
+        konduktorSelect.addEventListener('change', () => {
+            updateFaktorKoreksi();
+            updateSpekMax();
+            updateSpekTabel(); // Panggil fungsi baru
+        });
+        penampangSelect.addEventListener('change', () => {
+            updateSpekMax();
+            updateSpekTabel(); // Panggil fungsi baru
+        });
+        hapusBtn.addEventListener('click', hapus);
+
+        // Panggil fungsi inisialisasi
+        updateFaktorKoreksi();
+        updateSpekMax();
+        updateSpekTabel(); // Panggil fungsi baru saat halaman dimuat
+    });
+    </script>
+
+</body>
+</html>
