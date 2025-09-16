@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Konversi Kapasitansi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
+        
+        <h1 class="text-xl font-bold text-center text-gray-800 pb-4 mb-6 border-b border-gray-200">
+            Kalkulator Konversi Kapasitansi
+        </h1>
+
+        <div class="space-y-4">
+            
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label for="pembacaanNanoFarad" class="block text-sm font-bold text-gray-700">Pembacaan Alat (nF)</label>
+                    <input type="text" inputmode="decimal" name="pembacaanNanoFarad" id="pembacaanNanoFarad" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan nF">
+                </div>
+                <div class="w-1/2">
+                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang (m)</label>
+                    <input type="text" inputmode="numeric" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan meter">
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <label for="hasilKonversi" class="block text-sm font-bold text-gray-700">Hasil Konversi (nF/km)</label>
+                <input type="text" name="hasilKonversi" id="hasilKonversi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
+            </div>
+            
+            <div class="pt-4 flex flex-wrap gap-2">
+                <button type="button" onclick="history.back()" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Kembali
+                </button>
+                <button type="button" id="hapusBtn" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Hapus
+                </button>
+                <a href="/" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Beranda
+                </a>
+            </div>
+
+        </div>
+
+        <footer class="text-center text-gray-500 text-sm mt-6 pt-4 border-t border-gray-200">
+            Williyanto Adi 2025
+        </footer>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Ambil elemen dari DOM
+        const pembacaanNanoFaradInput = document.getElementById('pembacaanNanoFarad');
+        const panjangInput = document.getElementById('panjang');
+        const hasilKonversiInput = document.getElementById('hasilKonversi');
+        const hapusBtn = document.getElementById('hapusBtn');
+
+        // Fungsi untuk memvalidasi input (membolehkan desimal dengan titik)
+        function validateDecimalInput(event) {
+            event.target.value = event.target.value.replace(/[^0-9.]/g, '');
+        }
+
+        // Fungsi utama untuk menghitung konversi kapasitansi
+        function hitungKapasitansi() {
+            const nanoFarad = parseFloat(pembacaanNanoFaradInput.value);
+            // Hapus titik pemisah ribuan sebelum kalkulasi
+            const panjangMeter = parseFloat(panjangInput.value.replace(/\./g, ''));
+
+            if (!isNaN(nanoFarad) && !isNaN(panjangMeter) && panjangMeter !== 0) {
+                // Rumus: Hasil (nF/km) = (Pembacaan (nF) * 1000) / Panjang (m)
+                const hasil = (nanoFarad * 1000) / panjangMeter;
+                // Tampilkan hasil dengan 2 angka di belakang koma
+                hasilKonversiInput.value = hasil.toFixed(2);
+            } else {
+                hasilKonversiInput.value = '';
+            }
+        }
+        
+        // Fungsi untuk menghapus semua input
+        function hapus() {
+            pembacaanNanoFaradInput.value = '';
+            panjangInput.value = '';
+            hitungKapasitansi();
+        }
+        
+        // --- Tambahkan semua event listener ---
+
+        // Listener untuk input NanoFarad
+        pembacaanNanoFaradInput.addEventListener('input', validateDecimalInput);
+        pembacaanNanoFaradInput.addEventListener('input', hitungKapasitansi);
+
+        // Listener khusus untuk input Panjang agar otomatis format ribuan
+        panjangInput.addEventListener('input', (e) => {
+            let cleanValue = e.target.value.replace(/\D/g, '');
+            
+            if (cleanValue) {
+                const formattedValue = parseInt(cleanValue, 10).toLocaleString('id-ID');
+                e.target.value = formattedValue;
+            } else {
+                e.target.value = '';
+            }
+            
+            hitungKapasitansi();
+        });
+
+        // Listener untuk tombol Hapus
+        hapusBtn.addEventListener('click', hapus);
+    });
+    </script>
+
+</body>
+</html>
