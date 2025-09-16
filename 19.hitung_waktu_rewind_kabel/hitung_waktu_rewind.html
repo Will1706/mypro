@@ -15,7 +15,7 @@
         }
         .calculator-card {
             max-width: 600px;
-            margin: 5rem auto;
+            margin: 3rem auto; 
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
@@ -70,12 +70,19 @@
                 </div>
             </form>
 
+            <div class="d-flex gap-2 mt-4">
+                <button type="button" class="btn btn-secondary w-100" id="kembaliBtn"><i class="bi bi-arrow-left-circle me-2"></i>Kembali</button>
+                <button type="button" class="btn btn-danger w-100" id="hapusBtn"><i class="bi bi-trash me-2"></i>Hapus</button>
+                <button type="button" class="btn btn-primary w-100" id="berandaBtn"><i class="bi bi-house me-2"></i>Beranda</button>
+            </div>
+
+
             <div id="hasilEstimasi" class="mt-4" style="display: none;">
             </div>
 
         </div> 
         
-        <div class="mt-5">
+        <div class="mt-4">
             <hr>
             <footer class="text-center py-3">
                 <p class="text-muted mb-0">Williyanto Adi 2025</p>
@@ -83,8 +90,6 @@
         </div>
 
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
         // --- Inisialisasi Elemen ---
@@ -94,6 +99,9 @@
         const lanjutanContainer = document.getElementById('lanjutanInputContainer');
         const inputSudahBerjalan = document.getElementById('sudahBerjalan');
         const hasilDiv = document.getElementById('hasilEstimasi');
+        const kembaliBtn = document.getElementById('kembaliBtn');
+        const hapusBtn = document.getElementById('hapusBtn');
+        const berandaBtn = document.getElementById('berandaBtn');
 
         // --- Fungsi Formatting ---
         function formatAngkaInteger(inputElement) {
@@ -120,6 +128,21 @@
             inputElement.value = finalValue;
         }
 
+        // --- Fungsi Hapus Form ---
+        function hapusForm() {
+            inputPanjang.value = '';
+            inputKecepatan.value = '';
+            inputSudahBerjalan.value = '';
+            
+            if (lanjutkanSwitch.checked) {
+                lanjutkanSwitch.checked = false;
+                lanjutkanSwitch.dispatchEvent(new Event('change'));
+            }
+            
+            hasilDiv.style.display = 'none';
+            inputPanjang.focus();
+        }
+
         // --- Event Listeners ---
         inputPanjang.addEventListener('input', () => { formatAngkaInteger(inputPanjang); hitungEstimasi(); });
         inputKecepatan.addEventListener('input', () => { formatAngkaDesimal(inputKecepatan); hitungEstimasi(); });
@@ -138,6 +161,10 @@
             }
             hitungEstimasi();
         });
+
+        kembaliBtn.addEventListener('click', () => history.back());
+        hapusBtn.addEventListener('click', hapusForm);
+        berandaBtn.addEventListener('click', () => location.reload());
 
         // --- Fungsi Utama Kalkulator ---
         function hitungEstimasi() {
@@ -190,7 +217,7 @@
                     <p class="mb-2 fs-4">${hasilTextDurasi}</p>
                     
                     <div class="p-2 border rounded bg-light" style="font-size: 0.9rem;">
-                        Jika dilanjutkan pukul <strong class="text-primary">${jamMulai}:${menitMulai}</strong>, maka akan selesai sekitar pukul <strong class="fs-6 text-success">${jamSelesai}:${menitSelesai}</strong>.
+                        Jika dilanjutkan pukul <strong class="fs-6 text-primary">${jamMulai}:${menitMulai}</strong>, maka akan selesai sekitar pukul <strong class="fs-6 text-success">${jamSelesai}:${menitSelesai}</strong>.
                     </div>
 
                     <hr>
@@ -199,6 +226,5 @@
             hasilDiv.style.display = 'block';
         }
     </script>
-
 </body>
 </html>
