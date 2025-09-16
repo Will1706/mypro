@@ -6,6 +6,8 @@
     <title>Kalkulator Estimasi Waktu Produksi Kabel</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         body {
@@ -24,10 +26,10 @@
             max-height: 0;
             opacity: 0;
         }
-        /* BAGIAN BARU: Perbaikan tampilan outline input */
+        /* Perbaikan tampilan outline input */
         #sudahBerjalan:focus {
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Warna biru standar Bootstrap */
-            border-color: #86b7fe; /* Warna border biru standar Bootstrap */
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            border-color: #86b7fe;
         }
     </style>
 </head>
@@ -36,7 +38,7 @@
     <div class="container">
         <div class="card p-4 p-md-5 calculator-card">
             <div class="text-center mb-4">
-                <h1 class="h3 fw-bold">Estimasi Waktu Produksi Kabel</h1>
+                <h1 class="h3 fw-bold"><i class="bi bi-stopwatch me-2"></i>Estimasi Waktu Produksi Kabel</h1>
                 <p class="text-muted">Masukkan detail produksi untuk menghitung estimasi waktu yang dibutuhkan.</p>
                 <hr>
             </div>
@@ -44,14 +46,14 @@
             <form id="kalkulatorForm">
                 <div class="mb-3">
                     <label for="panjangKabel" class="form-label">
-                        <strong>Panjang Total Kabel (meter)</strong>
+                        <strong><i class="bi bi-rulers me-2"></i>Panjang Total Kabel (meter)</strong>
                     </label>
                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="panjangKabel" placeholder="Contoh: 1.000" required>
                 </div>
                 
                 <div class="mb-3">
                     <label for="kecepatanMesin" class="form-label">
-                        <strong>Kecepatan Mesin (meter per menit)</strong>
+                        <strong><i class="bi bi-speedometer2 me-2"></i>Kecepatan Mesin (meter per menit)</strong>
                     </label>
                     <input type="text" inputmode="decimal" class="form-control form-control-lg" id="kecepatanMesin" placeholder="Contoh: 4,5" required>
                 </div>
@@ -63,7 +65,7 @@
 
                 <div id="lanjutanInputContainer" class="mb-4">
                     <label for="sudahBerjalan" class="form-label">
-                        <strong>Sudah Berjalan (meter)</strong>
+                        <strong><i class="bi bi-arrow-return-right me-2"></i>Sudah Berjalan (meter)</strong>
                     </label>
                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="sudahBerjalan" placeholder="Contoh: 100">
                 </div>
@@ -88,6 +90,7 @@
         const lanjutkanSwitch = document.getElementById('lanjutkanSwitch');
         const lanjutanContainer = document.getElementById('lanjutanInputContainer');
         const inputSudahBerjalan = document.getElementById('sudahBerjalan');
+        const hasilDiv = document.getElementById('hasilEstimasi'); // Tambahkan inisialisasi di sini
 
         // --- Fungsi Formatting ---
         function formatAngkaInteger(inputElement) {
@@ -121,22 +124,20 @@
         
         lanjutkanSwitch.addEventListener('change', () => {
             if (lanjutkanSwitch.checked) {
-                lanjutanContainer.style.maxHeight = '150px'; // Tampilkan
+                lanjutanContainer.style.maxHeight = '150px';
                 lanjutanContainer.style.opacity = '1';
-                lanjutanContainer.style.marginTop = '1rem'; // Tambahkan margin atas untuk pemisah visual
+                lanjutanContainer.style.marginTop = '1rem';
             } else {
-                lanjutanContainer.style.maxHeight = '0'; // Sembunyikan
+                lanjutanContainer.style.maxHeight = '0';
                 lanjutanContainer.style.opacity = '0';
-                lanjutanContainer.style.marginTop = '0'; // Hapus margin
-                inputSudahBerjalan.value = ''; // Kosongkan nilainya
+                lanjutanContainer.style.marginTop = '0';
+                inputSudahBerjalan.value = '';
             }
-            hitungEstimasi(); // Hitung ulang saat toggle diubah
+            hitungEstimasi();
         });
 
         // --- Fungsi Utama Kalkulator ---
         function hitungEstimasi() {
-            const hasilDiv = document.getElementById('hasilEstimasi');
-
             const panjangTotal = parseFloat(inputPanjang.value.replace(/\./g, '')) || 0;
             const kecepatanMesin = parseFloat(inputKecepatan.value.replace(/\./g, '').replace(',', '.')) || 0;
             const sudahBerjalan = parseFloat(inputSudahBerjalan.value.replace(/\./g, '')) || 0;
@@ -151,7 +152,7 @@
                 return;
             }
             
-            if (panjangDihitung < 0) { // Kasus khusus jika input 'sudah berjalan' > 'total'
+            if (panjangDihitung < 0) {
                 hasilDiv.innerHTML = `<div class="alert alert-danger text-center"><strong>Error:</strong> Nilai "Sudah Berjalan" tidak boleh lebih besar dari "Panjang Total Kabel".</div>`;
                 hasilDiv.style.display = 'block';
                 return;
@@ -180,7 +181,7 @@
             
             hasilDiv.innerHTML = `
                 <div class="alert alert-success text-center" role="alert">
-                    <h4 class="alert-heading">Estimasi Selesai! ✅</h4>
+                    <h4 class="alert-heading"><i class="bi bi-check-circle-fill me-2"></i>Estimasi Selesai!</h4>
                     <p>Sisa waktu yang dibutuhkan untuk menyelesaikan pekerjaan:</p>
                     <p class="mb-2 fs-4">${hasilTextDurasi}</p>
                     
@@ -193,6 +194,11 @@
                 </div>`;
             hasilDiv.style.display = 'block';
         }
+
+        // Panggil hitungEstimasi() sekali saat halaman dimuat
+        // Untuk memastikan hasil ditampilkan jika ada nilai default atau saat refresh.
+        // Ini juga mencegah hasil kosong jika input kosong.
+        hitungEstimasi(); 
     </script>
 
 </body>
