@@ -1,494 +1,138 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Konverter Panjang</title>
-  <link rel="icon" type="image/png" href="/icons/logo_listrik.png">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-body {
-  background: linear-gradient(145deg, #f0f0f0, #ffffff);
-  font-family: 'Segoe UI', sans-serif;
-  transition: background 0.3s, color 0.3s;
-  color: #222;
-}
-.card-box {
-  max-width: 420px;
-  margin: 50px auto;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  padding: 25px;
-  background-color: #fff;
-  transition: background 0.3s, color 0.3s, border 0.3s;
-}
-h4.title {
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 25px;
-  transition: color 0.3s;
-}
-.form-control, .form-select {
-  border-radius: 12px;
-  font-weight: bold;
-  transition: background 0.3s, color 0.3s, border 0.3s;
-  background: #fff;
-  color: #222;
-  border: 1px solid #ddd;
-}
-.form-label {
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-#result-length {
-  transition:
-    box-shadow 0.5s cubic-bezier(.4,2,.7,1.2),
-    background 0.5s cubic-bezier(.4,2,.7,1.2),
-    color 0.5s cubic-bezier(.4,2,.7,1.2),
-    opacity 0.5s cubic-bezier(.4,2,.7,1.2),
-    transform 0.5s cubic-bezier(.4,2,.7,1.2);
-  opacity: 1;
-  background: #fff;
-  box-shadow: none;
-  color: #22b573 !important;
-  text-align: center;
-  font-weight: bold;
-}
-#result-length.anim-change {
-  opacity: 0;
-  background: #e0f7ff;
-  box-shadow: 0 0 16px 2px #80d0ff4d;
-  color: #22b573 !important;
-  transform: scale(0.96) translateY(-10px);
-  transition:
-    opacity 0.2s,
-    background 0.2s,
-    color 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
-}
-.info-text-length {
-  font-size: 14px;
-  text-align: center;
-  margin-top: 15px;
-  color: #333;
-  opacity: 1;
-  transform: translateY(0px) scale(1);
-  transition: opacity 0.55s cubic-bezier(.4,2,.7,1.2), transform 0.55s cubic-bezier(.4,2,.7,1.2);
-}
-.info-text-length.anim-change {
-  opacity: 0;
-  transform: translateY(18px) scale(0.96);
-  transition: opacity 0.2s, transform 0.2s;
-}
-.info-extra {
-  margin-top: 9px;
-  font-size: 13px;
-  color: #222;
-}
-.green {
-  color: #22b573 !important;
-  font-weight: bold;
-}
-/* --- NAV/PRIMARY BUTTONS --- */
-.nav-btn {
-  border-radius: 30px;
-  margin: 5px;
-  padding: 6px 18px;
-  font-weight: 500;
-  background-color: #0d6efd;
-  color: white !important;
-  transition: all 0.3s ease;
-  border: none;
-  font-size: 1rem;
-  line-height: 1.2;
-  text-decoration: none !important;
-  display: inline-block;
-}
-.nav-btn:hover {
-  background-color: #084298;
-  color: #fff !important;
-  text-decoration: none;
-}
-body.dark-mode .nav-btn {
-  background-color: #1a73e8 !important;
-  color: #fff !important;
-}
-body.dark-mode .nav-btn:hover {
-  background-color: #125bbb !important;
-}
-#btnSwitchLength {
-  padding: 6px 13px;
-  font-size: 1.2rem;
-  border-radius: 30px;
-  margin-bottom: 7px;
-  transition: background 0.2s, color 0.2s;
-  border: 2px solid #127cff;
-  background: #fff;
-  color: #127cff;
-}
-#btnSwitchLength:active, #btnSwitchLength:focus, #btnSwitchLength:hover {
-  background: #127cff;
-  color: #fff;
-}
-body.dark-mode #btnSwitchLength {
-  background: #23272e !important;
-  color: #127cff !important;
-  border: 2px solid #127cff !important;
-}
-body.dark-mode #btnSwitchLength:active,
-body.dark-mode #btnSwitchLength:focus,
-body.dark-mode #btnSwitchLength:hover {
-  background: #127cff !important;
-  color: #fff !important;
-}
-.footer {
-  border-top: 1px solid #ccc;
-  padding-top: 12px;
-  margin-top: 30px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: #555;
-  transition: color 0.3s, border-color 0.3s;
-}
-/* --- DARK MODE --- */
-body.dark-mode {
-  background: linear-gradient(145deg, #23272e 0%, #11141a 100%) !important;
-  color: #fff !important;
-}
-body.dark-mode .card-box {
-  background-color: #191c22 !important;
-  color: #fff !important;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-  border: 2px solid #3c3f46;
-}
-body.dark-mode .form-control,
-body.dark-mode .form-select {
-  background-color: #23272e !important;
-  color: #fff !important;
-  border: 1.5px solid #555 !important;
-}
-body.dark-mode .form-control:focus,
-body.dark-mode .form-select:focus {
-  background-color: #23272e !important;
-  color: #fff !important;
-  border: 2px solid #22b573 !important;
-  box-shadow: 0 0 0 0.15rem #22b5734d;
-}
-body.dark-mode .form-label {
-  color: #e1e1e1 !important;
-}
-body.dark-mode .info-text-length {
-  color: #eee !important;
-}
-body.dark-mode .info-extra {
-  color: #fff !important;
-}
-body.dark-mode .green {
-  color: #22b573 !important;
-}
-body.dark-mode #result-length {
-  color: #22b573 !important;
-  background: #23272e !important;
-  border: 1.5px solid #22b573 !important;
-}
-body.dark-mode .footer {
-  color: #bbb !important;
-  border-top: 1px solid #555 !important;
-}
-body.dark-mode h4.title {
-  color: #fff !important;
-}
-
-/* --- MOBILE OPTIMIZATION --- */
-@media (max-width: 576px) { /* Adjust breakpoint as needed for mobile */
-  .card-box {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 95%; /* Slightly wider to give more room */
-    padding: 15px; /* Reduced padding for very small screens */
-  }
-
-  /* Ensure the main input value column takes full width */
-  #input-group-length .d-flex.flex-row > div:first-child {
-    flex: 0 0 100%; /* Ensure "Nilai Panjang" column takes full width */
-    max-width: 100%;
-  }
-
-  /* For the "Satuan" and "Satuan Output" dropdowns + switch button */
-  #input-group-length .d-flex.flex-row.mt-2 { /* Target the specific flex-row for units */
-    flex-wrap: nowrap !important; /* Important: prevent wrapping to new line */
-    justify-content: center; /* Center the items if there's extra space */
-    gap: 5px !important; /* Reduce gap even more for tight fit */
-  }
-
-  #input-group-length .d-flex.flex-row.mt-2 > div {
-    flex: 1 1 40% !important; /* Allow flexibility, but aim for approx 40% width for dropdowns */
-    max-width: 45% !important; /* Max width for each dropdown */
-  }
-
-  /* Adjust switch button size and margin */
-  #btnSwitchLength {
-    margin: 0 3px !important; /* Smaller horizontal margin */
-    padding: 5px 8px; /* Smaller padding */
-    font-size: 1rem; /* Smaller font size */
-    flex: 0 0 auto !important; /* Ensure it doesn't try to take up too much space */
-  }
-
-  /* Adjust general button padding and font size for all buttons */
-  .leaf-btn, .nav-btn {
-    padding: 5px 10px;
-    font-size: 0.85rem;
-  }
-}
-
-/* Maintain your desktop settings here (no major changes needed) */
-@media (min-width: 577px) {
-    .d-flex.flex-row > div {
-        /* Revert to default flex for desktop if necessary */
-        flex: 1; /* Or as per your desktop design needs */
-    }
-}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Konversi Panjang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="card-box bg-white">
-    <h4 class="title">Konverter Panjang</h4>
-    <div class="mb-3" id="input-group-length">
-      <div class="d-flex flex-row align-items-end gap-2">
-        <div style="flex:100%;">
-          <div class="d-flex flex-row align-items-end gap-2">
-            <div style="flex:4;"> <label class="form-label">Nilai Panjang</label>
-              <input
-                type="number"
-                class="form-control"
-                id="inputValueLength"
-                placeholder="Masukkan nilai"
-                min="0"
-                autocomplete="off"
-              >
+<body class="bg-gray-100 min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
+        
+        <h1 class="text-xl font-bold text-center text-gray-800 pb-4 mb-6 border-b border-gray-200">
+            Kalkulator Konversi Panjang
+        </h1>
+
+        <div class="space-y-4">
+            
+            <div>
+                <label for="nilaiInput" class="block text-sm font-bold text-gray-700">Nilai</label>
+                <input type="text" inputmode="decimal" name="nilaiInput" id="nilaiInput" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Masukkan nilai panjang">
             </div>
-          </div>
-          <div class="mt-2 d-flex flex-row align-items-end gap-2">
-            <div style="flex:1;"> <label class="form-label mb-1" for="selectSatuanMainLength">Satuan</label>
-              <select class="form-select" id="selectSatuanMainLength">
-                <option value="km">Kilometer (km)</option>
-                <option value="hm">Hektometer (hm)</option>
-                <option value="dam">Dekameter (dam)</option>
-                <option value="m">Meter (m)</option>
-                <option value="dm">Desimeter (dm)</option>
-                <option value="cm">Centimeter (cm)</option>
-                <option value="mm">Milimeter (mm)</option>
-                <option value="mile">Mile (mi)</option>
-                <option value="yard">Yard (yd)</option>
-                <option value="ft">Feet (ft)</option>
-                <option value="in">Inchi (in)</option>
-              </select>
+
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label for="dariSatuan" class="block text-sm font-bold text-gray-700">Dari Satuan</label>
+                    <select id="dariSatuan" name="dariSatuan" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="m">Meter (m)</option>
+                        <option value="km">Kilometer (km)</option>
+                        <option value="cm">Sentimeter (cm)</option>
+                        <option value="mm">Milimeter (mm)</option>
+                        <option value="mi">Mil (mi)</option>
+                        <option value="yd">Yard (yd)</option>
+                        <option value="ft">Kaki (ft)</option>
+                        <option value="in">Inci (in)</option>
+                    </select>
+                </div>
+                <div class="w-1/2">
+                    <label for="keSatuan" class="block text-sm font-bold text-gray-700">Ke Satuan</label>
+                    <select id="keSatuan" name="keSatuan" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="km">Kilometer (km)</option>
+                        <option value="m">Meter (m)</option>
+                        <option value="cm">Sentimeter (cm)</option>
+                        <option value="mm">Milimeter (mm)</option>
+                        <option value="mi">Mil (mi)</option>
+                        <option value="yd">Yard (yd)</option>
+                        <option value="ft">Kaki (ft)</option>
+                        <option value="in">Inci (in)</option>
+                    </select>
+                </div>
             </div>
-            <div class="d-flex flex-column align-items-center" style="justify-content:center;">
-              <button type="button" class="leaf-btn" id="btnSwitchLength" title="Tukar satuan input dan output">⇆</button>
+
+            <div class="pt-2">
+                <label for="hasilKonversi" class="block text-sm font-bold text-gray-700">Hasil Konversi</label>
+                <input type="text" name="hasilKonversi" id="hasilKonversi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
             </div>
-            <div style="flex:1;"> <label class="form-label mb-1" for="selectSatuanOutputLength" style="visibility:hidden;">Satuan Output</label>
-              <select class="form-select" id="selectSatuanOutputLength">
-                <option value="km">Kilometer (km)</option>
-                <option value="hm">Hektometer (hm)</option>
-                <option value="dam">Dekameter (dam)</option>
-                <option value="m">Meter (m)</option>
-                <option value="dm">Desimeter (dm)</option>
-                <option value="cm">Centimeter (cm)</option>
-                <option value="mm">Milimeter (mm)</option>
-                <option value="mile">Mile (mi)</option>
-                <option value="yard">Yard (yd)</option>
-                <option value="ft">Feet (ft)</option>
-                <option value="in">Inchi (in)</option>
-              </select>
+            
+            <div class="pt-4 flex flex-wrap gap-2">
+                <button type="button" onclick="history.back()" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Kembali
+                </button>
+                <button type="button" id="hapusBtn" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Hapus
+                </button>
+                <a href="/" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Beranda
+                </a>
             </div>
-          </div>
+
         </div>
-      </div>
+
+        <footer class="text-center text-gray-500 text-sm mt-6 pt-4 border-t border-gray-200">
+            Williyanto Adi 2025
+        </footer>
+
     </div>
-    <div class="mb-3" id="result-box-length">
-      <label class="form-label">Hasil Konversi</label>
-      <input
-        type="text"
-        class="form-control"
-        id="result-length"
-        value="0"
-        readonly
-      >
-    </div>
-    <div class="info-text-length" id="infoTextLength">
-      silahkan masukkan nilai panjang dan pilih satuan asal.
-      <div class="info-extra" id="infoExtraLength"></div>
-    </div>
-    <div class="text-center mt-4">
-      <a href="..//lainnya/konverter_panjang.html" target class="nav-btn">Home</a>
-      <a href="..//index.html" target class="nav-btn">Home Page</a>
-      <button class="nav-btn" id="toggleDark">Dark</button>
-    </div>
-    <div class="footer mt-4">
-      Made by Williyanto Adi 2025
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Elemen Panjang
-    const inputValueLength = document.getElementById('inputValueLength');
-    const selectSatuanMainLength = document.getElementById('selectSatuanMainLength');
-    const selectSatuanOutputLength = document.getElementById('selectSatuanOutputLength');
-    const btnSwitchLength = document.getElementById('btnSwitchLength');
-    const resultInputLength = document.getElementById('result-length');
-    const infoTextLength = document.getElementById('infoTextLength');
-    const infoExtraLength = document.getElementById('infoExtraLength');
 
-    // Satuan Panjang + Satuan Internasional
-    // Semua konversi ke meter sebagai basis
-    const satuanPanjang = [
-      { value: "km", text: "Kilometer (km)", factor: 1000 },
-      { value: "hm", text: "Hektometer (hm)", factor: 100 },
-      { value: "dam", text: "Dekameter (dam)", factor: 10 },
-      { value: "m", text: "Meter (m)", factor: 1 },
-      { value: "dm", text: "Desimeter (dm)", factor: 0.1 },
-      { value: "cm", text: "Centimeter (cm)", factor: 0.01 },
-      { value: "mm", text: "Milimeter (mm)", factor: 0.001 },
-      { value: "mile", text: "Mile (mi)", factor: 1609.344 },
-      { value: "yard", text: "Yard (yd)", factor: 0.9144 },
-      { value: "ft", text: "Feet (ft)", factor: 0.3048 },
-      { value: "in", text: "Inchi (in)", factor: 0.0254 }
-    ];
-    function satuanPanjangText(val) {
-      const found = satuanPanjang.find(s => s.value === val);
-      return found ? found.text : "";
-    }
-    function satuanPanjangFactor(val) {
-      const found = satuanPanjang.find(s => s.value === val);
-      return found ? found.factor : 1;
-    }
-    function satuanPanjangIdx(val) {
-      return satuanPanjang.findIndex(s => s.value === val);
-    }
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
 
-    // Format hasil: jika hasil >= 0.01 tampilkan 2 digit koma, jika < 0.01 tampilkan max 6 digit koma
-    function formatHasil(hasil) {
-      if (Math.abs(hasil) >= 0.01 || hasil === 0) {
-        return hasil.toLocaleString('id-ID', { maximumFractionDigits: 2 });
-      } else {
-        // Tampilkan 6 angka di belakang koma untuk nilai sangat kecil, tanpa trailing zero
-        let str = hasil.toLocaleString('id-ID', { maximumFractionDigits: 6 });
-        // Hapus trailing zero dan koma jika perlu
-        str = str.replace(/(\,\d*?[1-9])0+$/,'$1');
-        str = str.replace(/\,0+$/,'');
-        return str;
-      }
-    }
+        // Ambil elemen dari DOM
+        const nilaiInput = document.getElementById('nilaiInput');
+        const dariSatuanSelect = document.getElementById('dariSatuan');
+        const keSatuanSelect = document.getElementById('keSatuan');
+        const hasilKonversiInput = document.getElementById('hasilKonversi');
+        const hapusBtn = document.getElementById('hapusBtn');
 
-    function getInfoExtraLength(nilai, satuanFrom, satuanTo) {
-      if (!nilai || satuanFrom === satuanTo) return '';
-      const fromIdx = satuanPanjangIdx(satuanFrom);
-      const toIdx = satuanPanjangIdx(satuanTo);
-      if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) return '';
+        // Faktor konversi ke satuan dasar (meter)
+        const faktorKeMeter = {
+            'm': 1,
+            'km': 1000,
+            'cm': 0.01,
+            'mm': 0.001,
+            'mi': 1609.34,
+            'yd': 0.9144,
+            'ft': 0.3048,
+            'in': 0.0254
+        };
 
-      let nilaiFrom = 1;
-      let nilaiTo = satuanPanjangFactor(satuanFrom) / satuanPanjangFactor(satuanTo);
-      let satuanFromText = satuanPanjangText(satuanFrom);
-      let satuanToText = satuanPanjangText(satuanTo);
+        // Fungsi utama untuk menghitung konversi
+        function hitungKonversi() {
+            const nilai = parseFloat(nilaiInput.value);
+            const dariSatuan = dariSatuanSelect.value;
+            const keSatuan = keSatuanSelect.value;
 
-      if (Math.abs(nilaiTo) < 1) {
-        nilaiTo = 1;
-        nilaiFrom = satuanPanjangFactor(satuanTo) / satuanPanjangFactor(satuanFrom);
-        let temp = satuanFromText; satuanFromText = satuanToText; satuanToText = temp;
-      }
-
-      let nilaiToStr = formatHasil(nilaiTo);
-      let nilaiFromStr = formatHasil(nilaiFrom);
-
-      return `<span class="green">${nilaiFromStr} ${satuanFromText}</span> sama dengan <span class="green">${nilaiToStr} ${satuanToText}</span>.`;
-    }
-
-    function animUpdate(el, updateFn) {
-      el.classList.add('anim-change');
-      setTimeout(() => {
-        updateFn();
-        el.classList.remove('anim-change');
-      }, 200);
-    }
-
-    function updateResultLength() {
-      const val = parseFloat(inputValueLength.value.replace(",", "."));
-      const satuanAsal = selectSatuanMainLength.value;
-      const satuanTujuan = selectSatuanOutputLength.value;
-      if (isNaN(val) || val < 0) {
-        animUpdate(resultInputLength, () => { resultInputLength.value = "0"; });
-        animUpdate(infoTextLength, () => {
-          infoTextLength.innerHTML = `silahkan masukkan nilai panjang dan pilih satuan asal.<div class="info-extra" id="infoExtraLength"></div>`;
-        });
-        return;
-      }
-      const meter = val * satuanPanjangFactor(satuanAsal);
-      const hasil = meter / satuanPanjangFactor(satuanTujuan);
-      animUpdate(resultInputLength, () => {
-        resultInputLength.value = `${formatHasil(hasil)} ${satuanPanjangText(satuanTujuan)}`;
-      });
-      animUpdate(infoTextLength, () => {
-        let infoExtraStr = getInfoExtraLength(1, satuanAsal, satuanTujuan);
-        infoTextLength.innerHTML = (infoExtraStr ? `<div class="info-extra">${infoExtraStr}</div>` : "");
-      });
-    }
-    inputValueLength.addEventListener('input', updateResultLength);
-    selectSatuanMainLength.addEventListener('change', updateResultLength);
-    selectSatuanOutputLength.addEventListener('change', updateResultLength);
-    btnSwitchLength.addEventListener('click', function() {
-      const idxMain = selectSatuanMainLength.selectedIndex;
-      const idxOut = selectSatuanOutputLength.selectedIndex;
-      selectSatuanMainLength.selectedIndex = idxOut;
-      selectSatuanOutputLength.selectedIndex = idxMain;
-      updateResultLength();
+            if (!isNaN(nilai)) {
+                // 1. Konversi nilai input ke meter
+                const nilaiDalamMeter = nilai * faktorKeMeter[dariSatuan];
+                
+                // 2. Konversi dari meter ke satuan tujuan
+                const hasil = nilaiDalamMeter / faktorKeMeter[keSatuan];
+                
+                // Tampilkan hasil dengan presisi yang cukup
+                hasilKonversiInput.value = Number(hasil.toPrecision(9));
+            } else {
+                hasilKonversiInput.value = '';
+            }
+        }
+        
+        // Fungsi untuk menghapus input
+        function hapus() {
+            nilaiInput.value = '';
+            hasilKonversiInput.value = '';
+        }
+        
+        // --- Tambahkan semua event listener ---
+        nilaiInput.addEventListener('input', hitungKonversi);
+        dariSatuanSelect.addEventListener('change', hitungKonversi);
+        keSatuanSelect.addEventListener('change', hitungKonversi);
+        hapusBtn.addEventListener('click', hapus);
+        
+        // Panggil sekali di awal untuk inisialisasi jika ada nilai default
+        hitungKonversi();
     });
+    </script>
 
-    // DARK MODE
-    const toggleDark = document.getElementById("toggleDark");
-    let darkMode = false;
-    function setDarkMode(on) {
-      if (on) {
-        document.body.classList.add('dark-mode');
-        toggleDark.textContent = "Light";
-        darkMode = true;
-      } else {
-        document.body.classList.remove('dark-mode');
-        toggleDark.textContent = "Dark";
-        darkMode = false;
-      }
-      localStorage.setItem('darkMode', darkMode ? "1" : "0");
-    }
-    toggleDark.addEventListener('click', function() {
-      setDarkMode(!darkMode);
-    });
-    function checkSystemDark() {
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    (function () {
-      let darkPref = localStorage.getItem('darkMode');
-      if (darkPref === "1" || (darkPref === null && checkSystemDark())) {
-        setDarkMode(true);
-      } else {
-        setDarkMode(false);
-      }
-      selectSatuanMainLength.value = "m"; // Set initial value
-      selectSatuanOutputLength.value = "ft"; // Set initial value
-      updateResultLength();
-    })();
-
-    window.addEventListener('DOMContentLoaded', function() {
-      // These are already handled by the immediately invoked function above
-      // selectSatuanMainLength.value = "m";
-      // selectSatuanOutputLength.value = "ft";
-      // updateResultLength();
-    });
-
-    // Initial update call (redundant if already in IIFE, but safe to keep)
-    updateResultLength();
-  </script>
 </body>
 </html>
