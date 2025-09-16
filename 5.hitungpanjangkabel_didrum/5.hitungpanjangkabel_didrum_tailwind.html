@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perhitungan Panjang Kabel dalam Drum (Tailwind CSS)</title>
+    <link rel="icon" type="image/png" href="/icons/logo_listrik.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tetap menggunakan CSS untuk background pattern & animasi karena lebih praktis via CDN */
+        body {
+            background-image: url('https://www.transparenttextures.com/patterns/symphony.png');
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .alert-result {
+            animation: fadeIn .5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+    
+    <div class="max-w-xl w-full mx-auto mt-10 mb-5 bg-white rounded-2xl shadow-xl p-7 sm:p-10">
+        
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#274472] tracking-wide text-center mb-6">
+            Perhitungan Panjang Kabel dalam Drum
+        </h2>
+        
+        <form id="kalkulatorKabel" autocomplete="off">
+            
+            <div class="mb-4 flex flex-wrap items-center">
+                <div class="mr-6 mb-2 sm:mb-0">
+                    <input type="radio" class="peer h-4 w-4 accent-[#274472]" id="pilihDiameter" name="jenisInputDrum" value="diameter" checked onchange="toggleInputDrum()">
+                    <label class="pl-2 text-slate-700 peer-checked:font-semibold peer-checked:text-[#274472]" for="pilihDiameter">Diameter Drum</label>
+                </div>
+                <div>
+                    <input type="radio" class="peer h-4 w-4 accent-[#274472]" id="pilihKeliling" name="jenisInputDrum" value="keliling" onchange="toggleInputDrum()">
+                    <label class="pl-2 text-slate-700 peer-checked:font-semibold peer-checked:text-[#274472]" for="pilihKeliling">Keliling Drum</label>
+                </div>
+            </div>
+
+            <div class="form-group-diameter mb-4">
+                <input type="number" class="w-full px-4 py-2 text-base border border-slate-300 rounded-lg focus:outline-none focus:border-[#274472] focus:ring-2 focus:ring-blue-200 transition-colors" id="diameterDrum" step="0.01" placeholder="Diameter Drum (meter)" oninput="hitungPanjang()">
+            </div>
+
+            <div class="form-group-keliling mb-4">
+                <input type="number" class="w-full px-4 py-2 text-base border border-slate-300 rounded-lg focus:outline-none focus:border-[#274472] focus:ring-2 focus:ring-blue-200 transition-colors" id="kelilingDrum" step="0.01" placeholder="Keliling Drum (meter)" oninput="hitungPanjang()">
+            </div>
+
+            <div class="mb-4">
+                <div class="flex flex-nowrap items-center">
+                    <input type="number" class="flex-grow w-full px-4 py-2 text-base border border-slate-300 rounded-lg focus:outline-none focus:border-[#274472] focus:ring-2 focus:ring-blue-200 transition-colors" id="lebarDrum" step="0.01" placeholder="Lebar Drum" oninput="hitungPanjang()">
+                    <select class="w-24 ml-2 px-3 py-2 text-base border border-slate-300 rounded-lg focus:outline-none focus:border-[#274472] focus:ring-2 focus:ring-blue-200 transition-colors" id="satuanLebarDrum" onchange="hitungPanjang()">
+                        <option value="m" selected>meter</option>
+                        <option value="cm">cm</option>
+                        <option value="mm">mm</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                 <div class="flex flex-nowrap items-center">
+                    <input type="number" class="flex-grow w-full px-4 py-2 text-base border border-slate-300 rounded-lg focus:outline-none focus:border-[#274472] focus:ring-2 focus:ring-blue-200 transition-colors" id="nilaiDiameterKabel" step="0.01" placeholder="Diameter Kabel" oninput="hitungPanjang()">
+                    <select class="w-24 ml-2 px-3 py-2 text-base border border-slate-300 rounded-lg focus:outline-none focus:border-[#274472] focus:ring-2 focus:ring-blue-200 transition-colors" id="satuanDiameterKabel" onchange="hitungPanjang()">
+                        <option value="mm" selected>mm</option>
+                        <option value="cm">cm</option>
+                        <option value="m">m</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label for="jumlahLayer" class="font-bold text-slate-800">Hitung Panjang Total untuk Layer Penuh</label>
+                <input type="number" class="mt-1 w-full px-4 py-2 text-base border border-slate-300 rounded-lg focus:outline-none focus:border-[#274472] focus:ring-2 focus:ring-blue-200 transition-colors" id="jumlahLayer" min="1" placeholder="Jumlah Layer" oninput="hitungPanjang()">
+                <small class="text-slate-500 mt-1">Masukkan jumlah layer untuk memulai perhitungan.</small>
+            </div>
+            
+        </form>
+        
+        <div id="hasil" class="mt-4"></div>
+
+    </div>
+
+    <footer class="mt-auto w-full text-center py-4 text-slate-500 tracking-wide">
+        &copy; Williyanto Adi 2025
+    </footer>
+    
+    <script>
+        function toggleInputDrum() {
+            const pilihDiameter = document.getElementById("pilihDiameter");
+            const diameterGroup = document.querySelector(".form-group-diameter");
+            const kelilingGroup = document.querySelector(".form-group-keliling");
+
+            diameterGroup.style.display = pilihDiameter.checked ? "block" : "none";
+            kelilingGroup.style.display = !pilihDiameter.checked ? "block" : "none";
+            
+            // Mengosongkan input yang tidak aktif untuk menghindari kebingungan
+            if (pilihDiameter.checked) {
+                document.getElementById("kelilingDrum").value = "";
+            } else {
+                document.getElementById("diameterDrum").value = "";
+            }
+            hitungPanjang();
+        }
+
+        // --- MENGGUNAKAN FUNGSI PERHITUNGAN YANG SUDAH DIPERBAIKI ---
+        function hitungPanjang() {
+            const pilihDiameter = document.getElementById("pilihDiameter").checked;
+            const diameterDrumInput = document.getElementById("diameterDrum");
+            const kelilingDrumInput = document.getElementById("kelilingDrum");
+            const lebarDrumNilai = parseFloat(document.getElementById("lebarDrum").value);
+            const satuanLebarDrum = document.getElementById("satuanLebarDrum").value;
+            const nilaiDiameterKabel = parseFloat(document.getElementById("nilaiDiameterKabel").value);
+            const satuanDiameterKabel = document.getElementById("satuanDiameterKabel").value;
+            const jumlahLayerInput = document.getElementById("jumlahLayer").value;
+            const hasilDiv = document.getElementById("hasil");
+
+            const konversiKeMeter = (nilai, satuan) => {
+                if (isNaN(nilai) || nilai <= 0) return NaN;
+                switch (satuan) {
+                    case "cm": return nilai / 100;
+                    case "mm": return nilai / 1000;
+                    default: return nilai;
+                }
+            };
+
+            hasilDiv.innerHTML = ""; // Bersihkan hasil
+
+            const lebarDrumMeter = konversiKeMeter(lebarDrumNilai, satuanLebarDrum);
+            const diameterKabelMeter = konversiKeMeter(nilaiDiameterKabel, satuanDiameterKabel);
+
+            let diameterDrum;
+            if (pilihDiameter) {
+                diameterDrum = parseFloat(diameterDrumInput.value);
+            } else {
+                const kelilingDrum = parseFloat(kelilingDrumInput.value);
+                if (isNaN(kelilingDrum) || kelilingDrum <= 0) {
+                    hasilDiv.innerHTML = '<div class="alert-result rounded-lg bg-red-100 p-4 text-sm text-red-700" role="alert">Mohon masukkan angka yang valid untuk <strong>Keliling Drum</strong>.</div>';
+                    return;
+                }
+                diameterDrum = kelilingDrum / Math.PI;
+            }
+
+            if (isNaN(diameterDrum) || diameterDrum <= 0) {
+                hasilDiv.innerHTML = '<div class="alert-result rounded-lg bg-red-100 p-4 text-sm text-red-700" role="alert">Mohon masukkan angka yang valid untuk <strong>Diameter Drum</strong>.</div>';
+                return;
+            }
+            if (isNaN(lebarDrumMeter)) {
+                hasilDiv.innerHTML = '<div class="alert-result rounded-lg bg-red-100 p-4 text-sm text-red-700" role="alert">Mohon masukkan angka yang valid untuk <strong>Lebar Drum</strong>.</div>';
+                return;
+            }
+            if (isNaN(diameterKabelMeter)) {
+                hasilDiv.innerHTML = '<div class="alert-result rounded-lg bg-red-100 p-4 text-sm text-red-700" role="alert">Mohon masukkan angka yang valid untuk <strong>Diameter Kabel</strong>.</div>';
+                return;
+            }
+            if (diameterKabelMeter > lebarDrumMeter) {
+                hasilDiv.innerHTML = '<div class="alert-result rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700" role="alert">Diameter kabel tidak boleh lebih besar dari lebar drum.</div>';
+                return;
+            }
+
+            const jumlahLayer = parseInt(jumlahLayerInput);
+            
+            if (!isNaN(jumlahLayer) && jumlahLayer > 0) {
+                const jumlahLilitanPerLayer = Math.floor(lebarDrumMeter / diameterKabelMeter);
+                let panjangTotalKabel = 0;
+
+                for (let n = 1; n <= jumlahLayer; n++) {
+                    const diameterRataRataLayer = diameterDrum + (2 * n - 1) * diameterKabelMeter;
+                    const kelilingRataRataLayer = Math.PI * diameterRataRataLayer;
+                    const panjangLayerIni = jumlahLilitanPerLayer * kelilingRataRataLayer;
+                    panjangTotalKabel += panjangLayerIni;
+                }
+                
+                // Template untuk hasil sukses dengan kelas Tailwind
+                hasilDiv.innerHTML = `<div class="alert-result rounded-lg bg-green-100 p-4 text-green-800" role="alert">
+                                        <p class="text-base">Perkiraan panjang total kabel untuk <strong class="font-bold">${jumlahLayer} layer</strong> penuh adalah sekitar <strong class="font-bold text-lg">${panjangTotalKabel.toFixed(2)} meter</strong>.</p>
+                                        <hr class="my-2 border-green-200">
+                                        <small class="text-sm">Dihitung berdasarkan <strong>${jumlahLilitanPerLayer} lilitan</strong> per layer.</small>
+                                      </div>`;
+            } else if (jumlahLayerInput !== "") {
+                hasilDiv.innerHTML = '<div class="alert-result rounded-lg bg-yellow-100 p-4 text-sm text-yellow-700" role="alert">Jumlah layer tidak valid.</div>';
+            } else {
+                 hasilDiv.innerHTML = '<div class="alert-result rounded-lg bg-blue-100 p-4 text-sm text-blue-700" role="alert">Masukkan jumlah layer untuk memulai perhitungan.</div>';
+            }
+        }
+
+        // Panggil fungsi toggle saat halaman pertama kali dimuat
+        document.addEventListener("DOMContentLoaded", function() {
+            toggleInputDrum();
+        });
+    </script>
+</body>
+</html>
