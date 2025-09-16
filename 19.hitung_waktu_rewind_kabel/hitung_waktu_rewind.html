@@ -17,6 +17,18 @@
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        /* Transisi untuk memunculkan input baru */
+        #lanjutanInputContainer {
+            transition: all 0.3s ease-in-out;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+        }
+        /* BAGIAN BARU: Perbaikan tampilan outline input */
+        #sudahBerjalan:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Warna biru standar Bootstrap */
+            border-color: #86b7fe; /* Warna border biru standar Bootstrap */
+        }
     </style>
 </head>
 <body>
@@ -37,11 +49,23 @@
                     <input type="text" inputmode="numeric" class="form-control form-control-lg" id="panjangKabel" placeholder="Contoh: 1.000" required>
                 </div>
                 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label for="kecepatanMesin" class="form-label">
                         <strong>Kecepatan Mesin (meter per menit)</strong>
                     </label>
                     <input type="text" inputmode="decimal" class="form-control form-control-lg" id="kecepatanMesin" placeholder="Contoh: 4,5" required>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" role="switch" id="lanjutkanSwitch">
+                    <label class="form-check-label" for="lanjutkanSwitch">Lanjutkan Produksi?</label>
+                </div>
+
+                <div id="lanjutanInputContainer" class="mb-4">
+                    <label for="sudahBerjalan" class="form-label">
+                        <strong>Sudah Berjalan (meter)</strong>
+                    </label>
+                    <input type="text" inputmode="numeric" class="form-control form-control-lg" id="sudahBerjalan" placeholder="Contoh: 100">
                 </div>
             </form>
 
@@ -58,13 +82,17 @@
     </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
+        // --- Inisialisasi Elemen ---
+        const inputPanjang = document.getElementById('panjangKabel');
+        const inputKecepatan = document.getElementById('kecepatanMesin');
+        const lanjutkanSwitch = document.getElementById('lanjutkanSwitch');
+        const lanjutanContainer = document.getElementById('lanjutanInputContainer');
+        const inputSudahBerjalan = document.getElementById('sudahBerjalan');
+
+        // --- Fungsi Formatting ---
         function formatAngkaInteger(inputElement) {
             let nilai = inputElement.value.replace(/\D/g, '');
-            if (!nilai) {
-                inputElement.value = '';
-                return;
-            }
-            inputElement.value = Number(nilai).toLocaleString('id-ID');
+            inputElement.value = nilai ? Number(nilai).toLocaleString('id-ID') : '';
         }
 
         function formatAngkaDesimal(inputElement) {
@@ -86,48 +114,58 @@
             inputElement.value = finalValue;
         }
 
-        const inputPanjang = document.getElementById('panjangKabel');
-        const inputKecepatan = document.getElementById('kecepatanMesin');
-
-        inputPanjang.addEventListener('input', () => {
-            formatAngkaInteger(inputPanjang);
-            hitungEstimasi();
-        });
+        // --- Event Listeners ---
+        inputPanjang.addEventListener('input', () => { formatAngkaInteger(inputPanjang); hitungEstimasi(); });
+        inputKecepatan.addEventListener('input', () => { formatAngkaDesimal(inputKecepatan); hitungEstimasi(); });
+        inputSudahBerjalan.addEventListener('input', () => { formatAngkaInteger(inputSudahBerjalan); hitungEstimasi(); });
         
-        inputKecepatan.addEventListener('input', () => {
-            formatAngkaDesimal(inputKecepatan);
-            hitungEstimasi();
+        lanjutkanSwitch.addEventListener('change', () => {
+            if (lanjutkanSwitch.checked) {
+                lanjutanContainer.style.maxHeight = '150px'; // Tampilkan
+                lanjutanContainer.style.opacity = '1';
+                lanjutanContainer.style.marginTop = '1rem'; // Tambahkan margin atas untuk pemisah visual
+            } else {
+                lanjutanContainer.style.maxHeight = '0'; // Sembunyikan
+                lanjutanContainer.style.opacity = '0';
+                lanjutanContainer.style.marginTop = '0'; // Hapus margin
+                inputSudahBerjalan.value = ''; // Kosongkan nilainya
+            }
+            hitungEstimasi(); // Hitung ulang saat toggle diubah
         });
 
-        // --- Fungsi Utama Kalkulator (DIMODIFIKASI TOTAL) ---
+        // --- Fungsi Utama Kalkulator ---
         function hitungEstimasi() {
-            const panjangKabelString = document.getElementById('panjangKabel').value;
-            const kecepatanMesinString = document.getElementById('kecepatanMesin').value;
             const hasilDiv = document.getElementById('hasilEstimasi');
 
-            const panjangKabel = parseFloat(panjangKabelString.replace(/\./g, ''));
-            const kecepatanMesin = parseFloat(kecepatanMesinString.replace(/\./g, '').replace(',', '.'));
+            const panjangTotal = parseFloat(inputPanjang.value.replace(/\./g, '')) || 0;
+            const kecepatanMesin = parseFloat(inputKecepatan.value.replace(/\./g, '').replace(',', '.')) || 0;
+            const sudahBerjalan = parseFloat(inputSudahBerjalan.value.replace(/\./g, '')) || 0;
 
-            if (isNaN(panjangKabel) || isNaN(kecepatanMesin) || panjangKabel <= 0 || kecepatanMesin <= 0) {
-                hasilDiv.style.display = 'none';
+            let panjangDihitung = panjangTotal;
+            if (lanjutkanSwitch.checked && sudahBerjalan > 0) {
+                panjangDihitung = panjangTotal - sudahBerjalan;
+            }
+
+            if (kecepatanMesin <= 0 || panjangTotal <= 0) {
+                 hasilDiv.style.display = 'none';
+                return;
+            }
+            
+            if (panjangDihitung < 0) { // Kasus khusus jika input 'sudah berjalan' > 'total'
+                hasilDiv.innerHTML = `<div class="alert alert-danger text-center"><strong>Error:</strong> Nilai "Sudah Berjalan" tidak boleh lebih besar dari "Panjang Total Kabel".</div>`;
+                hasilDiv.style.display = 'block';
                 return;
             }
 
-            // === BAGIAN BARU: Perhitungan Waktu Selesai ===
-            const waktuMulai = new Date(); // 1. Ambil waktu saat ini sebagai waktu mulai
-            
-            const totalMenit = panjangKabel / kecepatanMesin;
-            
-            // 2. Hitung waktu selesai dengan menambahkan durasi (dalam milidetik) ke waktu mulai
+            const waktuMulai = new Date();
+            const totalMenit = panjangDihitung / kecepatanMesin;
             const durasiMilidetik = totalMenit * 60 * 1000;
             const waktuSelesai = new Date(waktuMulai.getTime() + durasiMilidetik);
 
-            // 3. Format jam dan menit agar selalu 2 digit (misal: 07:05)
             const jamMulai = String(waktuMulai.getHours()).padStart(2, '0');
             const menitMulai = String(waktuMulai.getMinutes()).padStart(2, '0');
             const jamSelesai = String(waktuSelesai.getHours()).padStart(2, '0');
             const menitSelesai = String(waktuSelesai.getMinutes()).padStart(2, '0');
-            // === AKHIR BAGIAN BARU ===
 
             const jam = Math.floor(totalMenit / 60);
             const sisaMenit = Math.round(totalMenit % 60);
@@ -135,23 +173,23 @@
             let hasilTextDurasi = '';
             if (jam > 0) hasilTextDurasi += `<strong>${jam}</strong> jam `;
             if (sisaMenit > 0) hasilTextDurasi += `<strong>${sisaMenit}</strong> menit`;
-            if (jam === 0 && sisaMenit === 0 && totalMenit > 0) hasilTextDurasi = 'Kurang dari satu menit.';
-            if (totalMenit <= 0) hasilTextDurasi = 'Waktu tidak valid';
-
+            if (totalMenit > 0 && hasilTextDurasi === '') hasilTextDurasi = 'Kurang dari satu menit.';
+            if (panjangDihitung === 0) hasilTextDurasi = '<strong>Pekerjaan sudah selesai.</strong>';
+            
             const totalMenitFormatted = totalMenit.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             
             hasilDiv.innerHTML = `
                 <div class="alert alert-success text-center" role="alert">
                     <h4 class="alert-heading">Estimasi Selesai! ✅</h4>
-                    <p>Proses penggulungan kabel akan selesai dalam waktu:</p>
+                    <p>Sisa waktu yang dibutuhkan untuk menyelesaikan pekerjaan:</p>
                     <p class="mb-2 fs-4">${hasilTextDurasi}</p>
                     
                     <div class="p-2 border rounded bg-light" style="font-size: 0.9rem;">
-                        Jika dimulai pukul <strong>${jamMulai}:${menitMulai}</strong>, maka akan selesai sekitar pukul <strong class="fs-6 text-primary">${jamSelesai}:${menitSelesai}</strong>.
+                        Jika dilanjutkan pukul <strong>${jamMulai}:${menitMulai}</strong>, maka akan selesai sekitar pukul <strong class="fs-6 text-primary">${jamSelesai}:${menitSelesai}</strong>.
                     </div>
 
                     <hr>
-                    <p class="text-muted small mb-0">(Total Durasi Kalkulasi: ${totalMenitFormatted} menit)</p>
+                    <p class="text-muted small mb-0">(Estimasi untuk sisa ${panjangDihitung.toLocaleString('id-ID')} meter dari total ${panjangTotal.toLocaleString('id-ID')} meter)</p>
                 </div>`;
             hasilDiv.style.display = 'block';
         }
