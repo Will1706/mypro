@@ -19,14 +19,13 @@
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        /* Transisi untuk memunculkan input baru */
         #lanjutanInputContainer {
             transition: all 0.3s ease-in-out;
             overflow: hidden;
             max-height: 0;
             opacity: 0;
+            margin-top: 0;
         }
-        /* Perbaikan tampilan outline input */
         #sudahBerjalan:focus {
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
             border-color: #86b7fe;
@@ -63,7 +62,7 @@
                     <label class="form-check-label" for="lanjutkanSwitch">Lanjutkan Produksi?</label>
                 </div>
 
-                <div id="lanjutanInputContainer" class="mb-4">
+                <div id="lanjutanInputContainer">
                     <label for="sudahBerjalan" class="form-label">
                         <strong><i class="bi bi-arrow-return-right me-2"></i>Sudah Berjalan (meter)</strong>
                     </label>
@@ -72,16 +71,20 @@
             </form>
 
             <div id="hasilEstimasi" class="mt-4" style="display: none;">
-                </div>
+            </div>
 
-        </div> <div class="mt-5">
+        </div> 
+        
+        <div class="mt-5">
             <hr>
             <footer class="text-center py-3">
                 <p class="text-muted mb-0">Williyanto Adi 2025</p>
             </footer>
         </div>
 
-    </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
         // --- Inisialisasi Elemen ---
@@ -90,7 +93,7 @@
         const lanjutkanSwitch = document.getElementById('lanjutkanSwitch');
         const lanjutanContainer = document.getElementById('lanjutanInputContainer');
         const inputSudahBerjalan = document.getElementById('sudahBerjalan');
-        const hasilDiv = document.getElementById('hasilEstimasi'); // Tambahkan inisialisasi di sini
+        const hasilDiv = document.getElementById('hasilEstimasi');
 
         // --- Fungsi Formatting ---
         function formatAngkaInteger(inputElement) {
@@ -143,12 +146,12 @@
             const sudahBerjalan = parseFloat(inputSudahBerjalan.value.replace(/\./g, '')) || 0;
 
             let panjangDihitung = panjangTotal;
-            if (lanjutkanSwitch.checked && sudahBerjalan > 0) {
+            if (lanjutkanSwitch.checked) {
                 panjangDihitung = panjangTotal - sudahBerjalan;
             }
 
-            if (kecepatanMesin <= 0 || panjangTotal <= 0) {
-                 hasilDiv.style.display = 'none';
+            if (panjangTotal <= 0 || kecepatanMesin <= 0) {
+                hasilDiv.style.display = 'none';
                 return;
             }
             
@@ -175,18 +178,19 @@
             if (jam > 0) hasilTextDurasi += `<strong>${jam}</strong> jam `;
             if (sisaMenit > 0) hasilTextDurasi += `<strong>${sisaMenit}</strong> menit`;
             if (totalMenit > 0 && hasilTextDurasi === '') hasilTextDurasi = 'Kurang dari satu menit.';
-            if (panjangDihitung === 0) hasilTextDurasi = '<strong>Pekerjaan sudah selesai.</strong>';
+            if (panjangDihitung <= 0 && panjangTotal > 0) hasilTextDurasi = '<strong>Pekerjaan sudah selesai.</strong>';
             
             const totalMenitFormatted = totalMenit.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             
+            // === BAGIAN YANG DIPERBARUI ===
             hasilDiv.innerHTML = `
                 <div class="alert alert-success text-center" role="alert">
-                    <h4 class="alert-heading"><i class="bi bi-check-circle-fill me-2"></i>Estimasi Selesai!</h4>
+                    <h4 class="alert-heading"><i class="bi bi-check-circle-fill me-2 text-success"></i>Estimasi Selesai!</h4>
                     <p>Sisa waktu yang dibutuhkan untuk menyelesaikan pekerjaan:</p>
                     <p class="mb-2 fs-4">${hasilTextDurasi}</p>
                     
                     <div class="p-2 border rounded bg-light" style="font-size: 0.9rem;">
-                        Jika dilanjutkan pukul <strong>${jamMulai}:${menitMulai}</strong>, maka akan selesai sekitar pukul <strong class="fs-6 text-primary">${jamSelesai}:${menitSelesai}</strong>.
+                        Jika dilanjutkan pukul <strong class="text-primary">${jamMulai}:${menitMulai}</strong>, maka akan selesai sekitar pukul <strong class="fs-6 text-success">${jamSelesai}:${menitSelesai}</strong>.
                     </div>
 
                     <hr>
@@ -194,11 +198,6 @@
                 </div>`;
             hasilDiv.style.display = 'block';
         }
-
-        // Panggil hitungEstimasi() sekali saat halaman dimuat
-        // Untuk memastikan hasil ditampilkan jika ada nilai default atau saat refresh.
-        // Ini juga mencegah hasil kosong jika input kosong.
-        hitungEstimasi(); 
     </script>
 
 </body>
