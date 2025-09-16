@@ -26,7 +26,6 @@
             <div class="text-center mb-4">
                 <h1 class="h3 fw-bold">Estimasi Waktu Produksi Kabel</h1>
                 <p class="text-muted">Masukkan detail produksi untuk menghitung estimasi waktu yang dibutuhkan.</p>
-                
                 <hr>
             </div>
             
@@ -44,12 +43,6 @@
                     </label>
                     <input type="text" inputmode="decimal" class="form-control form-control-lg" id="kecepatanMesin" placeholder="Contoh: 4,5" required>
                 </div>
-
-                <div class="d-grid">
-                    <button type="button" class="btn btn-primary btn-lg" id="hitungBtn">
-                        Hitung Estimasi Waktu
-                    </button>
-                </div>
             </form>
 
             <div id="hasilEstimasi" class="mt-4" style="display: none;">
@@ -61,7 +54,8 @@
                 <p class="text-muted mb-0">Williyanto Adi 2025</p>
             </footer>
         </div>
-        </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
         function formatAngkaInteger(inputElement) {
@@ -94,39 +88,73 @@
 
         const inputPanjang = document.getElementById('panjangKabel');
         const inputKecepatan = document.getElementById('kecepatanMesin');
-        inputPanjang.addEventListener('input', () => formatAngkaInteger(inputPanjang));
-        inputKecepatan.addEventListener('input', () => formatAngkaDesimal(inputKecepatan));
 
+        inputPanjang.addEventListener('input', () => {
+            formatAngkaInteger(inputPanjang);
+            hitungEstimasi();
+        });
+        
+        inputKecepatan.addEventListener('input', () => {
+            formatAngkaDesimal(inputKecepatan);
+            hitungEstimasi();
+        });
+
+        // --- Fungsi Utama Kalkulator (DIMODIFIKASI TOTAL) ---
         function hitungEstimasi() {
             const panjangKabelString = document.getElementById('panjangKabel').value;
             const kecepatanMesinString = document.getElementById('kecepatanMesin').value;
             const hasilDiv = document.getElementById('hasilEstimasi');
+
             const panjangKabel = parseFloat(panjangKabelString.replace(/\./g, ''));
             const kecepatanMesin = parseFloat(kecepatanMesinString.replace(/\./g, '').replace(',', '.'));
+
             if (isNaN(panjangKabel) || isNaN(kecepatanMesin) || panjangKabel <= 0 || kecepatanMesin <= 0) {
-                hasilDiv.innerHTML = `<div class="alert alert-danger"><strong>Oops!</strong> Mohon isi semua kolom dengan angka yang valid.</div>`;
-                hasilDiv.style.display = 'block';
+                hasilDiv.style.display = 'none';
                 return;
             }
+
+            // === BAGIAN BARU: Perhitungan Waktu Selesai ===
+            const waktuMulai = new Date(); // 1. Ambil waktu saat ini sebagai waktu mulai
+            
             const totalMenit = panjangKabel / kecepatanMesin;
+            
+            // 2. Hitung waktu selesai dengan menambahkan durasi (dalam milidetik) ke waktu mulai
+            const durasiMilidetik = totalMenit * 60 * 1000;
+            const waktuSelesai = new Date(waktuMulai.getTime() + durasiMilidetik);
+
+            // 3. Format jam dan menit agar selalu 2 digit (misal: 07:05)
+            const jamMulai = String(waktuMulai.getHours()).padStart(2, '0');
+            const menitMulai = String(waktuMulai.getMinutes()).padStart(2, '0');
+            const jamSelesai = String(waktuSelesai.getHours()).padStart(2, '0');
+            const menitSelesai = String(waktuSelesai.getMinutes()).padStart(2, '0');
+            // === AKHIR BAGIAN BARU ===
+
             const jam = Math.floor(totalMenit / 60);
             const sisaMenit = Math.round(totalMenit % 60);
-            let hasilText = '';
-            if (jam > 0) hasilText += `<strong>${jam}</strong> jam `;
-            if (sisaMenit > 0) hasilText += `<strong>${sisaMenit}</strong> menit`;
-            if (jam === 0 && sisaMenit === 0) hasilText = 'Kurang dari satu menit.';
+
+            let hasilTextDurasi = '';
+            if (jam > 0) hasilTextDurasi += `<strong>${jam}</strong> jam `;
+            if (sisaMenit > 0) hasilTextDurasi += `<strong>${sisaMenit}</strong> menit`;
+            if (jam === 0 && sisaMenit === 0 && totalMenit > 0) hasilTextDurasi = 'Kurang dari satu menit.';
+            if (totalMenit <= 0) hasilTextDurasi = 'Waktu tidak valid';
+
             const totalMenitFormatted = totalMenit.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
             hasilDiv.innerHTML = `
-                <div class="alert alert-success text-center">
-                    <h4 class="alert-heading">Estimasi Selesai!</h4>
+                <div class="alert alert-success text-center" role="alert">
+                    <h4 class="alert-heading">Estimasi Selesai! ✅</h4>
                     <p>Proses penggulungan kabel akan selesai dalam waktu:</p>
+                    <p class="mb-2 fs-4">${hasilTextDurasi}</p>
+                    
+                    <div class="p-2 border rounded bg-light" style="font-size: 0.9rem;">
+                        Jika dimulai pukul <strong>${jamMulai}:${menitMulai}</strong>, maka akan selesai sekitar pukul <strong class="fs-6 text-primary">${jamSelesai}:${menitSelesai}</strong>.
+                    </div>
+
                     <hr>
-                    <p class="mb-0 fs-4">${hasilText}</p>
-                    <p class="text-muted mt-2">(Total: ${totalMenitFormatted} menit)</p>
+                    <p class="text-muted small mb-0">(Total Durasi Kalkulasi: ${totalMenitFormatted} menit)</p>
                 </div>`;
             hasilDiv.style.display = 'block';
         }
-        document.getElementById('hitungBtn').addEventListener('click', hitungEstimasi);
     </script>
 
 </body>
