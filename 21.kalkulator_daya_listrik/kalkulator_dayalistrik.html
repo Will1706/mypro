@@ -43,10 +43,15 @@
                                     <label for="durasi" class="form-label">Durasi (Jam/Hari)</label>
                                     <input type="number" class="form-control" id="durasi" placeholder="Contoh: 8" required>
                                 </div>
-                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-plus-circle me-2"></i>Tambahkan ke Daftar</button>
                         </form>
-
+                        
+                        <div class="d-flex justify-content-center gap-2 mt-3 border-top pt-3">
+                            <a href="index.html" class="btn btn-info btn-sm"><i class="bi bi-house-door-fill me-1"></i> Beranda</a>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btn-kembali"><i class="bi bi-arrow-left-circle-fill me-1"></i> Kembali</button>
+                            <button type="button" class="btn btn-danger btn-sm" id="btn-hapus-semua"><i class="bi bi-trash3-fill me-1"></i> Hapus Semua</button>
+                        </div>
                         <hr class="my-4">
 
                         <h2 class="h5 border-bottom pb-2 mb-3">2. Daftar Alat & Pemakaian</h2>
@@ -109,12 +114,17 @@
         const hasilDiv = document.getElementById('hasil-kalkulasi');
         const tarifInput = document.getElementById('tarif');
         const periodeSelect = document.getElementById('periode-hitung');
+        // ## DEFINISI TOMBOL BARU ##
+        const btnKembali = document.getElementById('btn-kembali');
+        const btnHapusSemua = document.getElementById('btn-hapus-semua');
+
 
         function cekTabelKosong() {
-            if (daftarAlatBody.children.length === 0) {
-                daftarAlatBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>';
-            } else if (daftarAlatBody.firstElementChild.children[0].getAttribute('colspan') === "4") {
-                 daftarAlatBody.innerHTML = '';
+            const placeholder = daftarAlatBody.querySelector('td[colspan="4"]');
+            if (placeholder) {
+                daftarAlatBody.innerHTML = '';
+            } else if (daftarAlatBody.children.length === 0) {
+                 daftarAlatBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>';
             }
         }
 
@@ -124,7 +134,7 @@
             const barisAlat = daftarAlatBody.getElementsByTagName('tr');
             let totalKwhHarian = 0;
 
-            if (barisAlat.length === 0 || (barisAlat.length === 1 && daftarAlatBody.firstElementChild.children[0].hasAttribute('colspan')) || isNaN(tarifPerKwh) || tarifPerKwh <= 0){
+            if (barisAlat.length === 0 || daftarAlatBody.querySelector('td[colspan="4"]') || isNaN(tarifPerKwh) || tarifPerKwh <= 0){
                 hasilDiv.style.display = 'none';
                 return;
             }
@@ -192,7 +202,20 @@
         tarifInput.addEventListener('input', calculateAndDisplay);
         periodeSelect.addEventListener('change', calculateAndDisplay);
 
-        cekTabelKosong();
+        // ## EVENT LISTENER UNTUK TOMBOL BARU ##
+        btnKembali.addEventListener('click', function() {
+            history.back();
+        });
+
+        btnHapusSemua.addEventListener('click', function() {
+            // Tampilkan konfirmasi sebelum menghapus
+            if (confirm('Apakah Anda yakin ingin menghapus semua data alat?')) {
+                daftarAlatBody.innerHTML = ''; // Kosongkan isi tabel
+                cekTabelKosong(); // Tampilkan kembali pesan placeholder
+                calculateAndDisplay(); // Hitung ulang (yang akan menyembunyikan hasil kalkulasi)
+            }
+        });
+
     </script>
 </body>
 </html>
