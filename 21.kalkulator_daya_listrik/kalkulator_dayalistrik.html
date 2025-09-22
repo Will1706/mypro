@@ -10,15 +10,27 @@
     <title>Kalkulator Biaya Listrik Otomatis</title>
     
     <style>
-        body { background-color: #f8f9fa; }
+        body { 
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+        }
         .card-header { background-color: #0d6efd; color: white; }
         .btn-remove { color: #dc3545; }
         .btn-remove:hover { color: #a71d2a; }
+        footer {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container mt-4 mb-5">
+    <div class="container mt-4 mb-5 main-content">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 
@@ -46,12 +58,7 @@
                             </div>
                             <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-plus-circle me-2"></i>Tambahkan ke Daftar</button>
                         </form>
-                        
-                        <div class="d-flex justify-content-center gap-2 mt-3 border-top pt-3">
-                            <a href="index.html" class="btn btn-info btn-sm"><i class="bi bi-house-door-fill me-1"></i> Beranda</a>
-                            <button type="button" class="btn btn-secondary btn-sm" id="btn-kembali"><i class="bi bi-arrow-left-circle-fill me-1"></i> Kembali</button>
-                            <button type="button" class="btn btn-danger btn-sm" id="btn-hapus-semua"><i class="bi bi-trash3-fill me-1"></i> Hapus Semua</button>
-                        </div>
+
                         <hr class="my-4">
 
                         <h2 class="h5 border-bottom pb-2 mb-3">2. Daftar Alat & Pemakaian</h2>
@@ -75,7 +82,7 @@
 
                         <hr class="my-4">
 
-                        <h2 class="h5 border-bottom pb-2 mb-3">3. Kalkulasi Total Biaya (Otomatis)</h2>
+                        <h2 class="h5 border-bottom pb-2 mb-3">3. Kalkulasi & Aksi</h2>
                         <div class="row g-3 align-items-end">
                              <div class="col-md-6">
                                 <label for="tarif" class="form-label">Tarif Listrik per kWh (Rp)</label>
@@ -96,6 +103,11 @@
                         </div>
                         <button id="hitung-biaya" class="btn btn-success w-100 mt-3"><i class="bi bi-calculator-fill me-2"></i>Hitung Ulang Manual</button>
                        
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn btn-secondary" onclick="history.back()">Kembali</button>
+                            <button class="btn btn-danger" id="tombol-hapus-semua">Hapus</button>
+                            <a href="index.html" class="btn btn-secondary">Beranda</a>
+                        </div>
                         <div id="hasil-kalkulasi" class="mt-4" style="display: none;">
                             </div>
 
@@ -104,6 +116,11 @@
             </div>
         </div>
     </div>
+
+    <footer class="text-center py-3 mt-auto">
+        Williyanto Adi 2025
+    </footer>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
@@ -114,10 +131,7 @@
         const hasilDiv = document.getElementById('hasil-kalkulasi');
         const tarifInput = document.getElementById('tarif');
         const periodeSelect = document.getElementById('periode-hitung');
-        // ## DEFINISI TOMBOL BARU ##
-        const btnKembali = document.getElementById('btn-kembali');
-        const btnHapusSemua = document.getElementById('btn-hapus-semua');
-
+        const tombolHapusSemua = document.getElementById('tombol-hapus-semua');
 
         function cekTabelKosong() {
             const placeholder = daftarAlatBody.querySelector('td[colspan="4"]');
@@ -155,29 +169,27 @@
 
             const totalKwhPeriode = totalKwhHarian * multiplier;
             const totalBiaya = totalKwhPeriode * tarifPerKwh;
-            
             const formatRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 
             hasilDiv.style.display = 'block';
             hasilDiv.innerHTML = `
                 <div class="alert alert-success">
                     <h4 class="alert-heading">Estimasi Biaya Listrik Anda</h4>
-                    <p>
-                        Total pemakaian harian: <strong>${totalKwhHarian.toFixed(2)} kWh</strong><br>
-                        Total pemakaian ${labelPeriode}: <strong>${totalKwhPeriode.toFixed(2)} kWh</strong>
-                    </p>
-                    <hr>
-                    <p class="mb-0 fs-5">
-                        Estimasi total biaya untuk ${namaPeriode} adalah: <strong>${formatRupiah.format(totalBiaya)}</strong>
-                    </p>
+                    <p>Total pemakaian harian: <strong>${totalKwhHarian.toFixed(2)} kWh</strong><br>Total pemakaian ${labelPeriode}: <strong>${totalKwhPeriode.toFixed(2)} kWh</strong></p><hr>
+                    <p class="mb-0 fs-5">Estimasi total biaya untuk ${namaPeriode} adalah: <strong>${formatRupiah.format(totalBiaya)}</strong></p>
                 </div>
             `;
+        }
+        
+        function hapusSemuaData() {
+            daftarAlatBody.innerHTML = '';
+            cekTabelKosong();
+            calculateAndDisplay();
         }
 
         formAlat.addEventListener('submit', function(event) {
             event.preventDefault();
             cekTabelKosong();
-
             const barisBaru = document.createElement('tr');
             barisBaru.innerHTML = `
                 <td>${document.getElementById('nama-alat').value}</td>
@@ -201,20 +213,7 @@
         tombolHitung.addEventListener('click', calculateAndDisplay);
         tarifInput.addEventListener('input', calculateAndDisplay);
         periodeSelect.addEventListener('change', calculateAndDisplay);
-
-        // ## EVENT LISTENER UNTUK TOMBOL BARU ##
-        btnKembali.addEventListener('click', function() {
-            history.back();
-        });
-
-        btnHapusSemua.addEventListener('click', function() {
-            // Tampilkan konfirmasi sebelum menghapus
-            if (confirm('Apakah Anda yakin ingin menghapus semua data alat?')) {
-                daftarAlatBody.innerHTML = ''; // Kosongkan isi tabel
-                cekTabelKosong(); // Tampilkan kembali pesan placeholder
-                calculateAndDisplay(); // Hitung ulang (yang akan menyembunyikan hasil kalkulasi)
-            }
-        });
+        tombolHapusSemua.addEventListener('click', hapusSemuaData);
 
     </script>
 </body>
