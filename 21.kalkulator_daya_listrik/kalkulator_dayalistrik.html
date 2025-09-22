@@ -104,15 +104,16 @@
                         </div>
 
                         <div id="hasil-kalkulasi" class="mt-4" style="display: none;"></div>
+
+                        <footer class="text-center text-muted border-top pt-3 mt-4">
+                            Williyanto Adi 2025
+                        </footer>
                     </div>
                 </div>
             </div>
         </div>
 
-        <footer class="text-center py-3 mt-4">
-            Williyanto Adi 2025
-        </footer>
-    </div>
+        </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -156,16 +157,12 @@
             }
             cekTabelKosong();
         }
-
-        // ## PERUBAHAN DI SINI: FUNGSI DIPERBAIKI ##
-        // Fungsi ini sekarang bertanggung jawab untuk membersihkan placeholder sebelum menambah item baru
+        
         function tambahAlatKeTabel(nama, daya, durasi) {
-            // Cek dan hapus placeholder jika ada
             const placeholder = daftarAlatBody.querySelector('td[colspan="5"]');
             if (placeholder) {
                 daftarAlatBody.innerHTML = '';
             }
-
             const barisBaru = document.createElement('tr');
             barisBaru.innerHTML = `
                 <td>${nama}</td>
@@ -178,7 +175,6 @@
         }
 
         function cekTabelKosong() {
-            // Fungsi ini sekarang hanya fokus untuk menampilkan placeholder jika tabel benar-benar kosong
             if (daftarAlatBody.children.length === 0) {
                  daftarAlatBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>';
             }
@@ -189,7 +185,6 @@
             const periode = periodeSelect.value;
             const barisAlat = daftarAlatBody.getElementsByTagName('tr');
             let totalKwhHarian = 0;
-
             if (barisAlat.length === 0 || daftarAlatBody.querySelector('td[colspan="5"]') || isNaN(tarifPerKwh) || tarifPerKwh <= 0){
                 hasilDiv.style.display = 'none';
                  for (let i = 0; i < barisAlat.length; i++) {
@@ -222,7 +217,6 @@
 
             const totalKwhPeriode = totalKwhHarian * multiplier;
             const totalBiaya = totalKwhPeriode * tarifPerKwh;
-
             hasilDiv.style.display = 'block';
             hasilDiv.innerHTML = `
                 <div class="alert alert-success">
@@ -240,7 +234,6 @@
             localStorage.removeItem('daftarAlatListrik');
         }
 
-        // ## PERUBAHAN DI SINI: LOGIKA SUBMIT DISESUAIKAN ##
         formAlat.addEventListener('submit', function(event) {
             event.preventDefault();
             
@@ -248,11 +241,9 @@
             const daya = document.getElementById('daya').value;
             const durasi = document.getElementById('durasi').value;
 
-            // Panggil fungsi yang sudah diperbaiki, yang akan membersihkan placeholder secara internal
             tambahAlatKeTabel(nama, daya, durasi);
             
             formAlat.reset();
-            // Jeda singkat (0 detik) untuk memastikan DOM update sebelum kalkulasi
             setTimeout(() => {
                 calculateAndDisplay();
                 simpanDataKeLocalStorage();
