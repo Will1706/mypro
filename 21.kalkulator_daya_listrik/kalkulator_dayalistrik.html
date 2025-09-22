@@ -26,6 +26,10 @@
             background-color: #e9ecef;
             color: #6c757d;
         }
+        /* Style untuk kolom biaya agar tidak terlalu lebar di mobile */
+        .cost-col {
+             min-width: 120px;
+        }
     </style>
 </head>
 <body>
@@ -61,7 +65,7 @@
 
                         <hr class="my-4">
 
-                        <h2 class="h5 border-bottom pb-2 mb-3">2. Daftar Alat & Pemakaian</h2>
+                        <h2 class="h5 border-bottom pb-2 mb-3">2. Daftar Alat & Rincian Biaya</h2>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead>
@@ -69,17 +73,17 @@
                                         <th scope="col">Nama Alat</th>
                                         <th scope="col" class="text-end">Daya (W)</th>
                                         <th scope="col" class="text-end">Durasi (Jam)</th>
+                                        <th scope="col" class="text-end cost-col">Est. Biaya / Bulan</th>
                                         <th scope="col" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="daftar-alat">
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">Belum ada alat yang ditambahkan.</td>
+                                        <td colspan="5" class="text-center text-muted">Belum ada alat yang ditambahkan.</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
                         <hr class="my-4">
 
                         <h2 class="h5 border-bottom pb-2 mb-3">3. Kalkulasi & Aksi</h2>
@@ -92,7 +96,7 @@
                                 </div>
                             </div>
                              <div class="col-md-6">
-                                <label for="periode-hitung" class="form-label">Pilih Periode</label>
+                                <label for="periode-hitung" class="form-label">Pilih Periode Total</label>
                                 <select class="form-select" id="periode-hitung">
                                     <option value="harian">Harian</option>
                                     <option value="mingguan">Mingguan</option>
@@ -104,10 +108,13 @@
                         <button id="hitung-biaya" class="btn btn-success w-100 mt-3"><i class="bi bi-calculator-fill me-2"></i>Hitung Ulang Manual</button>
                        
                         <div class="d-flex justify-content-between mt-3">
-                            <button class="btn btn-secondary" onclick="history.back()">Kembali</button>
-                            <a href="index.html" class="btn btn-secondary">Beranda</a>
-                            <button class="btn btn-danger" id="tombol-hapus-semua">Hapus</button>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-secondary" onclick="history.back()">Kembali</button>
+                                <a href="index.html" class="btn btn-secondary">Beranda</a>
+                            </div>
+                            <button class="btn btn-danger" id="tombol-hapus-semua">Hapus Semua</button>
                         </div>
+
                         <div id="hasil-kalkulasi" class="mt-4" style="display: none;">
                             </div>
 
@@ -130,34 +137,51 @@
         const tarifInput = document.getElementById('tarif');
         const periodeSelect = document.getElementById('periode-hitung');
         const tombolHapusSemua = document.getElementById('tombol-hapus-semua');
+        const formatRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 
         function cekTabelKosong() {
-            const placeholder = daftarAlatBody.querySelector('td[colspan="4"]');
+            const placeholder = daftarAlatBody.querySelector('td[colspan="5"]'); // Diubah ke colspan 5
             if (placeholder) {
                 daftarAlatBody.innerHTML = '';
             } else if (daftarAlatBody.children.length === 0) {
-                 daftarAlatBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>';
+                 daftarAlatBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>'; // Diubah ke colspan 5
             }
         }
 
+        // FUNGSI UTAMA KALKULASI (DIPERBARUI)
         function calculateAndDisplay() {
             const tarifPerKwh = parseFloat(tarifInput.value);
             const periode = periodeSelect.value;
             const barisAlat = daftarAlatBody.getElementsByTagName('tr');
             let totalKwhHarian = 0;
 
-            if (barisAlat.length === 0 || daftarAlatBody.querySelector('td[colspan="4"]') || isNaN(tarifPerKwh) || tarifPerKwh <= 0){
+            if (barisAlat.length === 0 || daftarAlatBody.querySelector('td[colspan="5"]') || isNaN(tarifPerKwh) || tarifPerKwh <= 0){
                 hasilDiv.style.display = 'none';
+                // Reset juga biaya per alat jika tidak valid
+                 for (let i = 0; i < barisAlat.length; i++) {
+                    barisAlat[i].querySelector('.biaya-alat').textContent = formatRupiah.format(0);
+                 }
                 return;
             }
-
+            
+            // Loop pertama: Hitung total dan biaya per alat
             for (let i = 0; i < barisAlat.length; i++) {
                 const sel = barisAlat[i].getElementsByTagName('td');
                 const daya = parseFloat(sel[1].getAttribute('data-daya'));
                 const durasi = parseFloat(sel[2].getAttribute('data-durasi'));
-                totalKwhHarian += (daya * durasi) / 1000;
+                
+                // Hitung kWh harian per alat
+                const kwhHarianAlat = (daya * durasi) / 1000;
+                totalKwhHarian += kwhHarianAlat;
+                
+                // Hitung biaya bulanan per alat (kWh Harian * 30 hari * tarif)
+                const biayaBulananAlat = kwhHarianAlat * 30 * tarifPerKwh;
+                
+                // Update kolom biaya di baris yang sama
+                barisAlat[i].querySelector('.biaya-alat').textContent = formatRupiah.format(biayaBulananAlat);
             }
             
+            // Loop kedua: Tampilkan total biaya
             let multiplier = 1, namaPeriode = 'satu hari', labelPeriode = 'Harian';
             switch (periode) {
                 case 'mingguan': multiplier = 7; namaPeriode = 'satu minggu'; labelPeriode = 'Mingguan'; break;
@@ -167,12 +191,11 @@
 
             const totalKwhPeriode = totalKwhHarian * multiplier;
             const totalBiaya = totalKwhPeriode * tarifPerKwh;
-            const formatRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 
             hasilDiv.style.display = 'block';
             hasilDiv.innerHTML = `
                 <div class="alert alert-success">
-                    <h4 class="alert-heading">Estimasi Biaya Listrik Anda</h4>
+                    <h4 class="alert-heading">Estimasi Total Biaya Anda</h4>
                     <p>Total pemakaian harian: <strong>${totalKwhHarian.toFixed(2)} kWh</strong><br>Total pemakaian ${labelPeriode}: <strong>${totalKwhPeriode.toFixed(2)} kWh</strong></p><hr>
                     <p class="mb-0 fs-5">Estimasi total biaya untuk ${namaPeriode} adalah: <strong>${formatRupiah.format(totalBiaya)}</strong></p>
                 </div>
@@ -185,14 +208,17 @@
             calculateAndDisplay();
         }
 
+        // FUNGSI SUBMIT FORM (DIPERBARUI)
         formAlat.addEventListener('submit', function(event) {
             event.preventDefault();
             cekTabelKosong();
             const barisBaru = document.createElement('tr');
+            // Tambahkan <td> baru untuk biaya dengan class 'biaya-alat'
             barisBaru.innerHTML = `
                 <td>${document.getElementById('nama-alat').value}</td>
                 <td class="text-end" data-daya="${document.getElementById('daya').value}">${document.getElementById('daya').value} W</td>
                 <td class="text-end" data-durasi="${document.getElementById('durasi').value}">${document.getElementById('durasi').value} jam</td>
+                <td class="text-end biaya-alat">${formatRupiah.format(0)}</td>
                 <td class="text-center"><button class="btn btn-sm btn-remove" title="Hapus"><i class="bi bi-trash3-fill"></i></button></td>
             `;
             daftarAlatBody.appendChild(barisBaru);
