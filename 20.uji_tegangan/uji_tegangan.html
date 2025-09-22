@@ -51,26 +51,36 @@
                     <div class="card-body p-4">
                         <form id="voltageForm">
                             <div class="mb-3">
-                                <label for="teganganInput" class="form-label fw-bold">1. Input Tegangan (Uo) dalam kV</label>
+                                <label for="teganganInput" class="form-label fw-bold">Input Tegangan (Uo) dalam kV</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-input-cursor-text"></i></span>
                                     <input type="number" class="form-control" id="teganganInput" placeholder="Contoh: 12" required>
                                 </div>
                             </div>
-
+                            
                             <div class="mb-3">
-                                <label for="faktorPengali" class="form-label fw-bold">2. Pilih Faktor Pengali</label>
+                                <label for="standarUji" class="form-label fw-bold">Standar Uji</label>
                                 <div class="input-group">
-                                     <span class="input-group-text"><i class="bi bi-x-diamond-fill"></i></span>
-                                     <select class="form-select" id="faktorPengali">
-                                        <option value="3.5" selected>3.5 x Uo</option>
-                                        <option value="2.5+2">2.5 x Uo + 2kV</option>
+                                     <span class="input-group-text"><i class="bi bi-journal-bookmark-fill"></i></span>
+                                     <select class="form-select" id="standarUji">
+                                        <option value="iec" selected>IEC</option>
+                                        <option value="icea">ICEA</option>
+                                        <option value="asnza">AS/NZS</option>
                                     </select>
                                 </div>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="faktorPengali" class="form-label fw-bold">Faktor Tegangan Uo</label>
+                                <div class="input-group">
+                                     <span class="input-group-text"><i class="bi bi-x-diamond-fill"></i></span>
+                                     <select class="form-select" id="faktorPengali">
+                                        </select>
+                                </div>
+                            </div>
+
                             <div class="mb-4">
-                                <label class="form-label fw-bold">3. Hasil Uji Tegangan (kV)</label>
+                                <label class="form-label fw-bold">Hasil Uji Tegangan (kV)</label>
                                 <div class="result-display" id="hasilPerkalian">
                                     -
                                 </div>
@@ -82,7 +92,7 @@
                         </form>
                     </div>
                     <div class="card-footer text-center text-muted small">
-                        Dibuat untuk kemudahan perhitungan
+                        Pilih standar untuk melihat faktor uji yang sesuai.
                     </div>
                 </div>
 
@@ -95,14 +105,49 @@
     <script>
         // Memilih elemen-elemen yang diperlukan dari DOM
         const teganganInput = document.getElementById('teganganInput');
+        const standarUji = document.getElementById('standarUji');
         const faktorPengali = document.getElementById('faktorPengali');
         const hasilPerkalian = document.getElementById('hasilPerkalian');
         const resetBtn = document.getElementById('resetBtn');
 
+        // Data faktor pengali untuk setiap standar
+        const faktorData = {
+            iec: [
+                { text: '3.5', value: '3.5' },
+                { text: '2.5 + 2kV', value: '2.5+2' }
+            ],
+            icea: [
+                // Contoh data untuk ICEA, bisa disesuaikan
+                { text: 'Faktor A', value: 'icea_a' },
+                { text: 'Faktor B', value: 'icea_b' }
+            ],
+            asnza: [
+                // Contoh data untuk AS/NZS, bisa disesuaikan
+                { text: 'Faktor X', value: 'as_x' },
+                { text: 'Faktor Y', value: 'as_y' }
+            ]
+        };
+
+        // Fungsi untuk memperbarui opsi faktor pengali berdasarkan standar yang dipilih
+        function updateFaktorOptions() {
+            const standarValue = standarUji.value;
+            faktorPengali.innerHTML = ''; // Kosongkan opsi sebelumnya
+
+            faktorData[standarValue].forEach(opsi => {
+                const optionElement = document.createElement('option');
+                optionElement.value = opsi.value;
+                optionElement.textContent = opsi.text;
+                faktorPengali.appendChild(optionElement);
+            });
+            
+            // Setelah memperbarui opsi, langsung hitung ulang
+            hitungTegangan();
+        }
+
         // Fungsi utama untuk melakukan kalkulasi
         function hitungTegangan() {
             const tegangan = parseFloat(teganganInput.value);
-            const pengali = faktorPengali.value;
+            const pengaliValue = faktorPengali.value;
             
             // Cek apakah input tegangan valid (berupa angka)
             if (isNaN(tegangan) || tegangan <= 0) {
@@ -112,27 +157,63 @@
 
             let hasil = 0;
             // Logika perhitungan berdasarkan pilihan faktor pengali
-            if (pengali === '3.5') {
-                hasil = tegangan * 3.5;
-            } else if (pengali === '2.5+2') {
-                hasil = (tegangan * 2.5) + 2;
+            // Sesuaikan rumus berdasarkan 'value' yang unik untuk setiap standar
+            switch (pengaliValue) {
+                case '3.5':
+                    hasil = tegangan * 3.5;
+                    break;
+                case '2.5+2':
+                    hasil = (tegangan * 2.5) + 2;
+                    break;
+                case 'icea_a':
+                    // Ganti dengan rumus sebenarnya untuk ICEA Faktor A
+                    hasil = tegangan * 4; 
+                    break;
+                case 'icea_b':
+                     // Ganti dengan rumus sebenarnya untuk ICEA Faktor B
+                    hasil = tegangan * 3.8;
+                    break;
+                case 'as_x':
+                     // Ganti dengan rumus sebenarnya untuk AS/NZS Faktor X
+                    hasil = tegangan * 3.0;
+                    break;
+                case 'as_y':
+                     // Ganti dengan rumus sebenarnya untuk AS/NZS Faktor Y
+                    hasil = tegangan * 2.8;
+                    break;
+                default:
+                    hasil = 0;
             }
 
-            // Menampilkan hasil dengan format 2 angka di belakang koma jika perlu
-            hasilPerkalian.textContent = hasil.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+            // Menampilkan hasil
+            if (hasil > 0) {
+                hasilPerkalian.textContent = hasil.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+            } else {
+                hasilPerkalian.textContent = '-';
+            }
         }
         
         // Fungsi untuk mereset semua input
         function resetKalkulator() {
             document.getElementById('voltageForm').reset();
+            updateFaktorOptions(); // Reset pilihan faktor ke default (IEC)
             hasilPerkalian.textContent = '-';
         }
 
-        // Menambahkan event listener untuk input dan select
-        // Kalkulasi akan berjalan otomatis setiap kali ada perubahan
+        // --- EVENT LISTENERS ---
+        // Saat nilai input tegangan berubah
         teganganInput.addEventListener('input', hitungTegangan);
+        // Saat pilihan standar berubah
+        standarUji.addEventListener('change', updateFaktorOptions);
+        // Saat pilihan faktor pengali berubah
         faktorPengali.addEventListener('change', hitungTegangan);
+        // Saat tombol reset diklik
         resetBtn.addEventListener('click', resetKalkulator);
+
+        // Panggil fungsi updateFaktorOptions saat halaman pertama kali dimuat
+        // untuk mengisi pilihan faktor IEC sebagai default.
+        document.addEventListener('DOMContentLoaded', updateFaktorOptions);
+
     </script>
 </body>
 </html>
