@@ -12,21 +12,13 @@
     <style>
         body { 
             background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .main-content {
-            flex: 1;
         }
         .card-header { background-color: #0d6efd; color: white; }
         .btn-remove { color: #dc3545; }
         .btn-remove:hover { color: #a71d2a; }
         footer {
-            background-color: #e9ecef;
             color: #6c757d;
         }
-        /* Style untuk kolom biaya agar tidak terlalu lebar di mobile */
         .cost-col {
              min-width: 120px;
         }
@@ -34,7 +26,7 @@
 </head>
 <body>
 
-    <div class="container mt-4 mb-5 main-content">
+    <div class="container mt-4 mb-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 
@@ -84,6 +76,7 @@
                                 </tbody>
                             </table>
                         </div>
+
                         <hr class="my-4">
 
                         <h2 class="h5 border-bottom pb-2 mb-3">3. Kalkulasi & Aksi</h2>
@@ -108,13 +101,10 @@
                         <button id="hitung-biaya" class="btn btn-success w-100 mt-3"><i class="bi bi-calculator-fill me-2"></i>Hitung Ulang Manual</button>
                        
                         <div class="d-flex justify-content-between mt-3">
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-secondary" onclick="history.back()">Kembali</button>
-                                <a href="index.html" class="btn btn-secondary">Beranda</a>
-                            </div>
-                            <button class="btn btn-danger" id="tombol-hapus-semua">Hapus Semua</button>
+                            <button class="btn btn-secondary" onclick="history.back()">Kembali</button>
+                            <button class="btn btn-danger" id="tombol-hapus-semua">Hapus</button>
+                            <a href="index.html" class="btn btn-secondary">Beranda</a>
                         </div>
-
                         <div id="hasil-kalkulasi" class="mt-4" style="display: none;">
                             </div>
 
@@ -122,11 +112,13 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <footer class="text-center py-3 mt-auto">
-        Williyanto Adi 2025
-    </footer>
+        <footer class="text-center py-3 mt-4">
+            Williyanto Adi 2025
+        </footer>
+        </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
@@ -140,15 +132,14 @@
         const formatRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 
         function cekTabelKosong() {
-            const placeholder = daftarAlatBody.querySelector('td[colspan="5"]'); // Diubah ke colspan 5
+            const placeholder = daftarAlatBody.querySelector('td[colspan="5"]');
             if (placeholder) {
                 daftarAlatBody.innerHTML = '';
             } else if (daftarAlatBody.children.length === 0) {
-                 daftarAlatBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>'; // Diubah ke colspan 5
+                 daftarAlatBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>';
             }
         }
 
-        // FUNGSI UTAMA KALKULASI (DIPERBARUI)
         function calculateAndDisplay() {
             const tarifPerKwh = parseFloat(tarifInput.value);
             const periode = periodeSelect.value;
@@ -157,31 +148,27 @@
 
             if (barisAlat.length === 0 || daftarAlatBody.querySelector('td[colspan="5"]') || isNaN(tarifPerKwh) || tarifPerKwh <= 0){
                 hasilDiv.style.display = 'none';
-                // Reset juga biaya per alat jika tidak valid
                  for (let i = 0; i < barisAlat.length; i++) {
-                    barisAlat[i].querySelector('.biaya-alat').textContent = formatRupiah.format(0);
+                    if (barisAlat[i].querySelector('.biaya-alat')) {
+                       barisAlat[i].querySelector('.biaya-alat').textContent = formatRupiah.format(0);
+                    }
                  }
                 return;
             }
             
-            // Loop pertama: Hitung total dan biaya per alat
             for (let i = 0; i < barisAlat.length; i++) {
                 const sel = barisAlat[i].getElementsByTagName('td');
                 const daya = parseFloat(sel[1].getAttribute('data-daya'));
                 const durasi = parseFloat(sel[2].getAttribute('data-durasi'));
                 
-                // Hitung kWh harian per alat
                 const kwhHarianAlat = (daya * durasi) / 1000;
                 totalKwhHarian += kwhHarianAlat;
                 
-                // Hitung biaya bulanan per alat (kWh Harian * 30 hari * tarif)
                 const biayaBulananAlat = kwhHarianAlat * 30 * tarifPerKwh;
                 
-                // Update kolom biaya di baris yang sama
                 barisAlat[i].querySelector('.biaya-alat').textContent = formatRupiah.format(biayaBulananAlat);
             }
             
-            // Loop kedua: Tampilkan total biaya
             let multiplier = 1, namaPeriode = 'satu hari', labelPeriode = 'Harian';
             switch (periode) {
                 case 'mingguan': multiplier = 7; namaPeriode = 'satu minggu'; labelPeriode = 'Mingguan'; break;
@@ -208,12 +195,10 @@
             calculateAndDisplay();
         }
 
-        // FUNGSI SUBMIT FORM (DIPERBARUI)
         formAlat.addEventListener('submit', function(event) {
             event.preventDefault();
             cekTabelKosong();
             const barisBaru = document.createElement('tr');
-            // Tambahkan <td> baru untuk biaya dengan class 'biaya-alat'
             barisBaru.innerHTML = `
                 <td>${document.getElementById('nama-alat').value}</td>
                 <td class="text-end" data-daya="${document.getElementById('daya').value}">${document.getElementById('daya').value} W</td>
