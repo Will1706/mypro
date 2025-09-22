@@ -70,10 +70,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="daftar-alat">
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted">Belum ada alat yang ditambahkan.</td>
-                                    </tr>
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
 
@@ -130,11 +127,59 @@
         const tombolHapusSemua = document.getElementById('tombol-hapus-semua');
         const formatRupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 
-        function cekTabelKosong() {
+        function simpanDataKeLocalStorage() {
+            const barisAlat = daftarAlatBody.getElementsByTagName('tr');
+            const dataAlat = [];
+            for (let i = 0; i < barisAlat.length; i++) {
+                if (barisAlat[i].querySelector('td[colspan="5"]')) continue;
+                const sel = barisAlat[i].getElementsByTagName('td');
+                const alat = {
+                    nama: sel[0].textContent,
+                    daya: sel[1].getAttribute('data-daya'),
+                    durasi: sel[2].getAttribute('data-durasi')
+                };
+                dataAlat.push(alat);
+            }
+            localStorage.setItem('daftarAlatListrik', JSON.stringify(dataAlat));
+        }
+
+        function muatDataDariLocalStorage() {
+            const dataTersimpan = localStorage.getItem('daftarAlatListrik');
+            if (dataTersimpan) {
+                const dataAlat = JSON.parse(dataTersimpan);
+                if (dataAlat && dataAlat.length > 0) {
+                    daftarAlatBody.innerHTML = '';
+                    dataAlat.forEach(alat => {
+                        tambahAlatKeTabel(alat.nama, alat.daya, alat.durasi);
+                    });
+                }
+            }
+            cekTabelKosong();
+        }
+
+        // ## PERUBAHAN DI SINI: FUNGSI DIPERBAIKI ##
+        // Fungsi ini sekarang bertanggung jawab untuk membersihkan placeholder sebelum menambah item baru
+        function tambahAlatKeTabel(nama, daya, durasi) {
+            // Cek dan hapus placeholder jika ada
             const placeholder = daftarAlatBody.querySelector('td[colspan="5"]');
             if (placeholder) {
                 daftarAlatBody.innerHTML = '';
-            } else if (daftarAlatBody.children.length === 0) {
+            }
+
+            const barisBaru = document.createElement('tr');
+            barisBaru.innerHTML = `
+                <td>${nama}</td>
+                <td class="text-end d-none d-md-table-cell" data-daya="${daya}">${daya} W</td>
+                <td class="text-end d-none d-md-table-cell" data-durasi="${durasi}">${durasi} jam</td>
+                <td class="text-end biaya-alat">${formatRupiah.format(0)}</td>
+                <td class="text-center"><button class="btn btn-sm btn-remove" title="Hapus"><i class="bi bi-trash3-fill"></i></button></td>
+            `;
+            daftarAlatBody.appendChild(barisBaru);
+        }
+
+        function cekTabelKosong() {
+            // Fungsi ini sekarang hanya fokus untuk menampilkan placeholder jika tabel benar-benar kosong
+            if (daftarAlatBody.children.length === 0) {
                  daftarAlatBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada alat yang ditambahkan.</td></tr>';
             }
         }
@@ -192,33 +237,34 @@
             daftarAlatBody.innerHTML = '';
             cekTabelKosong();
             calculateAndDisplay();
+            localStorage.removeItem('daftarAlatListrik');
         }
 
-        // ## PERUBAHAN DI SINI: JAVASCRIPT ##
+        // ## PERUBAHAN DI SINI: LOGIKA SUBMIT DISESUAIKAN ##
         formAlat.addEventListener('submit', function(event) {
             event.preventDefault();
-            cekTabelKosong();
-            const barisBaru = document.createElement('tr');
-            // Menambahkan kelas responsif pada <td> Daya dan Durasi
-            // Atribut data-label dihapus karena tidak lagi diperlukan
-            barisBaru.innerHTML = `
-                <td>${document.getElementById('nama-alat').value}</td>
-                <td class="text-end d-none d-md-table-cell" data-daya="${document.getElementById('daya').value}">${document.getElementById('daya').value} W</td>
-                <td class="text-end d-none d-md-table-cell" data-durasi="${document.getElementById('durasi').value}">${document.getElementById('durasi').value} jam</td>
-                <td class="text-end biaya-alat">${formatRupiah.format(0)}</td>
-                <td class="text-center"><button class="btn btn-sm btn-remove" title="Hapus"><i class="bi bi-trash3-fill"></i></button></td>
-            `;
-            daftarAlatBody.appendChild(barisBaru);
+            
+            const nama = document.getElementById('nama-alat').value;
+            const daya = document.getElementById('daya').value;
+            const durasi = document.getElementById('durasi').value;
+
+            // Panggil fungsi yang sudah diperbaiki, yang akan membersihkan placeholder secara internal
+            tambahAlatKeTabel(nama, daya, durasi);
+            
             formAlat.reset();
-            calculateAndDisplay();
+            // Jeda singkat (0 detik) untuk memastikan DOM update sebelum kalkulasi
+            setTimeout(() => {
+                calculateAndDisplay();
+                simpanDataKeLocalStorage();
+            }, 0);
         });
-        // ## AKHIR PERUBAHAN ##
 
         daftarAlatBody.addEventListener('click', function(event) {
             if (event.target.closest('.btn-remove')) {
                 event.target.closest('tr').remove();
                 cekTabelKosong();
                 calculateAndDisplay();
+                simpanDataKeLocalStorage();
             }
         });
 
@@ -226,6 +272,11 @@
         tarifInput.addEventListener('input', calculateAndDisplay);
         periodeSelect.addEventListener('change', calculateAndDisplay);
         tombolHapusSemua.addEventListener('click', hapusSemuaData);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            muatDataDariLocalStorage();
+            calculateAndDisplay();
+        });
 
     </script>
 </body>
