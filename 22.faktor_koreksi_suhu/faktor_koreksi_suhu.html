@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Kalkulator Faktor Koreksi Suhu</title>
+    <style>
+        body { background-color: #f0f2f5; }
+        .converter-container { max-width: 400px; margin-top: 50px; }
+        .card { border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .result-display { font-weight: bold; color: #0d6efd; font-size: 2.5rem; min-height: 50px; }
+        .form-label { font-weight: 500; }
+        .invalid-result { color: #dc3545; font-size: 1.75rem; }
+        
+        /* CSS BARU: Membuat placeholder menjadi miring */
+        #suhuInput::placeholder {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container converter-container">
+        <div class="card p-4">
+            <div class="card-body">
+                <h4 class="card-title text-center pb-3 mb-4 border-bottom">Faktor Koreksi Suhu</h4>
+                <div class="mb-3">
+                    <label for="specSelect" class="form-label">Pilih Spesifikasi</label>
+                    <select class="form-select form-select-lg" id="specSelect" onchange="hitungKoreksi()">
+                        <option value="IEC" selected>IEC</option>
+                        <option value="ICEA">ICEA</option>
+                        <option value="AS/NZS">AS/NZS</option>
+                        <option value="SPLN">SPLN</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="conductorTypeSelect" class="form-label">Pilih Jenis Konduktor</label>
+                    <select class="form-select form-select-lg" id="conductorTypeSelect" onchange="hitungKoreksi()">
+                        <option value="Cu" selected>Tembaga (Cu)</option>
+                        <option value="Al">Aluminium (Al)</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="suhuInput" class="form-label">Masukkan Suhu (°C)</label>
+                    <input type="number" class="form-control form-control-lg" id="suhuInput" placeholder="-40°C hingga 300°C" step="any" oninput="hitungKoreksi()">
+                </div>
+                <div class="text-center">
+                    <h6 class="text-muted">Faktor Koreksi</h6>
+                    <h2 class="result-display" id="hasilKoreksi">-</h2>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-muted mt-3">
+            <small id="formulaText">Rumus:</small>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a href="javascript:history.back()" class="btn btn-danger">&laquo; Kembali</a>
+            <a href="/index.html" class="btn btn-primary">Beranda &raquo;</a>
+        </div>
+        <footer class="text-center mt-5">
+            <hr>
+            <p class="text-muted small">Williyanto Adi</p>
+        </footer>
+    </div>
+
+    <script>
+        const specSelect = document.getElementById('specSelect');
+        const conductorTypeSelect = document.getElementById('conductorTypeSelect');
+        const inputSuhu = document.getElementById('suhuInput');
+        const displayHasil = document.getElementById('hasilKoreksi');
+        const formulaDisplay = document.getElementById('formulaText');
+
+        const specs = {
+            IEC: {
+                Cu: { base: 'k = 254.5 / (234.5 + t)', constant1: 254.5, constant2: 234.5 },
+                Al: { base: 'k = 248 / (228 + t)', constant1: 248, constant2: 228 }
+            },
+            ICEA: {
+                Cu: { base: 'k = 259.5 / (234.5 + t)', constant1: 259.5, constant2: 234.5 },
+                Al: { base: 'k = 253.0 / (228.0 + t)', constant1: 253.0, constant2: 228.0 }
+            },
+            'AS/NZS': {
+                Cu: { base: 'k = 250 / (230 + t)', constant1: 250, constant2: 230 },
+                Al: { base: 'k = 250 / (230 + t)', constant1: 250, constant2: 230 }
+            },
+            SPLN: {
+                Cu: { base: 'k = 250 / (230 + t)', constant1: 250, constant2: 230 },
+                Al: { base: 'k = 250 / (230 + t)', constant1: 250, constant2: 230 }
+            }
+        };
+
+        function hitungKoreksi() {
+            const spesifikasi = specSelect.value;
+            const conductorType = conductorTypeSelect.value;
+            const suhu = parseFloat(inputSuhu.value);
+            const currentFormulaData = specs[spesifikasi][conductorType];
+
+            // Selalu reset style ke normal setiap kali fungsi dijalankan
+            displayHasil.classList.remove('invalid-result');
+            inputSuhu.classList.remove('is-invalid');
+
+            if (isNaN(suhu)) {
+                displayHasil.textContent = '-';
+                formulaDisplay.textContent = 'Rumus: ' + currentFormulaData.base;
+                return;
+            }
+
+            const penyebut = currentFormulaData.constant2 + suhu;
+            
+            // Kondisi validasi: cek pembagian nol ATAU di luar rentang suhu
+            if (penyebut === 0 || suhu < -40 || suhu > 300) {
+                displayHasil.textContent = 'Tidak valid';
+                displayHasil.classList.add('invalid-result');
+                // LOGIKA BARU: Tambahkan kelas 'is-invalid' untuk membuat input merah
+                inputSuhu.classList.add('is-invalid');
+                formulaDisplay.textContent = 'Rumus: ' + currentFormulaData.base.replace('t', suhu);
+                return;
+            }
+
+            const faktorKoreksi = currentFormulaData.constant1 / penyebut;
+            
+            if (spesifikasi === 'ICEA' || spesifikasi === 'AS/NZS' || spesifikasi === 'SPLN') {
+                displayHasil.textContent = faktorKoreksi.toFixed(3);
+            } else {
+                displayHasil.textContent = faktorKoreksi.toFixed(4);
+            }
+            
+            formulaDisplay.textContent = 'Rumus: ' + currentFormulaData.base.replace('t', suhu);
+        }
+        
+        hitungKoreksi();
+    </script>
+</body>
+</html>
