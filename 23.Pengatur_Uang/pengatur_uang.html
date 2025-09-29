@@ -35,8 +35,22 @@
         .modal-content { background-color: #1e1e1e; }
         .form-control, .form-select { background-color: #333; border-color: #444; color: #fff; }
         .form-control:focus, .form-select:focus { background-color: #333; border-color: #0d6efd; color: #fff; box-shadow: none; }
-        .nav-tabs { border-bottom: none; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 5px; } .nav-tabs .nav-link { background-color: transparent; border: 1px solid transparent; color: #888; white-space: nowrap; } .nav-tabs .nav-link.active { background-color: #333; border-color: #444; color: #fff; }
-        .nav-pills { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 5px; } .nav-pills .nav-link { background-color: #333; color: #aaa; margin-right: 0.5rem; white-space: nowrap; } .nav-pills .nav-link.active { background-color: #0d6efd; color: white; }
+        
+        /* STYLE BARU: Membuat tab bisa digeser/slide */
+        .nav-tabs, .nav-pills {
+            border-bottom: none;
+            overflow-x: auto; /* Memungkinkan scroll horizontal */
+            flex-wrap: nowrap; /* Mencegah tab turun ke baris baru */
+            padding-bottom: 5px;
+            -ms-overflow-style: none;  /* Sembunyikan scrollbar di IE dan Edge */
+            scrollbar-width: none;  /* Sembunyikan scrollbar di Firefox */
+        }
+        .nav-tabs::-webkit-scrollbar, .nav-pills::-webkit-scrollbar {
+            display: none; /* Sembunyikan scrollbar di Chrome, Safari, Opera */
+        }
+        
+        .nav-tabs .nav-link { background-color: transparent; border: 1px solid transparent; color: #888; white-space: nowrap; } .nav-tabs .nav-link.active { background-color: #333; border-color: #444; color: #fff; }
+        .nav-pills .nav-link { background-color: #333; color: #aaa; margin-right: 0.5rem; white-space: nowrap; } .nav-pills .nav-link.active { background-color: #0d6efd; color: white; }
         
         /* Style untuk Date Navigator Baru */
         .date-navigator { display: flex; align-items: center; justify-content: space-between; background-color: #333; border: 1px solid #444; border-radius: .375rem; padding: 0.375rem; }
@@ -63,42 +77,27 @@
             </header>
             <main class="px-2">
                 <div class="card"><div class="card-body"><h5 class="card-title mb-3">Dompet Saya</h5><div id="wallet-cash" class="wallet-item p-2 rounded" data-target="view-cash"><div class="wallet-icon bg-orange text-white"><i class="bi bi-wallet2"></i></div><div class="wallet-info"><div class="wallet-name">Dompet Cash</div></div><div id="wallet-cash-balance" class="wallet-balance">Rp 0</div></div></div></div>
-                <div class="card"><div class="card-header bg-transparent border-0 pt-3"><ul class="nav nav-tabs card-header-tabs justify-content-end" id="home-month-tabs-container"></ul></div><div class="card-body"><p class="text-secondary small mb-1">Total pengeluaran dari <span id="monthly-transaction-count">0</span> transaksi</p><h3 id="monthly-total-expense" class="text-danger fw-bold">Rp 0</h3></div></div>
+                <div class="card">
+                    <div class="card-header bg-transparent border-0 pt-3">
+                        <ul class="nav nav-tabs card-header-tabs" id="home-month-tabs-container"></ul>
+                    </div>
+                    <div class="card-body">
+                         <p class="text-secondary small mb-1">Total pengeluaran dari <span id="monthly-transaction-count">0</span> transaksi</p>
+                         <h3 id="monthly-total-expense" class="text-danger fw-bold">Rp 0</h3>
+                    </div>
+                </div>
             </main>
         </div>
 
         <div id="view-cash" class="transaction-view">
             <header class="page-header d-flex align-items-center"><button class="btn-back btn me-2 fs-4 p-0"><i class="bi bi-arrow-left"></i></button><h4 class="mb-0">Transaksi Dompet Cash</h4></header>
-            <div class="px-3 pt-3"><ul class="nav nav-pills justify-content-end" id="month-tabs-container"></ul></div>
+            <div class="px-3 pt-3"><ul class="nav nav-pills" id="month-tabs-container"></ul></div>
             <div id="transaction-list-container" class="px-3"></div>
         </div>
     </div>
 
     <nav class="bottom-nav"><a href="#" class="nav-item-custom active"><i class="bi bi-house-door-fill nav-icon"></i><span class="nav-text">Ringkasan</span></a><a href="#" class="nav-item-custom"><i class="bi bi-arrow-down-up nav-icon"></i><span class="nav-text">Transaksi</span></a><a href="#" id="add-transaction-btn" class="nav-add-button"><i class="bi bi-plus"></i></a><a href="#" class="nav-item-custom"><i class="bi bi-pie-chart-fill nav-icon"></i><span class="nav-text">Anggaran</span></a><a href="#" class="nav-item-custom"><i class="bi bi-person-fill nav-icon"></i><span class="nav-text">Akun</span></a></nav>
-    
-    <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title">Tambah Transaksi Baru</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body">
-                    <form id="transaction-form">
-                        <div class="mb-3"><label class="form-label">Jumlah Uang</label><input type="text" class="form-control" id="transaction-amount" placeholder="Contoh: 50.000" required inputmode="numeric"></div>
-                        <div class="mb-3"><label class="form-label">Kategori Pengeluaran</label><select class="form-select" id="transaction-category" required><option value="" selected disabled>Pilih kategori...</option><option>Makanan & Minuman</option><option>Transportasi</option><option>Tagihan</option><option>Belanja</option><option>Hiburan</option><option>Lainnya</option></select></div>
-                        <div class="mb-3">
-                            <label class="form-label">Tanggal Transaksi</label>
-                            <div class="date-navigator">
-                                <button type="button" id="prev-day-btn">&lt;</button>
-                                <span class="date-display" id="date-display-text"></span>
-                                <button type="button" id="next-day-btn">&gt;</button>
-                            </div>
-                             <input type="hidden" id="transaction-date-hidden">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary" form="transaction-form">Simpan</button></div>
-            </div>
-        </div>
-    </div>
+    <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Tambah Transaksi Baru</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="transaction-form"><div class="mb-3"><label class="form-label">Jumlah Uang</label><input type="text" class="form-control" id="transaction-amount" placeholder="Contoh: 50.000" required inputmode="numeric"></div><div class="mb-3"><label class="form-label">Kategori Pengeluaran</label><select class="form-select" id="transaction-category" required><option value="" selected disabled>Pilih kategori...</option><option>Makanan & Minuman</option><option>Transportasi</option><option>Tagihan</option><option>Belanja</option><option>Hiburan</option><option>Lainnya</option></select></div><div class="mb-3"><label class="form-label">Tanggal Transaksi</label><div class="date-navigator"><button type="button" id="prev-day-btn">&lt;</button><span class="date-display" id="date-display-text"></span><button type="button" id="next-day-btn">&gt;</button></div><input type="hidden" id="transaction-date-hidden"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary" form="transaction-form">Simpan</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -106,9 +105,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- DATABASE SEMENTARA & Inisialisasi variabel lain ---
-            const today = new Date(); const yesterday = new Date(); yesterday.setDate(today.getDate() - 1); const twoDaysAgo = new Date(); twoDaysAgo.setDate(today.getDate() - 3); const lastMonthDate = new Date(); lastMonthDate.setMonth(lastMonthDate.getMonth() - 1); const twoMonthsAgoDate = new Date(); twoMonthsAgoDate.setMonth(twoMonthsAgoDate.getMonth() - 2); const threeMonthsAgoDate = new Date(); threeMonthsAgoDate.setMonth(threeMonthsAgoDate.getMonth() - 3);
+            const today = new Date(); const yesterday = new Date(); yesterday.setDate(today.getDate() - 1); const twoDaysAgo = new Date(); twoDaysAgo.setDate(today.getDate() - 3); const lastMonthDate = new Date(); lastMonthDate.setMonth(lastMonthDate.getMonth() - 1); const twoMonthsAgoDate = new Date(); twoMonthsAgoDate.setMonth(twoMonthsAgoDate.getMonth() - 2); const threeMonthsAgoDate = new Date(); threeMonthsAgoDate.setMonth(threeMonthsAgoDate.getMonth() - 3); const fourMonthsAgoDate = new Date(); fourMonthsAgoDate.setMonth(fourMonthsAgoDate.getMonth() - 4);
             const toYmd = (date) => date.toISOString().slice(0, 10);
-            let transactions = [ { amount: 50000, category: 'Transportasi', date: toYmd(today) }, { amount: 75000, category: 'Makanan & Minuman', date: toYmd(today) }, { amount: 120000, category: 'Belanja', date: toYmd(yesterday) }, { amount: 300000, category: 'Tagihan', date: toYmd(twoDaysAgo) }, { amount: 500000, category: 'Tagihan', date: toYmd(lastMonthDate) }, { amount: 85000, category: 'Belanja', date: toYmd(lastMonthDate) }, { amount: 150000, category: 'Transportasi', date: toYmd(twoMonthsAgoDate) }, { amount: 250000, category: 'Hiburan', date: toYmd(threeMonthsAgoDate) }, ];
+            let transactions = [ { amount: 50000, category: 'Transportasi', date: toYmd(today) }, { amount: 75000, category: 'Makanan & Minuman', date: toYmd(today) }, { amount: 120000, category: 'Belanja', date: toYmd(yesterday) }, { amount: 300000, category: 'Tagihan', date: toYmd(twoDaysAgo) }, { amount: 500000, category: 'Tagihan', date: toYmd(lastMonthDate) }, { amount: 85000, category: 'Belanja', date: toYmd(lastMonthDate) }, { amount: 150000, category: 'Transportasi', date: toYmd(twoMonthsAgoDate) }, { amount: 250000, category: 'Hiburan', date: toYmd(threeMonthsAgoDate) }, { amount: 100000, category: 'Lainnya', date: toYmd(fourMonthsAgoDate) }, ];
             let cashBalance = 2000000;
             let monthlyTotals = {}; let selectedMonth = null;
 
@@ -119,56 +118,37 @@
             const formatCurrency = (amount) => `Rp ${amount.toLocaleString('id-ID')}`;
             const isSameDay = (d1, d2) => d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
             const getDateLabel = (dateString) => { const today = new Date(); const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1); const transactionDate = new Date(dateString); const userTimezoneOffset = transactionDate.getTimezoneOffset() * 60000; const adjustedDate = new Date(transactionDate.getTime() + userTimezoneOffset); if (isSameDay(adjustedDate, today)) return 'Hari ini'; if (isSameDay(adjustedDate, yesterday)) return 'Kemarin'; return adjustedDate.toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }); };
-            
-            const getMonthTabLabel = (monthStr) => {
-                const today = new Date(); const currentMonthStr = today.toISOString().substring(0, 7); const lastMonth = new Date(); lastMonth.setMonth(lastMonth.getMonth() - 1); const lastMonthStr = lastMonth.toISOString().substring(0, 7);
-                if (monthStr === currentMonthStr) return 'Bulan Ini'; if (monthStr === lastMonthStr) return 'Bulan Lalu';
-                const [year, month] = monthStr.split('-'); return `${month}/${year}`;
-            };
-
+            const getMonthTabLabel = (monthStr) => { const today = new Date(); const currentMonthStr = today.toISOString().substring(0, 7); const lastMonth = new Date(); lastMonth.setMonth(lastMonth.getMonth() - 1); const lastMonthStr = lastMonth.toISOString().substring(0, 7); if (monthStr === currentMonthStr) return 'Bulan Ini'; if (monthStr === lastMonthStr) return 'Bulan Lalu'; const [year, month] = monthStr.split('-'); return `${month}/${year}`; };
             const renderTransactions = () => { transactionListContainer.innerHTML = ''; const filteredTransactions = transactions.filter(tx => tx.date.startsWith(selectedMonth)); if (filteredTransactions.length === 0) { transactionListContainer.innerHTML = '<p class="text-secondary mt-3">Tidak ada transaksi di bulan ini.</p>'; return; } const grouped = filteredTransactions.reduce((acc, tx) => { (acc[tx.date] = acc[tx.date] || []).push(tx); return acc; }, {}); const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a)); sortedDates.forEach(date => { const transactionsOnDate = grouped[date]; const dailyTotal = transactionsOnDate.reduce((sum, tx) => sum + tx.amount, 0); const dateLabel = getDateLabel(date); const separator = document.createElement('div'); separator.className = 'date-separator d-flex justify-content-between'; separator.innerHTML = `<span>${dateLabel}</span> <span>- ${formatCurrency(dailyTotal)}</span>`; transactionListContainer.appendChild(separator); transactionsOnDate.forEach(tx => { const item = document.createElement('div'); item.className = 'transaction-list-item d-flex justify-content-between align-items-center'; item.innerHTML = `<div><div class="fw-bold">${tx.category}</div><div class="small text-secondary">${new Date(tx.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'})}</div></div><div class="fw-bold transaction-amount-expense">- ${formatCurrency(tx.amount)}</div>`; transactionListContainer.appendChild(item); }); }); };
-            
-            // FUNGSI RENDER TAB (URUTAN DIUBAH)
             const renderMonthTabs = (container) => { container.innerHTML = ''; const uniqueMonths = [...new Set(transactions.map(tx => tx.date.substring(0, 7)))].sort(); uniqueMonths.forEach(monthStr => { const li = document.createElement('li'); li.className = 'nav-item'; const a = document.createElement('a'); a.className = 'nav-link'; a.href = '#'; a.textContent = getMonthTabLabel(monthStr); a.dataset.month = monthStr; li.appendChild(a); container.appendChild(li); }); };
-            
             const updateSummaries = () => { const uniqueMonths = [...new Set(transactions.map(tx => tx.date.substring(0, 7)))]; monthlyTotals = {}; uniqueMonths.forEach(monthStr => { const monthTransactions = transactions.filter(tx => tx.date.startsWith(monthStr)); monthlyTotals[monthStr] = { total: monthTransactions.reduce((sum, tx) => sum + tx.amount, 0), count: monthTransactions.length }; }); const totalExpense = transactions.reduce((sum, tx) => sum + tx.amount, 0); const currentBalance = cashBalance - totalExpense; document.getElementById('wallet-cash-balance').textContent = formatCurrency(currentBalance); document.getElementById('main-balance').textContent = formatCurrency(currentBalance); };
             const displayHomeSummary = (monthStr) => { const summary = monthlyTotals[monthStr] || { total: 0, count: 0 }; monthlyTotalEl.textContent = formatCurrency(summary.total); monthlyCountEl.textContent = summary.count; };
-
-            // --- Inisialisasi Kalender Mini (Flatpickr) ---
-            const fp = flatpickr(dateDisplayText, {
-                defaultDate: "today",
-                dateFormat: "Y-m-d", // Format yang disimpan di input tersembunyi
-                onChange: function(selectedDates, dateStr, instance) {
-                    updateDateDisplay(selectedDates[0]);
-                }
-            });
-            
-            // Fungsi baru untuk update tampilan tanggal
-            function updateDateDisplay(date) {
-                dateDisplayText.textContent = getDateLabel(date.toISOString());
-                dateHiddenInput.value = toYmd(date);
-            }
+            const fp = flatpickr(dateDisplayText, { defaultDate: "today", dateFormat: "Y-m-d", onChange: function(selectedDates) { updateDateDisplay(selectedDates[0]); } });
+            function updateDateDisplay(date) { dateDisplayText.textContent = getDateLabel(date.toISOString()); dateHiddenInput.value = toYmd(date); }
 
             // --- EVENT LISTENERS ---
-            walletCashBtn.addEventListener('click', () => { selectedMonth = new Date().toISOString().substring(0, 7); renderMonthTabs(cashTabsContainer); const firstTab = cashTabsContainer.querySelector(`[data-month="${selectedMonth}"]`) || cashTabsContainer.querySelector('.nav-link:last-child'); if(firstTab) { firstTab.classList.add('active'); selectedMonth = firstTab.dataset.month; } renderTransactions(); summaryView.style.display = 'none'; document.getElementById('view-cash').style.display = 'block'; });
+            walletCashBtn.addEventListener('click', () => {
+                selectedMonth = new Date().toISOString().substring(0, 7);
+                renderMonthTabs(cashTabsContainer);
+                const firstTab = cashTabsContainer.querySelector(`[data-month="${selectedMonth}"]`) || cashTabsContainer.querySelector('.nav-link:last-child');
+                if(firstTab) {
+                    firstTab.classList.add('active');
+                    selectedMonth = firstTab.dataset.month;
+                }
+                renderTransactions();
+                // BARIS BARU: Otomatis scroll tab ke kanan
+                cashTabsContainer.scrollLeft = cashTabsContainer.scrollWidth;
+                summaryView.style.display = 'none';
+                document.getElementById('view-cash').style.display = 'block';
+            });
             backButtons.forEach(btn => btn.addEventListener('click', () => { summaryView.style.display = 'block'; transactionViews.forEach(v => v.style.display = 'none'); }));
             addTransactionBtn.addEventListener('click', (e) => { e.preventDefault(); transactionForm.reset(); fp.setDate(new Date()); transactionModal.show(); });
             amountInput.addEventListener('input', (e) => { let rawValue = e.target.value.replace(/\D/g, ''); if (rawValue) { e.target.value = parseInt(rawValue, 10).toLocaleString('id-ID'); } });
-            
-            // Listener untuk tombol navigasi tanggal
             prevDayBtn.addEventListener('click', () => fp.setDate(fp.selectedDates[0].setDate(fp.selectedDates[0].getDate() - 1), true));
             nextDayBtn.addEventListener('click', () => fp.setDate(fp.selectedDates[0].setDate(fp.selectedDates[0].getDate() + 1), true));
-
             homeTabsContainer.addEventListener('click', function(e) { if(e.target.tagName === 'A') { e.preventDefault(); this.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active')); e.target.classList.add('active'); displayHomeSummary(e.target.dataset.month); } });
             cashTabsContainer.addEventListener('click', function(e) { if(e.target.tagName === 'A') { e.preventDefault(); this.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active')); e.target.classList.add('active'); selectedMonth = e.target.dataset.month; renderTransactions(); } });
-            
-            transactionForm.addEventListener('submit', (e) => { e.preventDefault(); const formattedAmount = amountInput.value; const amount = parseInt(formattedAmount.replace(/\./g, ''), 10);
-                const newTransaction = { amount: amount, category: document.getElementById('transaction-category').value, date: dateHiddenInput.value };
-                transactions.unshift(newTransaction);
-                transactionModal.hide();
-                initialize();
-                if (document.getElementById('view-cash').style.display === 'block') { renderMonthTabs(cashTabsContainer); const activeTab = cashTabsContainer.querySelector('.active'); selectedMonth = activeTab ? activeTab.dataset.month : new Date().toISOString().substring(0,7); renderTransactions(); }
-            });
+            transactionForm.addEventListener('submit', (e) => { e.preventDefault(); const formattedAmount = amountInput.value; const amount = parseInt(formattedAmount.replace(/\./g, ''), 10); const newTransaction = { amount: amount, category: document.getElementById('transaction-category').value, date: dateHiddenInput.value }; transactions.unshift(newTransaction); transactionModal.hide(); initialize(); if (document.getElementById('view-cash').style.display === 'block') { renderMonthTabs(cashTabsContainer); const activeTab = cashTabsContainer.querySelector('.active'); selectedMonth = activeTab ? activeTab.dataset.month : new Date().toISOString().substring(0,7); renderTransactions(); } });
             
             // --- INISIALISASI ---
             function initialize() {
@@ -176,7 +156,12 @@
                 renderMonthTabs(homeTabsContainer);
                 const currentMonthStr = new Date().toISOString().substring(0, 7);
                 const firstHomeTab = homeTabsContainer.querySelector(`[data-month="${currentMonthStr}"]`) || homeTabsContainer.querySelector('.nav-link:last-child');
-                if (firstHomeTab) { firstHomeTab.classList.add('active'); displayHomeSummary(firstHomeTab.dataset.month); }
+                if (firstHomeTab) {
+                    firstHomeTab.classList.add('active');
+                    displayHomeSummary(firstHomeTab.dataset.month);
+                }
+                // BARIS BARU: Otomatis scroll tab ke kanan
+                homeTabsContainer.scrollLeft = homeTabsContainer.scrollWidth;
             }
             initialize();
         });
