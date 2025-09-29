@@ -51,7 +51,7 @@
              <header class="main-header d-flex justify-content-between align-items-center">
                 <div>
                     <span class="text-secondary">Jumlah saldo</span>
-                    <div id="main-balance" class="total-balance">Rp 267.000</div>
+                    <div id="main-balance" class="total-balance">Rp 0</div>
                 </div>
                 <div>
                     <i class="bi bi-search fs-4 me-3"></i>
@@ -65,7 +65,7 @@
                         <div id="wallet-cash" class="wallet-item p-2 rounded" data-target="view-cash">
                             <div class="wallet-icon bg-orange text-white"><i class="bi bi-wallet2"></i></div>
                             <div class="wallet-info"><div class="wallet-name">Dompet Cash</div></div>
-                            <div id="wallet-cash-balance" class="wallet-balance">Rp 267.000</div>
+                            <div id="wallet-cash-balance" class="wallet-balance">Rp 0</div>
                         </div>
                     </div>
                 </div>
@@ -119,15 +119,22 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             // --- DATABASE SEMENTARA ---
-            // Data transaksi awal sebagai contoh
+            const today = new Date();
+            const yesterday = new Date();
+            yesterday.setDate(today.getDate() - 1);
+            const twoDaysAgo = new Date();
+            twoDaysAgo.setDate(today.getDate() - 3);
+
+            const toYmd = (date) => date.toISOString().slice(0, 10);
+
             let transactions = [
-                { amount: 50000, category: 'Transportasi', date: '2025-09-29' },
-                { amount: 75000, category: 'Makanan & Minuman', date: '2025-09-29' },
-                { amount: 120000, category: 'Belanja', date: '2025-09-28' },
-                { amount: 25000, category: 'Hiburan', date: '2025-09-28' },
-                { amount: 300000, category: 'Tagihan', date: '2025-09-26' },
+                { amount: 50000, category: 'Transportasi', date: toYmd(today) },
+                { amount: 75000, category: 'Makanan & Minuman', date: toYmd(today) },
+                { amount: 120000, category: 'Belanja', date: toYmd(yesterday) },
+                { amount: 25000, category: 'Hiburan', date: toYmd(yesterday) },
+                { amount: 300000, category: 'Tagihan', date: toYmd(twoDaysAgo) },
             ];
-            let cashBalance = 267000;
+            let cashBalance = 1000000; // Saldo awal
 
             // --- ELEMEN-ELEMEN PENTING ---
             const summaryView = document.getElementById('summary-view');
@@ -157,41 +164,41 @@
                 yesterday.setDate(yesterday.getDate() - 1);
                 const transactionDate = new Date(dateString);
 
-                if (isSameDay(transactionDate, today)) return 'Hari ini';
-                if (isSameDay(transactionDate, yesterday)) return 'Kemarin';
-                return transactionDate.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
+                // Perlu penyesuaian zona waktu agar perbandingan akurat
+                const userTimezoneOffset = transactionDate.getTimezoneOffset() * 60000;
+                const adjustedTransactionDate = new Date(transactionDate.getTime() + userTimezoneOffset);
+
+
+                if (isSameDay(adjustedTransactionDate, today)) return 'Hari ini';
+                if (isSameDay(adjustedTransactionDate, yesterday)) return 'Kemarin';
+                return adjustedTransactionDate.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
             };
             
             // FUNGSI INTI: Mengelompokkan transaksi dan menampilkannya
             const renderTransactions = () => {
-                transactionListContainer.innerHTML = ''; // Kosongkan daftar sebelum mengisi ulang
+                transactionListContainer.innerHTML = '';
                 if (transactions.length === 0) {
                     transactionListContainer.innerHTML = '<p class="text-secondary mt-3">Belum ada transaksi.</p>';
                     return;
                 }
 
-                // Kelompokkan transaksi berdasarkan tanggal
                 const grouped = transactions.reduce((acc, tx) => {
                     (acc[tx.date] = acc[tx.date] || []).push(tx);
                     return acc;
                 }, {});
                 
-                // Urutkan tanggal dari yang terbaru
                 const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
-                // Tampilkan setiap grup
                 sortedDates.forEach(date => {
                     const transactionsOnDate = grouped[date];
                     const dailyTotal = transactionsOnDate.reduce((sum, tx) => sum + tx.amount, 0);
                     const dateLabel = getDateLabel(date);
 
-                    // Buat elemen pemisah tanggal
                     const separator = document.createElement('div');
                     separator.className = 'date-separator d-flex justify-content-between';
                     separator.innerHTML = `<span>${dateLabel}</span> <span>- ${formatCurrency(dailyTotal)}</span>`;
                     transactionListContainer.appendChild(separator);
 
-                    // Tampilkan transaksi di bawah pemisah
                     transactionsOnDate.forEach(tx => {
                         const item = document.createElement('div');
                         item.className = 'transaction-list-item d-flex justify-content-between align-items-center';
@@ -214,11 +221,9 @@
                 
                 const todayTotal = todayTransactions.reduce((sum, tx) => sum + tx.amount, 0);
                 
-                // Update ringkasan di home
                 document.getElementById('today-total-expense').textContent = formatCurrency(todayTotal);
                 document.getElementById('today-transaction-count').textContent = todayTransactions.length;
 
-                // Update saldo dompet
                 const totalExpense = transactions.reduce((sum, tx) => sum + tx.amount, 0);
                 const currentBalance = cashBalance - totalExpense;
                 document.getElementById('wallet-cash-balance').textContent = formatCurrency(currentBalance);
@@ -227,7 +232,6 @@
 
             // --- EVENT LISTENERS ---
 
-            // Navigasi halaman
             walletCashBtn.addEventListener('click', () => {
                 summaryView.style.display = 'none';
                 document.getElementById('view-cash').style.display = 'block';
@@ -237,7 +241,6 @@
                 transactionViews.forEach(v => v.style.display = 'none');
             }));
 
-            // Tampilkan modal tambah transaksi
             addTransactionBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 transactionForm.reset();
@@ -245,7 +248,6 @@
                 transactionModal.show();
             });
 
-            // Simpan transaksi baru
             transactionForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const newTransaction = {
@@ -254,18 +256,15 @@
                     date: document.getElementById('transaction-date').value,
                 };
                 
-                // Tambahkan transaksi baru ke awal array
                 transactions.unshift(newTransaction);
                 
                 transactionModal.hide();
                 
-                // Perbarui tampilan
                 renderTransactions();
                 updateSummaries();
             });
 
             // --- INISIALISASI ---
-            // Tampilkan data awal saat halaman pertama kali dimuat
             renderTransactions();
             updateSummaries();
         });
