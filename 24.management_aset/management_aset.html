@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Aset Barang</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+        }
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .table-hover tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sortable:hover {
+            background-color: #e9ecef;
+        }
+        .sort-icon {
+            margin-left: 5px;
+            color: #aaa;
+        }
+        .sort-icon.active {
+            color: #000;
+        }
+        .table th, .table td {
+            white-space: nowrap; 
+            vertical-align: middle;
+        }
+        .total-cell {
+            font-size: 1.1rem;
+        }
+        .pagination-controls {
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-box-seam-fill"></i>
+                Manajemen Aset
+            </a>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                <h5 class="card-title mb-2 mb-md-0">Daftar Aset Barang</h5>
+                <div class="d-flex flex-wrap">
+                    <div class="btn-group me-2 mb-2 mb-md-0">
+                        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-download"></i> Ekspor
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="exportXLSX()">Ke Excel (.xlsx)</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="exportPDF()">Ke PDF (.pdf)</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="exportData()">Cadangkan ke JSON (.json)</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-info me-2 mb-2 mb-md-0" onclick="document.getElementById('importFile').click()">
+                        <i class="bi bi-upload"></i> Impor Data
+                    </button>
+                    <input type="file" id="importFile" class="d-none" accept=".json" onchange="importData(event)">
+                    <button class="btn btn-primary mb-2 mb-md-0" data-bs-toggle="modal" data-bs-target="#assetModal" onclick="openAddModal()">
+                        <i class="bi bi-plus-circle-fill"></i> Tambah Aset
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <input type="text" id="searchInput" class="form-control" oninput="filterAssets()" placeholder="🔍 Cari aset...">
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover" id="assetTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>No.</th>
+                                <th>Nama Aset</th>
+                                <th class="sortable" onclick="sortTable('price')">Harga <i id="sort-icon-price" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th class="sortable" onclick="sortTable('date')">Tanggal Beli <i id="sort-icon-date" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th class="sortable" onclick="sortTable('category')">Kategori <i id="sort-icon-category" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th class="sortable" onclick="sortTable('location')">Lokasi Beli <i id="sort-icon-location" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th>Detail Aset</th>
+                                <th class="sortable" onclick="sortTable('status')">Status <i id="sort-icon-status" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th class="no-export">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetTableBody">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div id="pagination-wrapper" class="d-flex justify-content-between align-items-center flex-wrap mt-3">
+                    <div class="d-flex align-items-center pagination-controls mb-2 mb-md-0">
+                        <label for="itemsPerPage" class="form-label me-2 mb-0">Aset per halaman:</label>
+                        <input type="number" class="form-control" id="itemsPerPage" value="50" min="1" style="width: 80px;" onchange="changeItemsPerPage(this)">
+                    </div>
+                    <nav id="pagination-nav">
+                        <ul class="pagination mb-0">
+                            <li class="page-item" id="prevPage">
+                                <a class="page-link" href="#" onclick="changePage('prev')">Previous</a>
+                            </li>
+                            <li class="page-item disabled"><span id="pageInfo" class="page-link">Halaman 1 dari 1</span></li>
+                            <li class="page-item" id="nextPage">
+                                <a class="page-link" href="#" onclick="changePage('next')">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                    <div class="text-end">
+                        <span class="fw-bold">TOTAL NILAI ASET (Hasil Filter):</span>
+                        <span id="totalAssetValue" class="fw-bold text-success total-cell ms-2"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-muted py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; Williyanto Adi 2025</p>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="assetModal" tabindex="-1" aria-labelledby="assetModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assetModalLabel">Tambah Aset Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                     <form id="assetForm" onsubmit="event.preventDefault(); saveAsset();">
+                        <input type="hidden" id="assetId">
+                        <div class="mb-3">
+                            <label for="assetName" class="form-label">Nama Aset</label>
+                            <input type="text" class="form-control" id="assetName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assetDetails" class="form-label">Detail Aset</label>
+                            <textarea class="form-control" id="assetDetails" rows="3" placeholder="Contoh: No. Seri, Warna, Spesifikasi, dll."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="assetPrice" class="form-label">Harga Aset</label>
+                                <input type="text" class="form-control" id="assetPrice" inputmode="numeric" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="purchaseDate" class="form-label">Tanggal Beli</label>
+                                <input type="date" class="form-control" id="purchaseDate" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assetCategory" class="form-label">Kategori</label>
+                            <input class="form-control" list="categoryOptions" id="assetCategory" placeholder="Pilih atau ketik kategori..." required>
+                            <datalist id="categoryOptions">
+                                <option value="Elektronik"></option>
+                                <option value="Furnitur"></option>
+                                <option value="Peralatan Dapur"></option>
+                                <option value="Kendaraan"></option>
+                                <option value="Properti"></option>
+                            </datalist>
+                        </div>
+                        <div class="mb-3">
+                            <label for="purchaseLocation" class="form-label">Toko/Lokasi Beli</label>
+                            <input type="text" class="form-control" id="purchaseLocation" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assetStatus" class="form-label">Status Aset</label>
+                            <input class="form-control" list="statusOptions" id="assetStatus" placeholder="Pilih atau ketik status..." required>
+                             <datalist id="statusOptions">
+                                <option value="Aktif"></option>
+                                <option value="Dalam Perbaikan"></option>
+                                <option value="Rusak"></option>
+                                <option value="Dijual"></option>
+                                <option value="Hilang"></option>
+                                <option value="Dihibahkan"></option>
+                            </datalist>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        // --- DATA & STATE MANAGEMENT ---
+        let originalAssets = JSON.parse(localStorage.getItem('assets')) || [];
+        let displayedAssets = [...originalAssets];
+        let sortState = { key: null, direction: 'none' }; 
+        let paginationState = { currentPage: 1, itemsPerPage: 50, totalPages: 1 };
+        const assetModal = new bootstrap.Modal(document.getElementById('assetModal'));
+
+        // --- HELPER FUNCTIONS ---
+        const formatCurrency = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value || 0);
+        const formatDate = (isoDate) => {
+            if (!isoDate) return '';
+            const [year, month, day] = isoDate.split('-');
+            return `${day}/${month}/${year}`;
+        };
+        
+        const getStatusBadge = (status) => {
+            const predefinedColors = {
+                'Aktif': 'bg-success', 'Dalam Perbaikan': 'bg-warning text-dark', 'Rusak': 'bg-danger',
+                'Dijual': 'bg-info text-dark', 'Hilang': 'bg-dark', 'Dihibahkan': 'bg-dark',
+            };
+            if (predefinedColors[status]) return predefinedColors[status];
+            const customColors = ['bg-primary', 'bg-info']; 
+            let hash = 0;
+            for (let i = 0; i < status.length; i++) hash = status.charCodeAt(i) + ((hash << 5) - hash);
+            return `${customColors[Math.abs(hash % customColors.length)]} text-white`;
+        };
+        
+        function calculateAndDisplayTotal() {
+            const total = displayedAssets.reduce((sum, asset) => sum + (asset.price || 0), 0);
+            document.getElementById('totalAssetValue').textContent = formatCurrency(total);
+        }
+
+        // --- RENDERING ---
+        function render() {
+            renderTable();
+            renderPaginationControls();
+        }
+
+        function renderTable() {
+            const tableBody = document.getElementById('assetTableBody');
+            tableBody.innerHTML = '';
+            
+            const startIndex = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
+            const endIndex = startIndex + paginationState.itemsPerPage;
+            const paginatedAssets = displayedAssets.slice(startIndex, endIndex);
+
+            if (paginatedAssets.length === 0) {
+                 tableBody.innerHTML = `<tr><td colspan="9" class="text-center">${originalAssets.length > 0 ? 'Aset tidak ditemukan' : 'Belum ada data aset'}</td></tr>`;
+            } else {
+                paginatedAssets.forEach((asset, index) => {
+                    const itemNumber = startIndex + index + 1;
+                    const row = `
+                        <tr>
+                            <td>${itemNumber}</td>
+                            <td>${asset.name}</td>
+                            <td>${formatCurrency(asset.price)}</td>
+                            <td>${formatDate(asset.date)}</td>
+                            <td>${asset.category}</td>
+                            <td>${asset.location}</td>
+                            <td>${asset.details || ''}</td>
+                            <td><span class="badge ${getStatusBadge(asset.status)}">${asset.status}</span></td>
+                            <td class="no-export">
+                                <button class="btn btn-warning btn-sm" onclick="openEditModal(${asset.id})"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteAsset(${asset.id})"><i class="bi bi-trash-fill"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            }
+            calculateAndDisplayTotal();
+        }
+
+        function renderPaginationControls() {
+            paginationState.totalPages = Math.ceil(displayedAssets.length / paginationState.itemsPerPage) || 1;
+            const { currentPage, totalPages } = paginationState;
+            
+            document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages}`;
+            document.getElementById('prevPage').classList.toggle('disabled', currentPage === 1);
+            document.getElementById('nextPage').classList.toggle('disabled', currentPage === totalPages);
+            
+            document.getElementById('pagination-wrapper').style.display = totalPages > 1 || originalAssets.length > 0 ? 'flex' : 'none';
+        }
+        
+        function updateSortIcons() {
+            document.querySelectorAll('.sort-icon').forEach(icon => icon.className = 'bi bi-arrow-down-up sort-icon');
+            if (sortState.key && sortState.direction !== 'none') {
+                const icon = document.getElementById(`sort-icon-${sortState.key}`);
+                icon.className = `bi ${sortState.direction === 'asc' ? 'bi-sort-down' : 'bi-sort-up'} sort-icon active`;
+            }
+        }
+
+        // --- CRUD & DATA OPERATIONS ---
+        function saveToLocalStorage() {
+            localStorage.setItem('assets', JSON.stringify(originalAssets));
+        }
+
+        function openAddModal() {
+            document.getElementById('assetForm').reset();
+            document.getElementById('assetId').value = '';
+            document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
+        }
+        
+        function saveAsset() {
+            const id = document.getElementById('assetId').value;
+            const priceString = document.getElementById('assetPrice').value.replace(/\./g, '');
+            const assetData = {
+                name: document.getElementById('assetName').value, details: document.getElementById('assetDetails').value,
+                price: parseInt(priceString, 10) || 0, date: document.getElementById('purchaseDate').value,
+                category: document.getElementById('assetCategory').value, location: document.getElementById('purchaseLocation').value,
+                status: document.getElementById('assetStatus').value,
+            };
+
+            if (id) { 
+                const index = originalAssets.findIndex(a => a.id == id);
+                originalAssets[index] = { ...originalAssets[index], ...assetData };
+            } else { 
+                assetData.id = Date.now();
+                originalAssets.push(assetData);
+            }
+            saveToLocalStorage();
+            filterAssets();
+            assetModal.hide();
+        }
+
+        function openEditModal(id) {
+            const asset = originalAssets.find(a => a.id == id);
+            document.getElementById('assetId').value = asset.id;
+            document.getElementById('assetName').value = asset.name;
+            document.getElementById('assetDetails').value = asset.details || '';
+            document.getElementById('assetPrice').value = (asset.price || '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            document.getElementById('purchaseDate').value = asset.date;
+            document.getElementById('assetCategory').value = asset.category;
+            document.getElementById('purchaseLocation').value = asset.location;
+            document.getElementById('assetStatus').value = asset.status;
+            assetModal.show();
+        }
+
+        function deleteAsset(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus aset ini?')) {
+                originalAssets = originalAssets.filter(a => a.id != id);
+                saveToLocalStorage();
+                filterAssets();
+            }
+        }
+        
+        // --- PENCARIAN & PAGINASI ---
+        function filterAssets() {
+            paginationState.currentPage = 1; 
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (!searchTerm) {
+                displayedAssets = [...originalAssets];
+            } else {
+                displayedAssets = originalAssets.filter(asset =>
+                    Object.values(asset).some(val => 
+                        String(val).toLowerCase().includes(searchTerm)
+                    )
+                );
+            }
+            sortState = { key: null, direction: 'none' };
+            updateSortIcons();
+            render();
+        }
+
+        function changePage(direction) {
+            const { currentPage, totalPages } = paginationState;
+            if (direction === 'prev' && currentPage > 1) paginationState.currentPage--;
+            else if (direction === 'next' && currentPage < totalPages) paginationState.currentPage++;
+            render();
+        }
+
+        // --- PERBAIKAN DI SINI ---
+        function changeItemsPerPage(element) {
+            let newItemsPerPage = parseInt(element.value, 10);
+            
+            // Validasi input: jika tidak valid atau kurang dari 1, set ke 1
+            if (isNaN(newItemsPerPage) || newItemsPerPage < 1) {
+                newItemsPerPage = 1;
+                element.value = newItemsPerPage; // Perbarui nilai di kotak input
+            }
+
+            paginationState.itemsPerPage = newItemsPerPage;
+            paginationState.currentPage = 1; // Selalu reset ke halaman pertama
+            render();
+        }
+        
+        // --- EKSPOR & IMPOR ---
+        function getPaginatedAssets() {
+            const startIndex = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
+            const endIndex = startIndex + paginationState.itemsPerPage;
+            return displayedAssets.slice(startIndex, endIndex);
+        }
+        
+        function exportData() {
+            if (originalAssets.length === 0) { return alert("Tidak ada data untuk diekspor."); }
+            const dataStr = JSON.stringify(originalAssets, null, 2);
+            const dataBlob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement("a");
+            link.href = url; link.download = `aset-data-${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file || file.type !== "application/json") { return alert("Harap pilih file .json yang valid."); }
+            if (!confirm("Mengimpor data baru akan menimpa semua data saat ini. Lanjutkan?")) { return event.target.value = null; }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedAssets = JSON.parse(e.target.result);
+                    if (!Array.isArray(importedAssets)) throw new Error("Format JSON tidak valid.");
+                    originalAssets = importedAssets;
+                    saveToLocalStorage();
+                    filterAssets();
+                    alert("Data berhasil diimpor!");
+                } catch (error) {
+                    alert("Gagal membaca file JSON. Error: " + error.message);
+                } finally { event.target.value = null; }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportXLSX() {
+            if (displayedAssets.length === 0) { return alert("Tidak ada data untuk diekspor."); }
+            const paginatedAssets = getPaginatedAssets();
+            const confirmationMessage = `Anda ingin mengekspor data yang mana?\n\n- Tekan 'OK' untuk mengekspor SEMUA hasil (${displayedAssets.length} aset).\n- Tekan 'Cancel' untuk mengekspor HANYA halaman saat ini (${paginatedAssets.length} aset).`;
+            const dataToUse = confirm(confirmationMessage) ? displayedAssets : paginatedAssets;
+
+            const dataToExport = dataToUse.map((asset, index) => ({
+                "No.": index + 1, "Nama Aset": asset.name, "Harga": asset.price,
+                "Tanggal Beli": formatDate(asset.date), "Kategori": asset.category,
+                "Lokasi Beli": asset.location, "Detail Aset": asset.details, "Status": asset.status
+            }));
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Aset");
+            XLSX.writeFile(workbook, `Daftar Aset - ${new Date().toISOString().slice(0, 10)}.xlsx`);
+        }
+        
+        function exportPDF() {
+            if (displayedAssets.length === 0) { return alert("Tidak ada data untuk diekspor."); }
+            const paginatedAssets = getPaginatedAssets();
+            const confirmationMessage = `Anda ingin mengekspor data yang mana?\n\n- Tekan 'OK' untuk mengekspor SEMUA hasil (${displayedAssets.length} aset).\n- Tekan 'Cancel' untuk mengekspor HANYA halaman saat ini (${paginatedAssets.length} aset).`;
+            const dataToUse = confirm(confirmationMessage) ? displayedAssets : paginatedAssets;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape' });
+            doc.autoTable({
+                html: '#assetTable',
+                headStyles: { fillColor: [41, 128, 185] },
+                columns: [0, 1, 2, 3, 4, 5, 6, 7], 
+                body: dataToUse.map((asset, index) => [
+                    index + 1, asset.name, formatCurrency(asset.price),
+                    formatDate(asset.date), asset.category, asset.location,
+                    asset.details || '-', asset.status
+                ]),
+                didDrawPage: (data) => {
+                    const footerText = "Manajemen Aset by Williyanto Adi";
+                    doc.setFontSize(10);
+                    doc.setTextColor(150);
+                    doc.text(footerText, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+                }
+            });
+            doc.save(`Daftar Aset - ${new Date().toISOString().slice(0, 10)}.pdf`);
+        }
+        
+        // --- SORTING ---
+        function sortTable(key) {
+            if (sortState.key === key) {
+                if (sortState.direction === 'asc') sortState.direction = 'desc';
+                else if (sortState.direction === 'desc') sortState.direction = 'none';
+                else sortState.direction = 'asc';
+            } else {
+                sortState.key = key;
+                sortState.direction = 'asc';
+            }
+            if (sortState.direction === 'none') {
+                filterAssets();
+            } else {
+                displayedAssets.sort((a, b) => {
+                    let valA = a[key], valB = b[key];
+                    if (typeof valA === 'number') return valA - valB;
+                    if (key === 'date') return new Date(valA) - new Date(valB);
+                    return (valA || '').localeCompare(valB || '');
+                });
+                if (sortState.direction === 'desc') displayedAssets.reverse();
+            }
+            updateSortIcons();
+            render();
+        }
+
+        // --- INITIALIZATION ---
+        function setupCurrencyInput(inputId) {
+            document.getElementById(inputId).addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\./g, '');
+                e.target.value = !isNaN(value) && value !== '' ? parseInt(value, 10).toLocaleString('id-ID') : '';
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+             setupCurrencyInput('assetPrice');
+             render();
+        });
+    </script>
+</body>
+</html>
