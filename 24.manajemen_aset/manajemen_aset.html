@@ -174,31 +174,44 @@
                         </div>
                         <div class="mb-3">
                             <label for="assetCategory" class="form-label">Kategori</label>
-                            <input class="form-control" list="categoryOptions" id="assetCategory" placeholder="Pilih atau ketik kategori..." required>
-                            <datalist id="categoryOptions">
-                                <option value="Elektronik"></option>
-                                <option value="Furnitur"></option>
-                                <option value="Peralatan Dapur"></option>
-                                <option value="Kendaraan"></option>
-                                <option value="Properti"></option>
-                            </datalist>
+                            <select class="form-select" id="assetCategory" required>
+                                <option value="" disabled selected>-- Pilih Kategori --</option>
+                                <option value="Elektronik">Elektronik</option>
+                                <option value="Furnitur">Furnitur</option>
+                                <option value="Peralatan Dapur">Peralatan Dapur</option>
+                                <option value="Kendaraan">Kendaraan</option>
+                                <option value="Properti">Properti</option>
+                                <option value="other">Aset Lain...</option>
+                            </select>
                         </div>
+                        <div class="mb-3 d-none" id="customCategoryWrapper">
+                             <label for="customCategory" class="form-label">Kategori Kustom</label>
+                             <input type="text" class="form-control" id="customCategory" placeholder="Masukkan nama kategori baru">
+                        </div>
+
                         <div class="mb-3">
                             <label for="purchaseLocation" class="form-label">Toko/Lokasi Beli</label>
                             <input type="text" class="form-control" id="purchaseLocation" required>
                         </div>
+
                         <div class="mb-3">
                             <label for="assetStatus" class="form-label">Status Aset</label>
-                            <input class="form-control" list="statusOptions" id="assetStatus" placeholder="Pilih atau ketik status..." required>
-                             <datalist id="statusOptions">
-                                <option value="Aktif"></option>
-                                <option value="Dalam Perbaikan"></option>
-                                <option value="Rusak"></option>
-                                <option value="Dijual"></option>
-                                <option value="Hilang"></option>
-                                <option value="Dihibahkan"></option>
-                            </datalist>
+                            <select class="form-select" id="assetStatus" required>
+                                <option value="" disabled selected>-- Pilih Status --</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                                <option value="Rusak">Rusak</option>
+                                <option value="Dijual">Dijual</option>
+                                <option value="Hilang">Hilang</option>
+                                <option value="Dihibahkan">Dihibahkan</option>
+                                <option value="other">Status Lain...</option>
+                            </select>
                         </div>
+                        <div class="mb-3 d-none" id="customStatusWrapper">
+                             <label for="customStatus" class="form-label">Status Kustom</label>
+                             <input type="text" class="form-control" id="customStatus" placeholder="Masukkan nama status baru">
+                        </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -222,7 +235,7 @@
         let sortState = { key: null, direction: 'none' }; 
         let paginationState = { currentPage: 1, itemsPerPage: 50, totalPages: 1 };
         const assetModal = new bootstrap.Modal(document.getElementById('assetModal'));
-
+        
         // --- HELPER FUNCTIONS ---
         const formatCurrency = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value || 0);
         const formatDate = (isoDate) => {
@@ -292,11 +305,9 @@
         function renderPaginationControls() {
             paginationState.totalPages = Math.ceil(displayedAssets.length / paginationState.itemsPerPage) || 1;
             const { currentPage, totalPages } = paginationState;
-            
             document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages}`;
             document.getElementById('prevPage').classList.toggle('disabled', currentPage === 1);
             document.getElementById('nextPage').classList.toggle('disabled', currentPage === totalPages);
-            
             document.getElementById('pagination-wrapper').style.display = totalPages > 1 || originalAssets.length > 0 ? 'flex' : 'none';
         }
         
@@ -317,16 +328,46 @@
             document.getElementById('assetForm').reset();
             document.getElementById('assetId').value = '';
             document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
+            
+            // Set default date to today
+            document.getElementById('purchaseDate').value = new Date().toISOString().slice(0, 10);
+
+            // Reset and hide custom fields
+            document.getElementById('customCategoryWrapper').classList.add('d-none');
+            document.getElementById('customCategory').value = '';
+            document.getElementById('customStatusWrapper').classList.add('d-none');
+            document.getElementById('customStatus').value = '';
         }
         
         function saveAsset() {
             const id = document.getElementById('assetId').value;
             const priceString = document.getElementById('assetPrice').value.replace(/\./g, '');
+            
+            // Get category value
+            let category = document.getElementById('assetCategory').value;
+            if (category === 'other') {
+                category = document.getElementById('customCategory').value.trim();
+                if (!category) {
+                    alert('Kategori kustom tidak boleh kosong.');
+                    return;
+                }
+            }
+
+            // Get status value
+            let status = document.getElementById('assetStatus').value;
+            if (status === 'other') {
+                status = document.getElementById('customStatus').value.trim();
+                 if (!status) {
+                    alert('Status kustom tidak boleh kosong.');
+                    return;
+                }
+            }
+
             const assetData = {
                 name: document.getElementById('assetName').value, details: document.getElementById('assetDetails').value,
                 price: parseInt(priceString, 10) || 0, date: document.getElementById('purchaseDate').value,
-                category: document.getElementById('assetCategory').value, location: document.getElementById('purchaseLocation').value,
-                status: document.getElementById('assetStatus').value,
+                category: category, location: document.getElementById('purchaseLocation').value,
+                status: status,
             };
 
             if (id) { 
@@ -342,15 +383,39 @@
         }
 
         function openEditModal(id) {
+            openAddModal(); // Reset form first
+            document.getElementById('assetModalLabel').textContent = 'Edit Data Aset';
+            
             const asset = originalAssets.find(a => a.id == id);
             document.getElementById('assetId').value = asset.id;
             document.getElementById('assetName').value = asset.name;
             document.getElementById('assetDetails').value = asset.details || '';
             document.getElementById('assetPrice').value = (asset.price || '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             document.getElementById('purchaseDate').value = asset.date;
-            document.getElementById('assetCategory').value = asset.category;
             document.getElementById('purchaseLocation').value = asset.location;
-            document.getElementById('assetStatus').value = asset.status;
+            
+            // Set category dropdown
+            const categorySelect = document.getElementById('assetCategory');
+            const categoryOptions = Array.from(categorySelect.options).map(opt => opt.value);
+            if (categoryOptions.includes(asset.category)) {
+                categorySelect.value = asset.category;
+            } else {
+                categorySelect.value = 'other';
+                document.getElementById('customCategoryWrapper').classList.remove('d-none');
+                document.getElementById('customCategory').value = asset.category;
+            }
+            
+            // Set status dropdown
+            const statusSelect = document.getElementById('assetStatus');
+            const statusOptions = Array.from(statusSelect.options).map(opt => opt.value);
+            if (statusOptions.includes(asset.status)) {
+                statusSelect.value = asset.status;
+            } else {
+                statusSelect.value = 'other';
+                document.getElementById('customStatusWrapper').classList.remove('d-none');
+                document.getElementById('customStatus').value = asset.status;
+            }
+            
             assetModal.show();
         }
 
@@ -366,15 +431,9 @@
         function filterAssets() {
             paginationState.currentPage = 1; 
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            if (!searchTerm) {
-                displayedAssets = [...originalAssets];
-            } else {
-                displayedAssets = originalAssets.filter(asset =>
-                    Object.values(asset).some(val => 
-                        String(val).toLowerCase().includes(searchTerm)
-                    )
-                );
-            }
+            displayedAssets = !searchTerm ? [...originalAssets] : originalAssets.filter(asset =>
+                Object.values(asset).some(val => String(val).toLowerCase().includes(searchTerm))
+            );
             sortState = { key: null, direction: 'none' };
             updateSortIcons();
             render();
@@ -387,18 +446,14 @@
             render();
         }
 
-        // --- PERBAIKAN DI SINI ---
         function changeItemsPerPage(element) {
             let newItemsPerPage = parseInt(element.value, 10);
-            
-            // Validasi input: jika tidak valid atau kurang dari 1, set ke 1
             if (isNaN(newItemsPerPage) || newItemsPerPage < 1) {
                 newItemsPerPage = 1;
-                element.value = newItemsPerPage; // Perbarui nilai di kotak input
+                element.value = newItemsPerPage;
             }
-
             paginationState.itemsPerPage = newItemsPerPage;
-            paginationState.currentPage = 1; // Selalu reset ke halaman pertama
+            paginationState.currentPage = 1;
             render();
         }
         
@@ -445,7 +500,6 @@
             const paginatedAssets = getPaginatedAssets();
             const confirmationMessage = `Anda ingin mengekspor data yang mana?\n\n- Tekan 'OK' untuk mengekspor SEMUA hasil (${displayedAssets.length} aset).\n- Tekan 'Cancel' untuk mengekspor HANYA halaman saat ini (${paginatedAssets.length} aset).`;
             const dataToUse = confirm(confirmationMessage) ? displayedAssets : paginatedAssets;
-
             const dataToExport = dataToUse.map((asset, index) => ({
                 "No.": index + 1, "Nama Aset": asset.name, "Harga": asset.price,
                 "Tanggal Beli": formatDate(asset.date), "Kategori": asset.category,
@@ -519,6 +573,14 @@
         
         document.addEventListener('DOMContentLoaded', () => {
              setupCurrencyInput('assetPrice');
+
+             document.getElementById('assetCategory').addEventListener('change', (e) => {
+                document.getElementById('customCategoryWrapper').classList.toggle('d-none', e.target.value !== 'other');
+             });
+             document.getElementById('assetStatus').addEventListener('change', (e) => {
+                document.getElementById('customStatusWrapper').classList.toggle('d-none', e.target.value !== 'other');
+             });
+
              render();
         });
     </script>
