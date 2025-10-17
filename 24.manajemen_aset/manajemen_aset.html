@@ -106,7 +106,7 @@
                             </tr>
                         </thead>
                         <tbody id="assetTableBody">
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
 
@@ -131,7 +131,7 @@
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <div id="lastUpdatedText" class="text-muted small"></div>
                     <div class="text-end">
-                        <span class="fw-bold">TOTAL NILAI ASET (Hasil Filter):</span>
+                        <span class="fw-bold">Total Nilai Aset :</span>
                         <span id="totalAssetValue" class="fw-bold text-success total-cell ms-2"></span>
                     </div>
                 </div>
@@ -153,69 +153,69 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                     <form id="assetForm" onsubmit="event.preventDefault(); saveAsset();">
-                        <input type="hidden" id="assetId">
-                        <div class="mb-3">
-                            <label for="assetName" class="form-label">Nama Aset</label>
-                            <input type="text" class="form-control" id="assetName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="assetDetails" class="form-label">Detail Aset</label>
-                            <textarea class="form-control" id="assetDetails" rows="3" placeholder="Contoh: No. Seri, Warna, Spesifikasi, dll."></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="assetPrice" class="form-label">Harga Aset</label>
-                                <input type="text" class="form-control" id="assetPrice" inputmode="numeric" required>
+                        <form id="assetForm" onsubmit="event.preventDefault(); saveAsset();">
+                            <input type="hidden" id="assetId">
+                            <div class="mb-3">
+                                <label for="assetName" class="form-label">Nama Aset</label>
+                                <input type="text" class="form-control" id="assetName" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="purchaseDate" class="form-label">Tanggal Beli</label>
-                                <input type="date" class="form-control" id="purchaseDate" required>
+                            <div class="mb-3">
+                                <label for="assetDetails" class="form-label">Detail Aset</label>
+                                <textarea class="form-control" id="assetDetails" rows="3" placeholder="Contoh: No. Seri, Warna, Spesifikasi, dll."></textarea>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="assetCategory" class="form-label">Kategori</label>
-                            <select class="form-select" id="assetCategory" required>
-                                <option value="Elektronik">Elektronik</option>
-                                <option value="Furnitur">Furnitur</option>
-                                <option value="Peralatan Dapur">Peralatan Dapur</option>
-                                <option value="Kendaraan">Kendaraan</option>
-                                <option value="Properti">Properti</option>
-                                <option value="other">Aset Lain...</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 d-none" id="customCategoryWrapper">
-                             <label for="customCategory" class="form-label">Kategori Kustom</label>
-                             <input type="text" class="form-control" id="customCategory" placeholder="Masukkan nama kategori baru">
-                        </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="assetPrice" class="form-label">Harga Aset</label>
+                                    <input type="text" class="form-control" id="assetPrice" inputmode="numeric" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="purchaseDate" class="form-label">Tanggal Beli</label>
+                                    <input type="text" class="form-control" id="purchaseDate" placeholder="dd/mm/yyyy" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="assetCategory" class="form-label">Kategori</label>
+                                <select class="form-select" id="assetCategory" required>
+                                    <option value="Elektronik">Elektronik</option>
+                                    <option value="Furnitur">Furnitur</option>
+                                    <option value="Peralatan Dapur">Peralatan Dapur</option>
+                                    <option value="Kendaraan">Kendaraan</option>
+                                    <option value="Properti">Properti</option>
+                                    <option value="other">Aset Lain...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 d-none" id="customCategoryWrapper">
+                                    <label for="customCategory" class="form-label">Kategori Kustom</label>
+                                    <input type="text" class="form-control" id="customCategory" placeholder="Masukkan nama kategori baru">
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="purchaseLocation" class="form-label">Toko/Lokasi Beli</label>
-                            <input type="text" class="form-control" id="purchaseLocation" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="purchaseLocation" class="form-label">Toko/Lokasi Beli</label>
+                                <input type="text" class="form-control" id="purchaseLocation" required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="assetStatus" class="form-label">Status Aset</label>
-                            <select class="form-select" id="assetStatus" required>
-                                <option value="Aktif">Aktif</option>
-                                <option value="Dalam Perbaikan">Dalam Perbaikan</option>
-                                <option value="Rusak">Rusak</option>
-                                <option value="Dijual">Dijual</option>
-                                <option value="Hilang">Hilang</option>
-                                <option value="Dihibahkan">Dihibahkan</option>
-                                <option value="other">Status Lain...</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 d-none" id="customStatusWrapper">
-                             <label for="customStatus" class="form-label">Status Kustom</label>
-                             <input type="text" class="form-control" id="customStatus" placeholder="Masukkan nama status baru">
-                        </div>
+                            <div class="mb-3">
+                                <label for="assetStatus" class="form-label">Status Aset</label>
+                                <select class="form-select" id="assetStatus" required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                                    <option value="Rusak">Rusak</option>
+                                    <option value="Dijual">Dijual</option>
+                                    <option value="Hilang">Hilang</option>
+                                    <option value="Dihibahkan">Dihibahkan</option>
+                                    <option value="other">Status Lain...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 d-none" id="customStatusWrapper">
+                                    <label for="customStatus" class="form-label">Status Kustom</label>
+                                    <input type="text" class="form-control" id="customStatus" placeholder="Masukkan nama status baru">
+                            </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
-                    </form>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
                 </div>
             </div>
         </div>
@@ -237,6 +237,7 @@
         
         // --- HELPER FUNCTIONS ---
         const formatCurrency = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value || 0);
+        
         const formatDate = (isoDate) => {
             if (!isoDate) return '';
             const date = new Date(isoDate);
@@ -244,6 +245,16 @@
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
+        };
+
+        // FUNGSI BARU: Mengubah format dd/mm/yyyy menjadi yyyy-mm-dd untuk disimpan
+        const parseDateString = (dateStr) => {
+            if (!dateStr || !/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+                // Jika format salah, kembalikan tanggal hari ini sebagai fallback
+                return new Date().toISOString().slice(0, 10); 
+            }
+            const [day, month, year] = dateStr.split('/');
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
         };
         
         const getStatusBadge = (status) => {
@@ -263,7 +274,6 @@
             document.getElementById('totalAssetValue').textContent = formatCurrency(total);
         }
 
-        // --- FUNGSI BARU UNTUK TIMESTAMP ---
         function updateAndDisplayTimestamp() {
             const now = new Date().toISOString();
             localStorage.setItem('lastUpdated', now);
@@ -284,7 +294,7 @@
         function render() {
             renderTable();
             renderPaginationControls();
-            displayTimestamp(); // Panggil saat render
+            displayTimestamp();
         }
 
         function renderTable() {
@@ -294,7 +304,7 @@
             const paginatedAssets = displayedAssets.slice(startIndex, startIndex + paginationState.itemsPerPage);
 
             if (paginatedAssets.length === 0) {
-                 tableBody.innerHTML = `<tr><td colspan="9" class="text-center">${originalAssets.length > 0 ? 'Aset tidak ditemukan' : 'Belum ada data aset'}</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="9" class="text-center">${originalAssets.length > 0 ? 'Aset tidak ditemukan' : 'Belum ada data aset'}</td></tr>`;
             } else {
                 paginatedAssets.forEach((asset, index) => {
                     const itemNumber = startIndex + index + 1;
@@ -340,14 +350,15 @@
         // --- CRUD & DATA OPERATIONS ---
         function saveToLocalStorage() {
             localStorage.setItem('assets', JSON.stringify(originalAssets));
-            updateAndDisplayTimestamp(); // Update timestamp setiap kali save
+            updateAndDisplayTimestamp();
         }
 
         function openAddModal() {
             document.getElementById('assetForm').reset();
             document.getElementById('assetId').value = '';
             document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
-            document.getElementById('purchaseDate').value = new Date().toISOString().slice(0, 10);
+            // UBAH DI SINI: Atur tanggal default ke format dd/mm/yyyy
+            document.getElementById('purchaseDate').value = formatDate(new Date().toISOString());
             document.getElementById('customCategoryWrapper').classList.add('d-none');
             document.getElementById('customCategory').value = '';
             document.getElementById('customStatusWrapper').classList.add('d-none');
@@ -365,11 +376,13 @@
             let status = document.getElementById('assetStatus').value;
             if (status === 'other') {
                 status = document.getElementById('customStatus').value.trim();
-                 if (!status) { return alert('Status kustom tidak boleh kosong.'); }
+                    if (!status) { return alert('Status kustom tidak boleh kosong.'); }
             }
             const assetData = {
                 name: document.getElementById('assetName').value, details: document.getElementById('assetDetails').value,
-                price: parseInt(priceString, 10) || 0, date: document.getElementById('purchaseDate').value,
+                price: parseInt(priceString, 10) || 0, 
+                // UBAH DI SINI: Konversi input dd/mm/yyyy ke yyyy-mm-dd sebelum menyimpan
+                date: parseDateString(document.getElementById('purchaseDate').value),
                 category: category, location: document.getElementById('purchaseLocation').value, status: status,
             };
 
@@ -394,7 +407,8 @@
             document.getElementById('assetName').value = asset.name;
             document.getElementById('assetDetails').value = asset.details || '';
             document.getElementById('assetPrice').value = (asset.price || '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            document.getElementById('purchaseDate').value = asset.date;
+            // UBAH DI SINI: Konversi tanggal yyyy-mm-dd dari data ke dd/mm/yyyy untuk ditampilkan
+            document.getElementById('purchaseDate').value = formatDate(asset.date);
             document.getElementById('purchaseLocation').value = asset.location;
             
             const categorySelect = document.getElementById('assetCategory');
@@ -481,7 +495,7 @@
                     const importedAssets = JSON.parse(e.target.result);
                     if (!Array.isArray(importedAssets)) throw new Error("Format JSON tidak valid.");
                     originalAssets = importedAssets;
-                    saveToLocalStorage(); // Ini akan memanggil updateAndDisplayTimestamp
+                    saveToLocalStorage();
                     filterAssets();
                     alert("Data berhasil diimpor!");
                 } catch (error) {
@@ -530,11 +544,9 @@
                     doc.setFontSize(10);
                     doc.setTextColor(150);
                     
-                    // Footer tengah
                     const footerText = "Manajemen Aset by Williyanto Adi";
                     doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
 
-                    // Footer kanan
                     const lastUpdated = localStorage.getItem('lastUpdated');
                     if (lastUpdated) {
                         const updatedText = `Terakhir Diperbarui: ${formatDate(lastUpdated)}`;
@@ -579,14 +591,14 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-             setupCurrencyInput('assetPrice');
-             document.getElementById('assetCategory').addEventListener('change', (e) => {
-                document.getElementById('customCategoryWrapper').classList.toggle('d-none', e.target.value !== 'other');
-             });
-             document.getElementById('assetStatus').addEventListener('change', (e) => {
-                document.getElementById('customStatusWrapper').classList.toggle('d-none', e.target.value !== 'other');
-             });
-             render();
+                setupCurrencyInput('assetPrice');
+                document.getElementById('assetCategory').addEventListener('change', (e) => {
+                    document.getElementById('customCategoryWrapper').classList.toggle('d-none', e.target.value !== 'other');
+                });
+                document.getElementById('assetStatus').addEventListener('change', (e) => {
+                    document.getElementById('customStatusWrapper').classList.toggle('d-none', e.target.value !== 'other');
+                });
+                render();
         });
     </script>
 </body>
