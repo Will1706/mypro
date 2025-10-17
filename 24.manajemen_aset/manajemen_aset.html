@@ -47,6 +47,11 @@
         .pagination-controls {
             gap: 10px;
         }
+        /* CSS Kustom untuk warna ungu */
+        .bg-purple {
+            background-color: #6f42c1;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -177,11 +182,12 @@
                                 <label for="assetCategory" class="form-label">Kategori</label>
                                 <select class="form-select" id="assetCategory" required>
                                     <option value="Elektronik">Elektronik</option>
+                                    <option value="Perangkat Komputer">Perangkat Komputer</option>
+                                    <option value="Kendaraan">Kendaraan</option>
                                     <option value="Furnitur">Furnitur</option>
                                     <option value="Peralatan Dapur">Peralatan Dapur</option>
-                                    <option value="Kendaraan">Kendaraan</option>
                                     <option value="Properti">Properti</option>
-                                    <option value="other">Aset Lain...</option>
+                                    <option value="other">Aset Lain</option>
                                 </select>
                             </div>
                             <div class="mb-3 d-none" id="customCategoryWrapper">
@@ -197,13 +203,14 @@
                             <div class="mb-3">
                                 <label for="assetStatus" class="form-label">Status Aset</label>
                                 <select class="form-select" id="assetStatus" required>
-                                    <option value="Aktif">Aktif</option>
+                                    <option value="Masih Ada, Kondisi Baik">Masih Ada, Kondisi Baik</option>
+                                    <option value="Masih Ada, Kondisi Rusak">Masih Ada, Kondisi Rusak</option>
                                     <option value="Dalam Perbaikan">Dalam Perbaikan</option>
-                                    <option value="Rusak">Rusak</option>
-                                    <option value="Dijual">Dijual</option>
+                                    <option value="Kondisi rusak/Tidak ada/Dibuang">Kondisi rusak/Tidak ada/Dibuang</option>
+                                    <option value="Dijual">Sudah Dijual</option>
                                     <option value="Hilang">Hilang</option>
                                     <option value="Dihibahkan">Dihibahkan</option>
-                                    <option value="other">Status Lain...</option>
+                                    <option value="other">Status Lain</option>
                                 </select>
                             </div>
                             <div class="mb-3 d-none" id="customStatusWrapper">
@@ -247,10 +254,8 @@
             return `${day}/${month}/${year}`;
         };
 
-        // FUNGSI BARU: Mengubah format dd/mm/yyyy menjadi yyyy-mm-dd untuk disimpan
         const parseDateString = (dateStr) => {
             if (!dateStr || !/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-                // Jika format salah, kembalikan tanggal hari ini sebagai fallback
                 return new Date().toISOString().slice(0, 10); 
             }
             const [day, month, year] = dateStr.split('/');
@@ -259,14 +264,21 @@
         
         const getStatusBadge = (status) => {
             const predefinedColors = {
-                'Aktif': 'bg-success', 'Dalam Perbaikan': 'bg-warning text-dark', 'Rusak': 'bg-danger',
-                'Dijual': 'bg-info text-dark', 'Hilang': 'bg-dark', 'Dihibahkan': 'bg-dark',
+                'Masih Ada, Kondisi Baik': 'bg-success',
+                'Masih Ada, Kondisi Rusak': 'bg-danger',
+                'Dalam Perbaikan': 'bg-warning text-dark',
+                'Kondisi rusak/Tidak ada/Dibuang': 'bg-danger',
+                'Dijual': 'bg-purple',
+                'Hilang': 'bg-info',
+                'Dihibahkan': 'bg-dark',
             };
             if (predefinedColors[status]) return predefinedColors[status];
-            const customColors = ['bg-primary', 'bg-info']; 
+            
+            const customColors = ['bg-primary', 'bg-secondary', 'bg-light text-dark']; 
             let hash = 0;
             for (let i = 0; i < status.length; i++) hash = status.charCodeAt(i) + ((hash << 5) - hash);
-            return `${customColors[Math.abs(hash % customColors.length)]} text-white`;
+            const colorClass = customColors[Math.abs(hash % customColors.length)];
+            return `${colorClass} ${colorClass.includes('light') ? '' : 'text-white'}`;
         };
         
         function calculateAndDisplayTotal() {
@@ -357,7 +369,6 @@
             document.getElementById('assetForm').reset();
             document.getElementById('assetId').value = '';
             document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
-            // UBAH DI SINI: Atur tanggal default ke format dd/mm/yyyy
             document.getElementById('purchaseDate').value = formatDate(new Date().toISOString());
             document.getElementById('customCategoryWrapper').classList.add('d-none');
             document.getElementById('customCategory').value = '';
@@ -381,7 +392,6 @@
             const assetData = {
                 name: document.getElementById('assetName').value, details: document.getElementById('assetDetails').value,
                 price: parseInt(priceString, 10) || 0, 
-                // UBAH DI SINI: Konversi input dd/mm/yyyy ke yyyy-mm-dd sebelum menyimpan
                 date: parseDateString(document.getElementById('purchaseDate').value),
                 category: category, location: document.getElementById('purchaseLocation').value, status: status,
             };
@@ -407,7 +417,6 @@
             document.getElementById('assetName').value = asset.name;
             document.getElementById('assetDetails').value = asset.details || '';
             document.getElementById('assetPrice').value = (asset.price || '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            // UBAH DI SINI: Konversi tanggal yyyy-mm-dd dari data ke dd/mm/yyyy untuk ditampilkan
             document.getElementById('purchaseDate').value = formatDate(asset.date);
             document.getElementById('purchaseLocation').value = asset.location;
             
