@@ -128,7 +128,8 @@
                     </nav>
                 </div>
 
-                <div class="d-flex justify-content-end mt-3">
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div id="lastUpdatedText" class="text-muted small"></div>
                     <div class="text-end">
                         <span class="fw-bold">TOTAL NILAI ASET (Hasil Filter):</span>
                         <span id="totalAssetValue" class="fw-bold text-success total-cell ms-2"></span>
@@ -195,7 +196,7 @@
 
                         <div class="mb-3">
                             <label for="assetStatus" class="form-label">Status Aset</label>
-                             <select class="form-select" id="assetStatus" required>
+                            <select class="form-select" id="assetStatus" required>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Dalam Perbaikan">Dalam Perbaikan</option>
                                 <option value="Rusak">Rusak</option>
@@ -238,7 +239,10 @@
         const formatCurrency = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value || 0);
         const formatDate = (isoDate) => {
             if (!isoDate) return '';
-            const [year, month, day] = isoDate.split('-');
+            const date = new Date(isoDate);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         };
         
@@ -259,19 +263,35 @@
             document.getElementById('totalAssetValue').textContent = formatCurrency(total);
         }
 
+        // --- FUNGSI BARU UNTUK TIMESTAMP ---
+        function updateAndDisplayTimestamp() {
+            const now = new Date().toISOString();
+            localStorage.setItem('lastUpdated', now);
+            displayTimestamp();
+        }
+
+        function displayTimestamp() {
+            const lastUpdated = localStorage.getItem('lastUpdated');
+            const element = document.getElementById('lastUpdatedText');
+            if (lastUpdated) {
+                element.textContent = `Terakhir diperbarui: ${formatDate(lastUpdated)}`;
+            } else {
+                element.textContent = '';
+            }
+        }
+
         // --- RENDERING ---
         function render() {
             renderTable();
             renderPaginationControls();
+            displayTimestamp(); // Panggil saat render
         }
 
         function renderTable() {
             const tableBody = document.getElementById('assetTableBody');
             tableBody.innerHTML = '';
-            
             const startIndex = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
-            const endIndex = startIndex + paginationState.itemsPerPage;
-            const paginatedAssets = displayedAssets.slice(startIndex, endIndex);
+            const paginatedAssets = displayedAssets.slice(startIndex, startIndex + paginationState.itemsPerPage);
 
             if (paginatedAssets.length === 0) {
                  tableBody.innerHTML = `<tr><td colspan="9" class="text-center">${originalAssets.length > 0 ? 'Aset tidak ditemukan' : 'Belum ada data aset'}</td></tr>`;
@@ -320,6 +340,7 @@
         // --- CRUD & DATA OPERATIONS ---
         function saveToLocalStorage() {
             localStorage.setItem('assets', JSON.stringify(originalAssets));
+            updateAndDisplayTimestamp(); // Update timestamp setiap kali save
         }
 
         function openAddModal() {
@@ -336,24 +357,20 @@
         function saveAsset() {
             const id = document.getElementById('assetId').value;
             const priceString = document.getElementById('assetPrice').value.replace(/\./g, '');
-            
             let category = document.getElementById('assetCategory').value;
             if (category === 'other') {
                 category = document.getElementById('customCategory').value.trim();
                 if (!category) { return alert('Kategori kustom tidak boleh kosong.'); }
             }
-
             let status = document.getElementById('assetStatus').value;
             if (status === 'other') {
                 status = document.getElementById('customStatus').value.trim();
                  if (!status) { return alert('Status kustom tidak boleh kosong.'); }
             }
-
             const assetData = {
                 name: document.getElementById('assetName').value, details: document.getElementById('assetDetails').value,
                 price: parseInt(priceString, 10) || 0, date: document.getElementById('purchaseDate').value,
-                category: category, location: document.getElementById('purchaseLocation').value,
-                status: status,
+                category: category, location: document.getElementById('purchaseLocation').value, status: status,
             };
 
             if (id) { 
@@ -382,20 +399,16 @@
             
             const categorySelect = document.getElementById('assetCategory');
             const categoryOptions = Array.from(categorySelect.options).map(opt => opt.value);
-            if (categoryOptions.includes(asset.category)) {
-                categorySelect.value = asset.category;
-            } else {
-                categorySelect.value = 'other';
+            categorySelect.value = categoryOptions.includes(asset.category) ? asset.category : 'other';
+            if (categorySelect.value === 'other') {
                 document.getElementById('customCategoryWrapper').classList.remove('d-none');
                 document.getElementById('customCategory').value = asset.category;
             }
             
             const statusSelect = document.getElementById('assetStatus');
             const statusOptions = Array.from(statusSelect.options).map(opt => opt.value);
-            if (statusOptions.includes(asset.status)) {
-                statusSelect.value = asset.status;
-            } else {
-                statusSelect.value = 'other';
+            statusSelect.value = statusOptions.includes(asset.status) ? asset.status : 'other';
+            if (statusSelect.value === 'other') {
                 document.getElementById('customStatusWrapper').classList.remove('d-none');
                 document.getElementById('customStatus').value = asset.status;
             }
@@ -444,8 +457,7 @@
         // --- EKSPOR & IMPOR ---
         function getPaginatedAssets() {
             const startIndex = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
-            const endIndex = startIndex + paginationState.itemsPerPage;
-            return displayedAssets.slice(startIndex, endIndex);
+            return displayedAssets.slice(startIndex, startIndex + paginationState.itemsPerPage);
         }
         
         function exportData() {
@@ -469,7 +481,7 @@
                     const importedAssets = JSON.parse(e.target.result);
                     if (!Array.isArray(importedAssets)) throw new Error("Format JSON tidak valid.");
                     originalAssets = importedAssets;
-                    saveToLocalStorage();
+                    saveToLocalStorage(); // Ini akan memanggil updateAndDisplayTimestamp
                     filterAssets();
                     alert("Data berhasil diimpor!");
                 } catch (error) {
@@ -513,10 +525,21 @@
                     asset.details || '-', asset.status
                 ]),
                 didDrawPage: (data) => {
-                    const footerText = "Manajemen Aset by Williyanto Adi";
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    const pageWidth = doc.internal.pageSize.getWidth();
                     doc.setFontSize(10);
                     doc.setTextColor(150);
-                    doc.text(footerText, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+                    
+                    // Footer tengah
+                    const footerText = "Manajemen Aset by Williyanto Adi";
+                    doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                    // Footer kanan
+                    const lastUpdated = localStorage.getItem('lastUpdated');
+                    if (lastUpdated) {
+                        const updatedText = `Terakhir Diperbarui: ${formatDate(lastUpdated)}`;
+                        doc.text(updatedText, pageWidth - data.settings.margin.right, pageHeight - 10, { align: 'right' });
+                    }
                 }
             });
             doc.save(`Daftar Aset - ${new Date().toISOString().slice(0, 10)}.pdf`);
@@ -557,14 +580,12 @@
         
         document.addEventListener('DOMContentLoaded', () => {
              setupCurrencyInput('assetPrice');
-
              document.getElementById('assetCategory').addEventListener('change', (e) => {
                 document.getElementById('customCategoryWrapper').classList.toggle('d-none', e.target.value !== 'other');
              });
              document.getElementById('assetStatus').addEventListener('change', (e) => {
                 document.getElementById('customStatusWrapper').classList.toggle('d-none', e.target.value !== 'other');
              });
-
              render();
         });
     </script>
