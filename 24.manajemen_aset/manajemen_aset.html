@@ -175,7 +175,6 @@
                         <div class="mb-3">
                             <label for="assetCategory" class="form-label">Kategori</label>
                             <select class="form-select" id="assetCategory" required>
-                                <option value="" disabled selected>-- Pilih Kategori --</option>
                                 <option value="Elektronik">Elektronik</option>
                                 <option value="Furnitur">Furnitur</option>
                                 <option value="Peralatan Dapur">Peralatan Dapur</option>
@@ -196,8 +195,7 @@
 
                         <div class="mb-3">
                             <label for="assetStatus" class="form-label">Status Aset</label>
-                            <select class="form-select" id="assetStatus" required>
-                                <option value="" disabled selected>-- Pilih Status --</option>
+                             <select class="form-select" id="assetStatus" required>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Dalam Perbaikan">Dalam Perbaikan</option>
                                 <option value="Rusak">Rusak</option>
@@ -328,11 +326,7 @@
             document.getElementById('assetForm').reset();
             document.getElementById('assetId').value = '';
             document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
-            
-            // Set default date to today
             document.getElementById('purchaseDate').value = new Date().toISOString().slice(0, 10);
-
-            // Reset and hide custom fields
             document.getElementById('customCategoryWrapper').classList.add('d-none');
             document.getElementById('customCategory').value = '';
             document.getElementById('customStatusWrapper').classList.add('d-none');
@@ -343,24 +337,16 @@
             const id = document.getElementById('assetId').value;
             const priceString = document.getElementById('assetPrice').value.replace(/\./g, '');
             
-            // Get category value
             let category = document.getElementById('assetCategory').value;
             if (category === 'other') {
                 category = document.getElementById('customCategory').value.trim();
-                if (!category) {
-                    alert('Kategori kustom tidak boleh kosong.');
-                    return;
-                }
+                if (!category) { return alert('Kategori kustom tidak boleh kosong.'); }
             }
 
-            // Get status value
             let status = document.getElementById('assetStatus').value;
             if (status === 'other') {
                 status = document.getElementById('customStatus').value.trim();
-                 if (!status) {
-                    alert('Status kustom tidak boleh kosong.');
-                    return;
-                }
+                 if (!status) { return alert('Status kustom tidak boleh kosong.'); }
             }
 
             const assetData = {
@@ -383,7 +369,7 @@
         }
 
         function openEditModal(id) {
-            openAddModal(); // Reset form first
+            openAddModal(); 
             document.getElementById('assetModalLabel').textContent = 'Edit Data Aset';
             
             const asset = originalAssets.find(a => a.id == id);
@@ -394,7 +380,6 @@
             document.getElementById('purchaseDate').value = asset.date;
             document.getElementById('purchaseLocation').value = asset.location;
             
-            // Set category dropdown
             const categorySelect = document.getElementById('assetCategory');
             const categoryOptions = Array.from(categorySelect.options).map(opt => opt.value);
             if (categoryOptions.includes(asset.category)) {
@@ -405,7 +390,6 @@
                 document.getElementById('customCategory').value = asset.category;
             }
             
-            // Set status dropdown
             const statusSelect = document.getElementById('assetStatus');
             const statusOptions = Array.from(statusSelect.options).map(opt => opt.value);
             if (statusOptions.includes(asset.status)) {
