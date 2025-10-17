@@ -102,6 +102,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th>No.</th>
+                                <th class="text-nowrap">Nomor Aset</th>
                                 <th>Nama Aset</th>
                                 <th class="text-nowrap sortable" onclick="sortTable('price')">Harga <i id="sort-icon-price" class="bi bi-arrow-down-up sort-icon"></i></th>
                                 <th class="text-nowrap sortable" onclick="sortTable('date')">Tanggal Beli <i id="sort-icon-date" class="bi bi-arrow-down-up sort-icon"></i></th>
@@ -148,7 +149,7 @@
 
     <footer class="text-center text-muted py-4 mt-5">
         <div class="container">
-            <p class="mb-0">Williyanto Adi 2025</p>
+            <p class="mb-0">&copy; Williyanto Adi 2025</p>
         </div>
     </footer>
 
@@ -160,70 +161,72 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                        <form id="assetForm" onsubmit="event.preventDefault(); saveAsset();">
-                            <input type="hidden" id="assetId">
-                            <div class="mb-3">
-                                <label for="assetName" class="form-label">Nama Aset</label>
-                                <input type="text" class="form-control" id="assetName" required>
+                    <h6 class="text-muted">Nomor Aset: <span id="displayAssetNumber" class="fw-bold"></span></h6>
+                    <hr class="mt-2">
+                    <form id="assetForm" onsubmit="event.preventDefault(); saveAsset();">
+                        <input type="hidden" id="assetId">
+                        <div class="mb-3">
+                            <label for="assetName" class="form-label">Nama Aset</label>
+                            <input type="text" class="form-control" id="assetName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assetDetails" class="form-label">Detail Aset</label>
+                            <textarea class="form-control" id="assetDetails" rows="3" placeholder="Contoh: No. Seri, Warna, Spesifikasi, dll."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="assetPrice" class="form-label">Harga Aset</label>
+                                <input type="text" class="form-control" id="assetPrice" inputmode="numeric" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="assetDetails" class="form-label">Detail Aset</label>
-                                <textarea class="form-control" id="assetDetails" rows="3" placeholder="Contoh: No. Seri, Warna, Spesifikasi, dll."></textarea>
+                            <div class="col-md-6 mb-3">
+                                <label for="purchaseDate" class="form-label">Tanggal Beli</label>
+                                <input type="text" class="form-control" id="purchaseDate" placeholder="dd/mm/yyyy" required>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="assetPrice" class="form-label">Harga Aset</label>
-                                    <input type="text" class="form-control" id="assetPrice" inputmode="numeric" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="purchaseDate" class="form-label">Tanggal Beli</label>
-                                    <input type="text" class="form-control" id="purchaseDate" placeholder="dd/mm/yyyy" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="assetCategory" class="form-label">Kategori</label>
-                                <select class="form-select" id="assetCategory" required>
-                                    <option value="Elektronik">Elektronik</option>
-                                    <option value="Furnitur">Furnitur</option>
-                                    <option value="Peralatan Dapur">Peralatan Dapur</option>
-                                    <option value="Kendaraan">Kendaraan</option>
-                                    <option value="Properti">Properti</option>
-                                    <option value="other">Aset Lain...</option>
-                                </select>
-                            </div>
-                            <div class="mb-3 d-none" id="customCategoryWrapper">
-                                    <label for="customCategory" class="form-label">Kategori Kustom</label>
-                                    <input type="text" class="form-control" id="customCategory" placeholder="Masukkan nama kategori baru">
-                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assetCategory" class="form-label">Kategori</label>
+                            <select class="form-select" id="assetCategory" required>
+                                <option value="Elektronik">Elektronik</option>
+                                <option value="Furnitur">Furnitur</option>
+                                <option value="Peralatan Dapur">Peralatan Dapur</option>
+                                <option value="Kendaraan">Kendaraan</option>
+                                <option value="Properti">Properti</option>
+                                <option value="other">Aset Lain...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 d-none" id="customCategoryWrapper">
+                                <label for="customCategory" class="form-label">Kategori Kustom</label>
+                                <input type="text" class="form-control" id="customCategory" placeholder="Masukkan nama kategori baru">
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="purchaseLocation" class="form-label">Toko/Lokasi Beli</label>
-                                <input type="text" class="form-control" id="purchaseLocation" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="purchaseLocation" class="form-label">Toko/Lokasi Beli</label>
+                            <input type="text" class="form-control" id="purchaseLocation" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="assetStatus" class="form-label">Status Aset</label>
-                                <select class="form-select" id="assetStatus" required>
-                                    <option value="Masih Ada, Kondisi Baik">Masih Ada, Kondisi Baik</option>
-                                    <option value="Masih Ada, Kondisi Rusak">Masih Ada, Kondisi Rusak</option>
-                                    <option value="Dalam Perbaikan">Dalam Perbaikan</option>
-                                    <option value="Kondisi rusak/Tidak ada/Dibuang">Kondisi rusak/Tidak ada/Dibuang</option>
-                                    <option value="Dijual">Sudah Dijual</option>
-                                    <option value="Hilang">Hilang</option>
-                                    <option value="Dihibahkan">Dihibahkan</option>
-                                    <option value="other">Status Lain...</option>
-                                </select>
-                            </div>
-                            <div class="mb-3 d-none" id="customStatusWrapper">
-                                    <label for="customStatus" class="form-label">Status Kustom</label>
-                                    <input type="text" class="form-control" id="customStatus" placeholder="Masukkan nama status baru">
-                            </div>
+                        <div class="mb-3">
+                            <label for="assetStatus" class="form-label">Status Aset</label>
+                            <select class="form-select" id="assetStatus" required>
+                                <option value="Masih Ada, Kondisi Baik">Masih Ada, Kondisi Baik</option>
+                                <option value="Masih Ada, Kondisi Rusak">Masih Ada, Kondisi Rusak</option>
+                                <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                                <option value="Kondisi rusak/Tidak ada/Dibuang">Kondisi rusak/Tidak ada/Dibuang</option>
+                                <option value="Dijual">Sudah Dijual</option>
+                                <option value="Hilang">Hilang</option>
+                                <option value="Dihibahkan">Dihibahkan</option>
+                                <option value="other">Status Lain...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 d-none" id="customStatusWrapper">
+                                <label for="customStatus" class="form-label">Status Kustom</label>
+                                <input type="text" class="form-control" id="customStatus" placeholder="Masukkan nama status baru">
+                        </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -261,6 +264,20 @@
             }
             const [day, month, year] = dateStr.split('/');
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        };
+
+        const generateUniqueAssetNumber = () => {
+            let newNumber;
+            let isUnique = false;
+            const existingNumbers = new Set(originalAssets.map(a => a.assetNumber));
+            
+            while (!isUnique) {
+                newNumber = Math.floor(10000 + Math.random() * 90000).toString();
+                if (!existingNumbers.has(newNumber)) {
+                    isUnique = true;
+                }
+            }
+            return newNumber;
         };
         
         const getStatusBadge = (status) => {
@@ -317,13 +334,14 @@
             const paginatedAssets = displayedAssets.slice(startIndex, startIndex + paginationState.itemsPerPage);
 
             if (paginatedAssets.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="9" class="text-center">${originalAssets.length > 0 ? 'Aset tidak ditemukan' : 'Belum ada data aset'}</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="10" class="text-center">${originalAssets.length > 0 ? 'Aset tidak ditemukan' : 'Belum ada data aset'}</td></tr>`;
             } else {
                 paginatedAssets.forEach((asset, index) => {
                     const itemNumber = startIndex + index + 1;
                     const row = `
                         <tr>
                             <td class="text-nowrap">${itemNumber}</td>
+                            <td class="text-nowrap">${asset.assetNumber || '-'}</td>
                             <td>${asset.name}</td>
                             <td class="text-nowrap">${formatCurrency(asset.price)}</td>
                             <td class="text-nowrap">${formatDate(asset.date)}</td>
@@ -370,6 +388,7 @@
             document.getElementById('assetForm').reset();
             document.getElementById('assetId').value = '';
             document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
+            document.getElementById('displayAssetNumber').textContent = '(Akan dibuat otomatis)';
             document.getElementById('purchaseDate').value = formatDate(new Date().toISOString());
             document.getElementById('customCategoryWrapper').classList.add('d-none');
             document.getElementById('customCategory').value = '';
@@ -388,20 +407,25 @@
             let status = document.getElementById('assetStatus').value;
             if (status === 'other') {
                 status = document.getElementById('customStatus').value.trim();
-                    if (!status) { return alert('Status kustom tidak boleh kosong.'); }
+                if (!status) { return alert('Status kustom tidak boleh kosong.'); }
             }
             const assetData = {
-                name: document.getElementById('assetName').value, details: document.getElementById('assetDetails').value,
+                name: document.getElementById('assetName').value,
+                details: document.getElementById('assetDetails').value,
                 price: parseInt(priceString, 10) || 0, 
                 date: parseDateString(document.getElementById('purchaseDate').value),
-                category: category, location: document.getElementById('purchaseLocation').value, status: status,
+                category: category,
+                location: document.getElementById('purchaseLocation').value,
+                status: status,
             };
 
             if (id) { 
                 const index = originalAssets.findIndex(a => a.id == id);
+                assetData.assetNumber = originalAssets[index].assetNumber;
                 originalAssets[index] = { ...originalAssets[index], ...assetData };
             } else { 
                 assetData.id = Date.now();
+                assetData.assetNumber = generateUniqueAssetNumber();
                 originalAssets.push(assetData);
             }
             saveToLocalStorage();
@@ -414,6 +438,7 @@
             document.getElementById('assetModalLabel').textContent = 'Edit Data Aset';
             
             const asset = originalAssets.find(a => a.id == id);
+            document.getElementById('displayAssetNumber').textContent = asset.assetNumber || 'N/A';
             document.getElementById('assetId').value = asset.id;
             document.getElementById('assetName').value = asset.name;
             document.getElementById('assetDetails').value = asset.details || '';
@@ -508,7 +533,19 @@
                     let importedAssets = JSON.parse(e.target.result);
                     if (!Array.isArray(importedAssets)) throw new Error("Format JSON tidak valid.");
 
+                    const existingNumbersInImport = new Set(importedAssets.map(a => a.assetNumber).filter(Boolean));
+                    
                     importedAssets = importedAssets.map((asset, index) => {
+                        let assetNumber = asset.assetNumber;
+                        if (!assetNumber) {
+                            let newNumber;
+                            do {
+                                newNumber = Math.floor(10000 + Math.random() * 90000).toString();
+                            } while (existingNumbersInImport.has(newNumber));
+                            existingNumbersInImport.add(newNumber);
+                            assetNumber = newNumber;
+                        }
+
                         let cleanPrice = 0;
                         if (typeof asset.price === 'string') {
                             const priceString = asset.price.replace(/[^0-9]/g, '');
@@ -520,6 +557,7 @@
                         return {
                             ...asset,
                             id: asset.id || Date.now() + index,
+                            assetNumber: assetNumber,
                             price: cleanPrice,
                             name: asset.name || 'Tanpa Nama',
                             date: asset.date || new Date().toISOString().slice(0, 10),
@@ -549,9 +587,15 @@
             const confirmationMessage = `Anda ingin mengekspor data yang mana?\n\n- Tekan 'OK' untuk mengekspor SEMUA hasil (${displayedAssets.length} aset).\n- Tekan 'Cancel' untuk mengekspor HANYA halaman saat ini (${paginatedAssets.length} aset).`;
             const dataToUse = confirm(confirmationMessage) ? displayedAssets : paginatedAssets;
             const dataToExport = dataToUse.map((asset, index) => ({
-                "No.": index + 1, "Nama Aset": asset.name, "Harga": asset.price,
-                "Tanggal Beli": formatDate(asset.date), "Kategori": asset.category,
-                "Lokasi Beli": asset.location, "Detail Aset": asset.details, "Status": asset.status
+                "No.": index + 1,
+                "Nomor Aset": asset.assetNumber,
+                "Nama Aset": asset.name,
+                "Harga": asset.price,
+                "Tanggal Beli": formatDate(asset.date),
+                "Kategori": asset.category,
+                "Lokasi Beli": asset.location,
+                "Detail Aset": asset.details,
+                "Status": asset.status
             }));
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
             const workbook = XLSX.utils.book_new();
@@ -567,15 +611,24 @@
             
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape' });
+            
+            const head = [['No.', 'Nomor Aset', 'Nama Aset', 'Harga', 'Tanggal Beli', 'Kategori', 'Lokasi Beli', 'Detail Aset', 'Status']];
+            const body = dataToUse.map((asset, index) => [
+                    index + 1,
+                    asset.assetNumber,
+                    asset.name,
+                    formatCurrency(asset.price),
+                    formatDate(asset.date),
+                    asset.category,
+                    asset.location,
+                    asset.details || '-',
+                    asset.status
+                ]);
+
             doc.autoTable({
-                html: '#assetTable',
+                head: head,
+                body: body,
                 headStyles: { fillColor: [41, 128, 185] },
-                columns: [0, 1, 2, 3, 4, 5, 6, 7], 
-                body: dataToUse.map((asset, index) => [
-                    index + 1, asset.name, formatCurrency(asset.price),
-                    formatDate(asset.date), asset.category, asset.location,
-                    asset.details || '-', asset.status
-                ]),
                 didDrawPage: (data) => {
                     const pageHeight = doc.internal.pageSize.getHeight();
                     const pageWidth = doc.internal.pageSize.getWidth();
