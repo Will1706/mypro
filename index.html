@@ -3,600 +3,602 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Aset Barang</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <title>Daftar Proyek - Williyanto Adi</title>
+    <link rel="icon" type="image/png" href="/icons/williyanto_logo_rounded.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .main-content {
-            flex: 1;
-        }
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .table-hover tbody tr:hover {
-            background-color: #e9ecef;
-        }
-        .sortable {
-            cursor: pointer;
-            user-select: none;
-        }
-        .sortable:hover {
-            background-color: #e9ecef;
-        }
-        .sort-icon {
-            margin-left: 5px;
-            color: #aaa;
-        }
-        .sort-icon.active {
-            color: #000;
-        }
-        .table th, .table td {
-            white-space: nowrap; 
-            vertical-align: middle;
-        }
-        .total-cell {
-            font-size: 1.1rem;
-        }
-        .pagination-controls {
-            gap: 10px;
+        /* --- Variabel Tema untuk Mode Gelap/Terang --- */
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg-color: #ffffff;
+            --text-color: #333;
+            --muted-text-color: #888;
+            --border-color: #dee2e6;
+            --header-bg-color: rgba(255, 255, 255, 0.7);
+            --shadow-color: rgba(0,0,0,0.05);
         }
 
-        /* --- PERBAIKAN DI SINI --- */
-        .sticky-controls {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0; /* Menempel di paling atas viewport */
-            z-index: 1020; /* Z-index tinggi agar di atas konten lain */
-            background-color: white; /* Memberi background agar tidak transparan */
-            padding-bottom: 1rem; /* Memberi jarak dari tabel di bawahnya */
+        body.dark-mode {
+            --bg-color: #121212;
+            --card-bg-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --muted-text-color: #888;
+            --border-color: #444;
+            --header-bg-color: rgba(30, 30, 30, 0.7);
+            --shadow-color: rgba(255,255,255,0.05);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-top: 130px; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode .text-muted {
+            color: var(--muted-text-color) !important;
+        }
+        
+        /* --- Header & Jam --- */
+        .header-section {
+            background-color: var(--header-bg-color);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+        .header-section h1 {
+            color: #0d6efd;
+            font-weight: 700;
+            font-size: 1.8rem; 
+        }
+        #live-clock-container {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--muted-text-color);
+            transition: color 0.3s;
+        }
+
+        /* --- Kontrol (Pencarian, Toggle Layout) --- */
+        .controls-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .search-input {
+            flex-grow: 1;
+            background-color: var(--card-bg-color);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+        .search-input:focus {
+            background-color: var(--card-bg-color);
+            color: var(--text-color);
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        /* Perbaikan placeholder pada mode gelap */
+        body.dark-mode .search-input::placeholder {
+            color: var(--muted-text-color);
+        }
+
+        /* --- Styling Proyek (List & Grid) --- */
+        .list-group-item {
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg-color);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+        }
+        .list-group-item + .list-group-item {
+            border-top-width: 1px;
+        }
+        .list-group-item:hover {
+            background-color: #e9f5ff;
+            border-color: #0d6efd;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+        }
+        body.dark-mode .list-group-item:hover {
+            background-color: #0d6efd20;
+        }
+        .list-group-item strong, .list-group-item i {
+            color: #0d6efd;
+        }
+        .list-group-item i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        /* --- Layout Grid --- */
+        .list-group.grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .list-group.grid-view .list-group-item {
+            margin-bottom: 0;
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .list-group.grid-view .list-group-item i {
+            margin-right: 0;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        /* --- Animasi Scroll --- */
+        .list-group-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .list-group-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Kontainer Tombol Bawah --- */
+        .bottom-right-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        #back-to-top {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #back-to-top.show {
+            display: inline-block;
+            opacity: 1;
+        }
+        
+        #additional-projects {
+            display: none;
+        }
+
+        /* --- Garis di atas Footer --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+            margin-top: 3rem !important; /* Memberi jarak lebih */
+            transition: border-color 0.3s;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light mb-4 sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-box-seam-fill"></i>
-                Manajemen Aset
+    <div class="header-section text-center">
+        <div class="container position-relative">
+            <h1><i class="bi bi-folder-fill me-2"></i>Daftar Proyek Saya</h1>
+            <div id="live-clock-container">
+                <span id="live-clock"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        
+        <div class="controls-container">
+            <input type="search" id="search-input" class="form-control search-input" placeholder="Cari proyek...">
+            <button class="btn btn-outline-secondary" id="layout-toggle" title="Ubah Tampilan"><i class="bi bi-grid-3x2-gap-fill"></i></button>
+        </div>
+        
+        <div class="list-group" id="project-list">
+            <a href="./1.kalkulator_hambatan_konduktor/index_kalkulator_hambatan.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-globe"></i> 
+                <div>
+                    <strong>Proyek 1: Kalkulator Hambatan</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung hambatan listrik.</small>
+                </div>
             </a>
-        </div>
-    </nav>
+            <a href="./2.konverter_hambatan/index_konverter_hambatan_ir.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-phone"></i>
+                <div>
+                    <strong>Proyek 2: Koverter Hambatan IR</strong><br>
+                    <small class="text-muted">Aplikasi web untuk mengonversi hambatan dalam rangkaian listrik.</small>
+                </div>
+            </a>
+            <a href="./3.konverter_panjang/konverter_panjang.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-github"></i>
+                <div>
+                    <strong>Proyek 3: Konverter Panjang</strong><br>
+                    <small class="text-muted">Aplikasi web untuk mengonversi satuan panjang.</small>
+                </div>
+            </a>
+            <a href="./4.kalkulator_dimensi/kalkulator_dimensi.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-stack"></i>
+                <div>
+                    <strong>Proyek 4: Kalkulator Dimensi</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung dimensi objek.</small>
+                </div>
+            </a>
+            <a href="./5.hitungpanjangkabel_didrum/hitungpanjangkabel_didrum.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-code-slash"></i>
+                <div>
+                    <strong>Proyek 5: Hitung Panjang Kabel di Drum</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung panjang kabel yang terpasang di drum.</small>
+                </div>
+            </a>
+            <a href="./6.uji_tekuk_bending_fix/8.uji_tekuk_bending_fix.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-lightbulb"></i>
+                <div>
+                    <strong>Proyek 6: Kalkulator Uji Bending</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung hasil uji bending pada material.</small>
+                </div>
+            </a>
+            <a href="./7.coldbending_test/coldbending_test.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-bar-chart-line"></i>
+                <div>
+                    <strong>Proyek 7: Uji Cold Bending</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung hasil uji cold bending pada material.</small>
+                </div>
+            </a>
+            <a href="./8.heatshock_test/heatshock_test.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-camera"></i>
+                <div>
+                    <strong>Proyek 8: Uji Heat Shock</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung hasil uji heat shock pada material.</small>
+                </div>
+            </a>
+            <a href="./9. generator_angka/generator_angka.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-chat-dots"></i>
+                <div>
+                    <strong>Proyek 9: Aplikasi Generator Angka</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghasilkan angka acak.</small>
+                </div>
+            </a>
+            <a href="./10.kalkulator_resistor/kalkulator_resistor.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-book"></i>
+                <div>
+                    <strong>Proyek 10: Kalkulator Resistor</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung nilai resistor dalam rangkaian listrik.</small>
+                </div>
+            </a>
+            <a href="./11.android_kw/android_kw.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-truck"></i>
+                <div>
+                    <strong>Proyek 11: Android KW</strong><br>
+                    <small class="text-muted">Membuat aplikasi Android untuk kebutuhan sehari-hari.</small>
+                </div>
+            </a>
+            <a href="./12.CR_trial/cr_trial.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-calendar-check"></i>
+                <div>
+                    <strong>Proyek 12: Kalkulator Hambatan Trial</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung hambatan dalam rangkaian listrik.</small>
+                </div>
+            </a>
+            <a href="./13.yusup/chots_fix_banget.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-wallet"></i>
+                <div>
+                    <strong>Proyek 13: YuSup Chots</strong><br>
+                    <small class="text-muted">Aplikasi Uji coba YuSup Chots</small>
+                </div>
+            </a>
+            <a href="./13.yusup/chots.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <div>
+                    <strong>Proyek 14: YuSup Chots v2</strong><br>
+                    <small class="text-muted">Aplikasi Uji coba YuSup Chots versi 2</small>
+                </div>
+            </a>
+            <a href="./14. web streaming video/web_streaming.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-megaphone"></i>
+                <div>
+                    <strong>Proyek 15: Streaming Video</strong><br>
+                    <small class="text-muted">Aplikasi web untuk streaming video secara langsung.</small>
+                </div>
+            </a>
+            <a href="./17.alokasi_gaji/kalkulator_alokasigaji.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-basket"></i>
+                <div>
+                    <strong>Proyek 16: Aplikasi Kalkulator Alokasi Gaji</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung alokasi gaji karyawan.</small>
+                </div>
+            </a>
+            <a href="/19.hitung_waktu_rewind_kabel/hitung_waktu_rewind.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-house"></i>
+                <div>
+                    <strong>Proyek 17: Aplikasi Penghitung Waktu Rewind</strong><br>
+                    <small class="text-muted">Aplikasi web untuk menghitung waktu rewind kabel.</small>
+                </div>
+            </a>
+            <a href="./22.faktor_koreksi_suhu/faktor_koreksi_suhu.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-music-note"></i>
+                <div>
+                    <strong>Proyek 18: Faktor Koreksi Suhu</strong><br>
+                    <small class="text-muted">Menghitung faktor koreksi suhu untuk berbagai aplikasi.</small>
+                </div>
+            </a>
+            <a href="./24.manajemen_aset/manajemen_aset.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-geo-alt"></i>
+                <div>
+                    <strong>Proyek 19: Manajemen Aset</strong><br>
+                    <small class="text-muted">Aplikasi untuk me</small>
+                </div>
+            </a>
+            <a href="/20.uji_tegangan/uji_tegangan.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-file-earmark-text"></i>
+                <div>
+                    <strong>Proyek 20: Kalkulator Uji Tegangan</strong><br>
+                    <small class="text-muted">Alat untuk menulis dan mengedit dokumen di web.</small>
+                </div>
+            </a>
+            <a href="/21.kalkulator_daya_listrik/kalkulator_dayalistrik.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-people"></i>
+                <div>
+                    <strong>Proyek 21: Kalkulator Daya Listrik</strong><br>
+                    <small class="text-muted">Tempat berbagi informasi dan berdiskusi online.</small>
+                </div>
+            </a>
+            <a href="./23.Pengatur_Uang/pengatur_uang.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-shield-check"></i>
+                <div>
+                    <strong>Proyek 22: Pengatur Keuangan</strong><br>
+                    <small class="text-muted">Aplikasi Pengatur Keuangan</small>
+                </div>
+            </a>
+            <a href="./23.Pengatur_Uang/alokasi_gaji.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-cart3"></i>
+                <div>
+                    <strong>Proyek 23: Alokasi Gaji</strong><br>
+                    <small class="text-muted">Halaman web promosi untuk produk baru.</small>
+                </div>
+            </a>
+            <a href="./24.manajemen_aset/manajemen_aset.html" class="list-group-item list-group-item-action">
+                <i class="bi bi-graph-up"></i>
+                <div>
+                    <strong>Proyek 24: Manajemen Aset</strong><br>
+                    <small class="text-muted">Website untuk memudahkan mengelola Manajemen Aset</small>
+                </div>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="bi bi-headset"></i>
+                <div>
+                    <strong>Proyek 25: Sistem Customer Support Chat</strong><br>
+                    <small class="text-muted">Membantu pelanggan melalui obrolan langsung.</small>
+                </div>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="bi bi-display"></i>
+                <div>
+                    <strong>Proyek 26: Desain UI/UX Mockup</strong><br>
+                    <small class="text-muted">Contoh desain antarmuka pengguna untuk berbagai aplikasi.</small>
+                </div>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="bi bi-robot"></i>
+                <div>
+                    <strong>Proyek 27: Proyek Machine Learning Prediksi Harga</strong><br>
+                    <small class="text-muted">Model AI untuk memprediksi harga saham atau properti.</small>
+                </div>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="bi bi-gamepad"></i>
+                <div>
+                    <strong>Proyek 28: Game Sederhana Berbasis Web</strong><br>
+                    <small class="text-muted">Game interaktif yang dapat dimainkan di browser.</small>
+                </div>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="bi bi-film"></i>
+                <div>
+                    <strong>Proyek 29: Platform Streaming Video Sederhana</strong><br>
+                    <small class="text-muted">Menampilkan daftar video yang dapat ditonton.</small>
+                </div>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="bi bi-wallet2"></i>
+                <div>
+                    <strong>Proyek 30: Sistem Pembayaran Online Integrasi</strong><br>
+                    <small class="text-muted">Mengintegrasikan gateway pembayaran ke dalam website.</small>
+                </div>
+            </a>
 
-    <div class="container main-content">
-        <div class="card">
-            <div class="sticky-controls">
-                <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
-                    <h5 class="card-title mb-2 mb-md-0">Daftar Aset Barang</h5>
-                    <div class="d-flex flex-wrap">
-                        <div class="btn-group me-2 mb-2 mb-md-0">
-                            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-download"></i> Ekspor
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="exportXLSX()">Ke Excel (.xlsx)</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="exportPDF()">Ke PDF (.pdf)</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#" onclick="exportData()">Cadangkan ke JSON (.json)</a></li>
-                            </ul>
-                        </div>
-                        <button class="btn btn-info me-2 mb-2 mb-md-0" onclick="document.getElementById('importFile').click()">
-                            <i class="bi bi-upload"></i> Impor Data
-                        </button>
-                        <input type="file" id="importFile" class="d-none" accept=".json" onchange="importData(event)">
-                        <button class="btn btn-primary mb-2 mb-md-0" data-bs-toggle="modal" data-bs-target="#assetModal" onclick="openAddModal()">
-                            <i class="bi bi-plus-circle-fill"></i> Tambah Aset
-                        </button>
+            <div id="additional-projects">
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-translate"></i>
+                    <div>
+                        <strong>Proyek 31: Aplikasi Penerjemah Bahasa</strong><br>
+                        <small class="text-muted">Menerjemahkan teks antar berbagai bahasa secara real-time.</small>
                     </div>
-                </div>
-                <div class="mt-3">
-                    <input type="text" id="searchInput" class="form-control" oninput="filterAssets()" placeholder="🔍 Cari aset...">
-                </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-kanban"></i>
+                    <div>
+                        <strong>Proyek 32: Papan Kanban Manajemen Tugas</strong><br>
+                        <small class="text-muted">Aplikasi untuk mengatur alur kerja dan tugas tim.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-file-earmark-zip"></i>
+                    <div>
+                        <strong>Proyek 33: Alat Kompresi File Online</strong><br>
+                        <small class="text-muted">Mengurangi ukuran file gambar, PDF, atau dokumen lainnya.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-graph-down"></i>
+                    <div>
+                        <strong>Proyek 34: Pelacak Harga Saham</strong><br>
+                        <small class="text-muted">Memantau pergerakan harga saham dengan grafik interaktif.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-qr-code-scan"></i>
+                    <div>
+                        <strong>Proyek 35: Generator Kode QR</strong><br>
+                        <small class="text-muted">Membuat kode QR kustom untuk URL, teks, atau informasi kontak.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-clipboard-check"></i>
+                    <div>
+                        <strong>Proyek 36: Aplikasi Kuis Interaktif</strong><br>
+                        <small class="text-muted">Platform untuk membuat dan mengikuti kuis dengan skor.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-cloud-haze2"></i>
+                    <div>
+                        <strong>Proyek 37: Widget Cuaca</strong><br>
+                        <small class="text-muted">Menampilkan informasi cuaca berdasarkan lokasi pengguna.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-person-rolodex"></i>
+                    <div>
+                        <strong>Proyek 38: Sistem Manajemen Kontak</strong><br>
+                        <small class="text-muted">Menyimpan dan mengelola daftar kontak pribadi atau bisnis.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-diagram-3"></i>
+                    <div>
+                        <strong>Proyek 39: Alat Pembuat Diagram Alur</strong><br>
+                        <small class="text-muted">Aplikasi web untuk membuat diagram alur (flowchart) sederhana.</small>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="bi bi-stopwatch"></i>
+                    <div>
+                        <strong>Proyek 40: Aplikasi Pomodoro Timer</strong><br>
+                        <small class="text-muted">Membantu fokus belajar atau bekerja dengan teknik Pomodoro.</small>
+                    </div>
+                </a>
             </div>
-
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="assetTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th>No.</th>
-                                <th>Nama Aset</th>
-                                <th class="sortable" onclick="sortTable('price')">Harga <i id="sort-icon-price" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="sortable" onclick="sortTable('date')">Tanggal Beli <i id="sort-icon-date" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="sortable" onclick="sortTable('category')">Kategori <i id="sort-icon-category" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="sortable" onclick="sortTable('location')">Lokasi Beli <i id="sort-icon-location" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th>Detail Aset</th>
-                                <th class="sortable" onclick="sortTable('status')">Status <i id="sort-icon-status" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="no-export">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="assetTableBody">
-                            </tbody>
-                    </table>
-                </div>
-
-                <div id="pagination-wrapper" class="d-flex justify-content-between align-items-center flex-wrap mt-3">
-                    <div class="d-flex align-items-center pagination-controls mb-2 mb-md-0">
-                        <label for="itemsPerPage" class="form-label me-2 mb-0">Aset per halaman:</label>
-                        <input type="number" class="form-control" id="itemsPerPage" value="50" min="1" style="width: 80px;" onchange="changeItemsPerPage(this)">
-                    </div>
-                    <nav id="pagination-nav">
-                        <ul class="pagination mb-0">
-                            <li class="page-item" id="prevPage">
-                                <a class="page-link" href="#" onclick="changePage('prev')">Previous</a>
-                            </li>
-                            <li class="page-item disabled"><span id="pageInfo" class="page-link">Halaman 1 dari 1</span></li>
-                            <li class="page-item" id="nextPage">
-                                <a class="page-link" href="#" onclick="changePage('next')">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div id="lastUpdatedText" class="text-muted small"></div>
-                    <div class="text-end">
-                        <span class="fw-bold">TOTAL NILAI ASET (Hasil Filter):</span>
-                        <span id="totalAssetValue" class="fw-bold text-success total-cell ms-2"></span>
-                    </div>
-                </div>
-            </div>
         </div>
+        
+        <div class="text-center mt-4">
+            <button id="toggle-projects-btn" class="btn btn-primary">Tampilkan Lebih Banyak</button>
+        </div>
+
+        <footer class="text-center text-muted">
+            <p> Williyanto Adi 2025</p>
+        </footer>
+
     </div>
-
-    <footer class="text-center text-muted py-4 mt-5">
-        <div class="container">
-            <p class="mb-0">&copy; Williyanto Adi 2025</p>
-        </div>
-    </footer>
-
-    <div class="modal fade" id="assetModal" tabindex="-1" aria-labelledby="assetModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="assetModalLabel">Tambah Aset Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                     <form id="assetForm" onsubmit="event.preventDefault(); saveAsset();">
-                        <input type="hidden" id="assetId">
-                        <div class="mb-3">
-                            <label for="assetName" class="form-label">Nama Aset</label>
-                            <input type="text" class="form-control" id="assetName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="assetDetails" class="form-label">Detail Aset</label>
-                            <textarea class="form-control" id="assetDetails" rows="3" placeholder="Contoh: No. Seri, Warna, Spesifikasi, dll."></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="assetPrice" class="form-label">Harga Aset</label>
-                                <input type="text" class="form-control" id="assetPrice" inputmode="numeric" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="purchaseDate" class="form-label">Tanggal Beli</label>
-                                <input type="date" class="form-control" id="purchaseDate" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="assetCategory" class="form-label">Kategori</label>
-                            <select class="form-select" id="assetCategory" required>
-                                <option value="Elektronik">Elektronik</option>
-                                <option value="Furnitur">Furnitur</option>
-                                <option value="Peralatan Dapur">Peralatan Dapur</option>
-                                <option value="Kendaraan">Kendaraan</option>
-                                <option value="Properti">Properti</option>
-                                <option value="other">Aset Lain...</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 d-none" id="customCategoryWrapper">
-                             <label for="customCategory" class="form-label">Kategori Kustom</label>
-                             <input type="text" class="form-control" id="customCategory" placeholder="Masukkan nama kategori baru">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="purchaseLocation" class="form-label">Toko/Lokasi Beli</label>
-                            <input type="text" class="form-control" id="purchaseLocation" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="assetStatus" class="form-label">Status Aset</label>
-                            <select class="form-select" id="assetStatus" required>
-                                <option value="Aktif">Aktif</option>
-                                <option value="Dalam Perbaikan">Dalam Perbaikan</option>
-                                <option value="Rusak">Rusak</option>
-                                <option value="Dijual">Dijual</option>
-                                <option value="Hilang">Hilang</option>
-                                <option value="Dihibahkan">Dihibahkan</option>
-                                <option value="other">Status Lain...</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 d-none" id="customStatusWrapper">
-                             <label for="customStatus" class="form-label">Status Kustom</label>
-                             <input type="text" class="form-control" id="customStatus" placeholder="Masukkan nama status baru">
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <div class="bottom-right-controls">
+        <button class="btn btn-secondary rounded-circle shadow-lg" id="theme-toggle" title="Ubah Tema">🌓</button>
+        <a href="#" id="back-to-top" class="btn btn-primary rounded-circle shadow-lg" title="Kembali ke Atas"><i class="bi bi-arrow-up"></i></a>
+    </div>
 
     <script>
-        // --- DATA & STATE MANAGEMENT ---
-        let originalAssets = JSON.parse(localStorage.getItem('assets')) || [];
-        let displayedAssets = [...originalAssets];
-        let sortState = { key: null, direction: 'none' }; 
-        let paginationState = { currentPage: 1, itemsPerPage: 50, totalPages: 1 };
-        const assetModal = new bootstrap.Modal(document.getElementById('assetModal'));
-        
-        // --- HELPER FUNCTIONS ---
-        const formatCurrency = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value || 0);
-        const formatDate = (isoDate) => {
-            if (!isoDate) return '';
-            const date = new Date(isoDate);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        };
-        
-        const getStatusBadge = (status) => {
-            const predefinedColors = {
-                'Aktif': 'bg-success', 'Dalam Perbaikan': 'bg-warning text-dark', 'Rusak': 'bg-danger',
-                'Dijual': 'bg-info text-dark', 'Hilang': 'bg-dark', 'Dihibahkan': 'bg-dark',
-            };
-            if (predefinedColors[status]) return predefinedColors[status];
-            const customColors = ['bg-primary', 'bg-info']; 
-            let hash = 0;
-            for (let i = 0; i < status.length; i++) hash = status.charCodeAt(i) + ((hash << 5) - hash);
-            return `${customColors[Math.abs(hash % customColors.length)]} text-white`;
-        };
-        
-        function calculateAndDisplayTotal() {
-            const total = displayedAssets.reduce((sum, asset) => sum + (asset.price || 0), 0);
-            document.getElementById('totalAssetValue').textContent = formatCurrency(total);
-        }
+    document.addEventListener('DOMContentLoaded', function() {
 
-        function updateAndDisplayTimestamp() {
-            const now = new Date().toISOString();
-            localStorage.setItem('lastUpdated', now);
-            displayTimestamp();
-        }
+        const clockElement = document.getElementById('live-clock');
+        const themeToggle = document.getElementById('theme-toggle');
+        const searchInput = document.getElementById('search-input');
+        const layoutToggle = document.getElementById('layout-toggle');
+        const projectList = document.getElementById('project-list');
+        const backToTopButton = document.getElementById('back-to-top');
+        const toggleBtn = document.getElementById('toggle-projects-btn');
+        const additionalProjects = document.getElementById('additional-projects');
 
-        function displayTimestamp() {
-            const lastUpdated = localStorage.getItem('lastUpdated');
-            const element = document.getElementById('lastUpdatedText');
-            if (lastUpdated) {
-                element.textContent = `Terakhir diperbarui: ${formatDate(lastUpdated)}`;
-            } else {
-                element.textContent = '';
+        // --- FUNGSI JAM DIGITAL ---
+        function updateClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const day = days[now.getDay()];
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            if(clockElement) {
+                clockElement.textContent = `${day}, ${date} ${month} ${year} - ${hours}:${minutes}:${seconds}`;
             }
         }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        // --- RENDERING ---
-        function render() {
-            renderTable();
-            renderPaginationControls();
-            displayTimestamp();
+        // --- FITUR MODE GELAP (DARK MODE) ---
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-mode');
         }
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            let theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
 
-        function renderTable() {
-            const tableBody = document.getElementById('assetTableBody');
-            tableBody.innerHTML = '';
-            const startIndex = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
-            const paginatedAssets = displayedAssets.slice(startIndex, startIndex + paginationState.itemsPerPage);
+        // --- FITUR PENCARIAN ---
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.list-group-item').forEach(item => {
+                const itemText = item.textContent.toLowerCase();
+                const isVisible = itemText.includes(searchTerm);
+                item.style.display = isVisible ? '' : 'none';
+            });
+        });
 
-            if (paginatedAssets.length === 0) {
-                 tableBody.innerHTML = `<tr><td colspan="9" class="text-center">${originalAssets.length > 0 ? 'Aset tidak ditemukan' : 'Belum ada data aset'}</td></tr>`;
-            } else {
-                paginatedAssets.forEach((asset, index) => {
-                    const itemNumber = startIndex + index + 1;
-                    const row = `
-                        <tr>
-                            <td>${itemNumber}</td>
-                            <td>${asset.name}</td>
-                            <td>${formatCurrency(asset.price)}</td>
-                            <td>${formatDate(asset.date)}</td>
-                            <td>${asset.category}</td>
-                            <td>${asset.location}</td>
-                            <td>${asset.details || ''}</td>
-                            <td><span class="badge ${getStatusBadge(asset.status)}">${asset.status}</span></td>
-                            <td class="no-export">
-                                <button class="btn btn-warning btn-sm" onclick="openEditModal(${asset.id})"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteAsset(${asset.id})"><i class="bi bi-trash-fill"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
-                });
-            }
-            calculateAndDisplayTotal();
-        }
+        // --- FITUR TOGGLE LAYOUT (LIST/GRID) ---
+        const icon = layoutToggle.querySelector('i');
+        layoutToggle.addEventListener('click', function() {
+            projectList.classList.toggle('grid-view');
+            const isGridView = projectList.classList.contains('grid-view');
+            icon.className = isGridView ? 'bi bi-list-ul' : 'bi bi-grid-3x2-gap-fill';
+            searchInput.dispatchEvent(new Event('input'));
+        });
 
-        function renderPaginationControls() {
-            paginationState.totalPages = Math.ceil(displayedAssets.length / paginationState.itemsPerPage) || 1;
-            const { currentPage, totalPages } = paginationState;
-            document.getElementById('pageInfo').textContent = `Halaman ${currentPage} dari ${totalPages}`;
-            document.getElementById('prevPage').classList.toggle('disabled', currentPage === 1);
-            document.getElementById('nextPage').classList.toggle('disabled', currentPage === totalPages);
-            document.getElementById('pagination-wrapper').style.display = totalPages > 1 || originalAssets.length > 0 ? 'flex' : 'none';
-        }
-        
-        function updateSortIcons() {
-            document.querySelectorAll('.sort-icon').forEach(icon => icon.className = 'bi bi-arrow-down-up sort-icon');
-            if (sortState.key && sortState.direction !== 'none') {
-                const icon = document.getElementById(`sort-icon-${sortState.key}`);
-                icon.className = `bi ${sortState.direction === 'asc' ? 'bi-sort-down' : 'bi-sort-up'} sort-icon active`;
-            }
-        }
-
-        // --- CRUD & DATA OPERATIONS ---
-        function saveToLocalStorage() {
-            localStorage.setItem('assets', JSON.stringify(originalAssets));
-            updateAndDisplayTimestamp();
-        }
-
-        function openAddModal() {
-            document.getElementById('assetForm').reset();
-            document.getElementById('assetId').value = '';
-            document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
-            document.getElementById('purchaseDate').value = new Date().toISOString().slice(0, 10);
-            document.getElementById('customCategoryWrapper').classList.add('d-none');
-            document.getElementById('customCategory').value = '';
-            document.getElementById('customStatusWrapper').classList.add('d-none');
-            document.getElementById('customStatus').value = '';
-        }
-        
-        function saveAsset() {
-            const id = document.getElementById('assetId').value;
-            const priceString = document.getElementById('assetPrice').value.replace(/\./g, '');
-            let category = document.getElementById('assetCategory').value;
-            if (category === 'other') {
-                category = document.getElementById('customCategory').value.trim();
-                if (!category) { return alert('Kategori kustom tidak boleh kosong.'); }
-            }
-            let status = document.getElementById('assetStatus').value;
-            if (status === 'other') {
-                status = document.getElementById('customStatus').value.trim();
-                 if (!status) { return alert('Status kustom tidak boleh kosong.'); }
-            }
-            const assetData = {
-                name: document.getElementById('assetName').value, details: document.getElementById('assetDetails').value,
-                price: parseInt(priceString, 10) || 0, date: document.getElementById('purchaseDate').value,
-                category: category, location: document.getElementById('purchaseLocation').value, status: status,
-            };
-
-            if (id) { 
-                const index = originalAssets.findIndex(a => a.id == id);
-                originalAssets[index] = { ...originalAssets[index], ...assetData };
-            } else { 
-                assetData.id = Date.now();
-                originalAssets.push(assetData);
-            }
-            saveToLocalStorage();
-            filterAssets();
-            assetModal.hide();
-        }
-
-        function openEditModal(id) {
-            openAddModal(); 
-            document.getElementById('assetModalLabel').textContent = 'Edit Data Aset';
-            
-            const asset = originalAssets.find(a => a.id == id);
-            document.getElementById('assetId').value = asset.id;
-            document.getElementById('assetName').value = asset.name;
-            document.getElementById('assetDetails').value = asset.details || '';
-            document.getElementById('assetPrice').value = (asset.price || '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            document.getElementById('purchaseDate').value = asset.date;
-            document.getElementById('purchaseLocation').value = asset.location;
-            
-            const categorySelect = document.getElementById('assetCategory');
-            const categoryOptions = Array.from(categorySelect.options).map(opt => opt.value);
-            categorySelect.value = categoryOptions.includes(asset.category) ? asset.category : 'other';
-            if (categorySelect.value === 'other') {
-                document.getElementById('customCategoryWrapper').classList.remove('d-none');
-                document.getElementById('customCategory').value = asset.category;
-            }
-            
-            const statusSelect = document.getElementById('assetStatus');
-            const statusOptions = Array.from(statusSelect.options).map(opt => opt.value);
-            statusSelect.value = statusOptions.includes(asset.status) ? asset.status : 'other';
-            if (statusSelect.value === 'other') {
-                document.getElementById('customStatusWrapper').classList.remove('d-none');
-                document.getElementById('customStatus').value = asset.status;
-            }
-            
-            assetModal.show();
-        }
-
-        function deleteAsset(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus aset ini?')) {
-                originalAssets = originalAssets.filter(a => a.id != id);
-                saveToLocalStorage();
-                filterAssets();
-            }
-        }
-        
-        // --- PENCARIAN & PAGINASI ---
-        function filterAssets() {
-            paginationState.currentPage = 1; 
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            displayedAssets = !searchTerm ? [...originalAssets] : originalAssets.filter(asset =>
-                Object.values(asset).some(val => String(val).toLowerCase().includes(searchTerm))
-            );
-            sortState = { key: null, direction: 'none' };
-            updateSortIcons();
-            render();
-        }
-
-        function changePage(direction) {
-            const { currentPage, totalPages } = paginationState;
-            if (direction === 'prev' && currentPage > 1) paginationState.currentPage--;
-            else if (direction === 'next' && currentPage < totalPages) paginationState.currentPage++;
-            render();
-        }
-
-        function changeItemsPerPage(element) {
-            let newItemsPerPage = parseInt(element.value, 10);
-            if (isNaN(newItemsPerPage) || newItemsPerPage < 1) {
-                newItemsPerPage = 1;
-                element.value = newItemsPerPage;
-            }
-            paginationState.itemsPerPage = newItemsPerPage;
-            paginationState.currentPage = 1;
-            render();
-        }
-        
-        // --- EKSPOR & IMPOR ---
-        function getPaginatedAssets() {
-            const startIndex = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
-            return displayedAssets.slice(startIndex, startIndex + paginationState.itemsPerPage);
-        }
-        
-        function exportData() {
-            if (originalAssets.length === 0) { return alert("Tidak ada data untuk diekspor."); }
-            const dataStr = JSON.stringify(originalAssets, null, 2);
-            const dataBlob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement("a");
-            link.href = url; link.download = `aset-data-${new Date().toISOString().slice(0, 10)}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file || file.type !== "application/json") { return alert("Harap pilih file .json yang valid."); }
-            if (!confirm("Mengimpor data baru akan menimpa semua data saat ini. Lanjutkan?")) { return event.target.value = null; }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const importedAssets = JSON.parse(e.target.result);
-                    if (!Array.isArray(importedAssets)) throw new Error("Format JSON tidak valid.");
-                    originalAssets = importedAssets;
-                    saveToLocalStorage();
-                    filterAssets();
-                    alert("Data berhasil diimpor!");
-                } catch (error) {
-                    alert("Gagal membaca file JSON. Error: " + error.message);
-                } finally { event.target.value = null; }
-            };
-            reader.readAsText(file);
-        }
-
-        function exportXLSX() {
-            if (displayedAssets.length === 0) { return alert("Tidak ada data untuk diekspor."); }
-            const paginatedAssets = getPaginatedAssets();
-            const confirmationMessage = `Anda ingin mengekspor data yang mana?\n\n- Tekan 'OK' untuk mengekspor SEMUA hasil (${displayedAssets.length} aset).\n- Tekan 'Cancel' untuk mengekspor HANYA halaman saat ini (${paginatedAssets.length} aset).`;
-            const dataToUse = confirm(confirmationMessage) ? displayedAssets : paginatedAssets;
-            const dataToExport = dataToUse.map((asset, index) => ({
-                "No.": index + 1, "Nama Aset": asset.name, "Harga": asset.price,
-                "Tanggal Beli": formatDate(asset.date), "Kategori": asset.category,
-                "Lokasi Beli": asset.location, "Detail Aset": asset.details, "Status": asset.status
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Aset");
-            XLSX.writeFile(workbook, `Daftar Aset - ${new Date().toISOString().slice(0, 10)}.xlsx`);
-        }
-        
-        function exportPDF() {
-            if (displayedAssets.length === 0) { return alert("Tidak ada data untuk diekspor."); }
-            const paginatedAssets = getPaginatedAssets();
-            const confirmationMessage = `Anda ingin mengekspor data yang mana?\n\n- Tekan 'OK' untuk mengekspor SEMUA hasil (${displayedAssets.length} aset).\n- Tekan 'Cancel' untuk mengekspor HANYA halaman saat ini (${paginatedAssets.length} aset).`;
-            const dataToUse = confirm(confirmationMessage) ? displayedAssets : paginatedAssets;
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape' });
-            doc.autoTable({
-                html: '#assetTable',
-                headStyles: { fillColor: [41, 128, 185] },
-                columns: [0, 1, 2, 3, 4, 5, 6, 7], 
-                body: dataToUse.map((asset, index) => [
-                    index + 1, asset.name, formatCurrency(asset.price),
-                    formatDate(asset.date), asset.category, asset.location,
-                    asset.details || '-', asset.status
-                ]),
-                didDrawPage: (data) => {
-                    const pageHeight = doc.internal.pageSize.getHeight();
-                    const pageWidth = doc.internal.pageSize.getWidth();
-                    doc.setFontSize(10);
-                    doc.setTextColor(150);
-                    
-                    const footerText = "Manajemen Aset by Williyanto Adi";
-                    doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
-
-                    const lastUpdated = localStorage.getItem('lastUpdated');
-                    if (lastUpdated) {
-                        const updatedText = `Terakhir Diperbarui: ${formatDate(lastUpdated)}`;
-                        doc.text(updatedText, pageWidth - data.settings.margin.right, pageHeight - 10, { align: 'right' });
-                    }
+        // --- FITUR ANIMASI SAAT SCROLL ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
-            doc.save(`Daftar Aset - ${new Date().toISOString().slice(0, 10)}.pdf`);
-        }
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.list-group-item').forEach(item => observer.observe(item));
         
-        // --- SORTING ---
-        function sortTable(key) {
-            if (sortState.key === key) {
-                if (sortState.direction === 'asc') sortState.direction = 'desc';
-                else if (sortState.direction === 'desc') sortState.direction = 'none';
-                else sortState.direction = 'asc';
-            } else {
-                sortState.key = key;
-                sortState.direction = 'asc';
-            }
-            if (sortState.direction === 'none') {
-                filterAssets();
-            } else {
-                displayedAssets.sort((a, b) => {
-                    let valA = a[key], valB = b[key];
-                    if (typeof valA === 'number') return valA - valB;
-                    if (key === 'date') return new Date(valA) - new Date(valB);
-                    return (valA || '').localeCompare(valB || '');
-                });
-                if (sortState.direction === 'desc') displayedAssets.reverse();
-            }
-            updateSortIcons();
-            render();
-        }
-
-        // --- INITIALIZATION ---
-        function setupCurrencyInput(inputId) {
-            document.getElementById(inputId).addEventListener('input', (e) => {
-                let value = e.target.value.replace(/\./g, '');
-                e.target.value = !isNaN(value) && value !== '' ? parseInt(value, 10).toLocaleString('id-ID') : '';
-            });
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-             setupCurrencyInput('assetPrice');
-             document.getElementById('assetCategory').addEventListener('change', (e) => {
-                document.getElementById('customCategoryWrapper').classList.toggle('d-none', e.target.value !== 'other');
-             });
-             document.getElementById('assetStatus').addEventListener('change', (e) => {
-                document.getElementById('customStatusWrapper').classList.toggle('d-none', e.target.value !== 'other');
-             });
-             render();
+        // --- FITUR TOMBOL KEMBALI KE ATAS ---
+        window.onscroll = function() {
+            const show = document.body.scrollTop > 300 || document.documentElement.scrollTop > 300;
+            backToTopButton.classList.toggle('show', show);
+        };
+        backToTopButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+
+        // --- FITUR TOMBOL TAMPILKAN LAINNYA ---
+        toggleBtn.addEventListener('click', function() {
+            const isHidden = additionalProjects.style.display === 'none' || additionalProjects.style.display === '';
+            if (isHidden) {
+                additionalProjects.style.display = 'block';
+                toggleBtn.textContent = 'Sembunyikan';
+            } else {
+                additionalProjects.style.display = 'none';
+                toggleBtn.textContent = 'Tampilkan Lebih Banyak';
+            }
+        });
+    });
     </script>
+
 </body>
 </html>
