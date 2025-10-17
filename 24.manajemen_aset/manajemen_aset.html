@@ -38,8 +38,11 @@
             color: #000;
         }
         .table th, .table td {
-            white-space: nowrap; 
             vertical-align: middle;
+        }
+        .table {
+            table-layout: auto;
+            width: 100%;
         }
         .total-cell {
             font-size: 1.1rem;
@@ -47,7 +50,6 @@
         .pagination-controls {
             gap: 10px;
         }
-        /* CSS Kustom untuk warna ungu */
         .bg-purple {
             background-color: #6f42c1;
             color: white;
@@ -101,13 +103,13 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Nama Aset</th>
-                                <th class="sortable" onclick="sortTable('price')">Harga <i id="sort-icon-price" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="sortable" onclick="sortTable('date')">Tanggal Beli <i id="sort-icon-date" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="sortable" onclick="sortTable('category')">Kategori <i id="sort-icon-category" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="sortable" onclick="sortTable('location')">Lokasi Beli <i id="sort-icon-location" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th class="text-nowrap sortable" onclick="sortTable('price')">Harga <i id="sort-icon-price" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th class="text-nowrap sortable" onclick="sortTable('date')">Tanggal Beli <i id="sort-icon-date" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th>Kategori</th>
+                                <th>Lokasi Beli</th>
                                 <th>Detail Aset</th>
-                                <th class="sortable" onclick="sortTable('status')">Status <i id="sort-icon-status" class="bi bi-arrow-down-up sort-icon"></i></th>
-                                <th class="no-export">Aksi</th>
+                                <th>Status</th>
+                                <th class="text-nowrap no-export">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="assetTableBody">
@@ -182,12 +184,11 @@
                                 <label for="assetCategory" class="form-label">Kategori</label>
                                 <select class="form-select" id="assetCategory" required>
                                     <option value="Elektronik">Elektronik</option>
-                                    <option value="Perangkat Komputer">Perangkat Komputer</option>
-                                    <option value="Kendaraan">Kendaraan</option>
                                     <option value="Furnitur">Furnitur</option>
                                     <option value="Peralatan Dapur">Peralatan Dapur</option>
+                                    <option value="Kendaraan">Kendaraan</option>
                                     <option value="Properti">Properti</option>
-                                    <option value="other">Aset Lain</option>
+                                    <option value="other">Aset Lain...</option>
                                 </select>
                             </div>
                             <div class="mb-3 d-none" id="customCategoryWrapper">
@@ -210,7 +211,7 @@
                                     <option value="Dijual">Sudah Dijual</option>
                                     <option value="Hilang">Hilang</option>
                                     <option value="Dihibahkan">Dihibahkan</option>
-                                    <option value="other">Status Lain</option>
+                                    <option value="other">Status Lain...</option>
                                 </select>
                             </div>
                             <div class="mb-3 d-none" id="customStatusWrapper">
@@ -322,15 +323,15 @@
                     const itemNumber = startIndex + index + 1;
                     const row = `
                         <tr>
-                            <td>${itemNumber}</td>
+                            <td class="text-nowrap">${itemNumber}</td>
                             <td>${asset.name}</td>
-                            <td>${formatCurrency(asset.price)}</td>
-                            <td>${formatDate(asset.date)}</td>
+                            <td class="text-nowrap">${formatCurrency(asset.price)}</td>
+                            <td class="text-nowrap">${formatDate(asset.date)}</td>
                             <td>${asset.category}</td>
                             <td>${asset.location}</td>
                             <td>${asset.details || ''}</td>
                             <td><span class="badge ${getStatusBadge(asset.status)}">${asset.status}</span></td>
-                            <td class="no-export">
+                            <td class="text-nowrap">
                                 <button class="btn btn-warning btn-sm" onclick="openEditModal(${asset.id})"><i class="bi bi-pencil-square"></i></button>
                                 <button class="btn btn-danger btn-sm" onclick="deleteAsset(${asset.id})"><i class="bi bi-trash-fill"></i></button>
                             </td>
@@ -497,19 +498,47 @@
         function importData(event) {
             const file = event.target.files[0];
             if (!file || file.type !== "application/json") { return alert("Harap pilih file .json yang valid."); }
-            if (!confirm("Mengimpor data baru akan menimpa semua data saat ini. Lanjutkan?")) { return event.target.value = null; }
+            if (!confirm("Mengimpor data baru akan menimpa semua data saat ini. Lanjutkan?")) { 
+                event.target.value = null;
+                return; 
+            }
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const importedAssets = JSON.parse(e.target.result);
+                    let importedAssets = JSON.parse(e.target.result);
                     if (!Array.isArray(importedAssets)) throw new Error("Format JSON tidak valid.");
+
+                    importedAssets = importedAssets.map((asset, index) => {
+                        let cleanPrice = 0;
+                        if (typeof asset.price === 'string') {
+                            const priceString = asset.price.replace(/[^0-9]/g, '');
+                            cleanPrice = parseInt(priceString, 10) || 0;
+                        } else if (typeof asset.price === 'number') {
+                            cleanPrice = asset.price;
+                        }
+                        
+                        return {
+                            ...asset,
+                            id: asset.id || Date.now() + index,
+                            price: cleanPrice,
+                            name: asset.name || 'Tanpa Nama',
+                            date: asset.date || new Date().toISOString().slice(0, 10),
+                            category: asset.category || 'Tidak Dikategorikan',
+                            location: asset.location || '-',
+                            details: asset.details || '',
+                            status: asset.status || 'Status Tidak Diketahui'
+                        };
+                    });
+                    
                     originalAssets = importedAssets;
                     saveToLocalStorage();
                     filterAssets();
                     alert("Data berhasil diimpor!");
                 } catch (error) {
                     alert("Gagal membaca file JSON. Error: " + error.message);
-                } finally { event.target.value = null; }
+                } finally { 
+                    event.target.value = null; 
+                }
             };
             reader.readAsText(file);
         }
