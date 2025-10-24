@@ -43,6 +43,8 @@
         .table {
             table-layout: auto;
             width: 100%;
+            /* Hapus word-break jika text-nowrap digunakan */
+            /* word-break: break-word; */
         }
         .total-cell {
             font-size: 1.1rem;
@@ -53,6 +55,14 @@
         .bg-purple {
             background-color: #6f42c1;
             color: white;
+        }
+        .asset-link {
+            cursor: pointer;
+            color: #0d6efd;
+            font-weight: 500;
+        }
+        .asset-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -106,11 +116,11 @@
                                 <th>Nama Aset</th>
                                 <th class="text-nowrap sortable" onclick="sortTable('price')">Harga <i id="sort-icon-price" class="bi bi-arrow-down-up sort-icon"></i></th>
                                 <th class="text-nowrap sortable" onclick="sortTable('date')">Tanggal Beli <i id="sort-icon-date" class="bi bi-arrow-down-up sort-icon"></i></th>
+                                <th class="text-nowrap sortable" onclick="sortTable('duration')">Durasi Pakai <i id="sort-icon-duration" class="bi bi-arrow-down-up sort-icon"></i></th>
                                 <th>Kategori</th>
                                 <th>Lokasi Beli</th>
                                 <th>Detail Aset</th>
                                 <th>Status</th>
-                                <th class="text-nowrap no-export">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="assetTableBody">
@@ -169,6 +179,12 @@
                             <label for="assetName" class="form-label">Nama Aset</label>
                             <input type="text" class="form-control" id="assetName" required>
                         </div>
+                        
+                        <div class="mb-3">
+                            <label for="assetImage" class="form-label">URL Gambar (Opsional)</label>
+                            <input type="url" class="form-control" id="assetImage" placeholder="https://.../gambar.png">
+                        </div>
+
                         <div class="mb-3">
                             <label for="assetDetails" class="form-label">Detail Aset</label>
                             <textarea class="form-control" id="assetDetails" rows="3" placeholder="Contoh: No. Seri, Warna, Spesifikasi, dll."></textarea>
@@ -232,6 +248,46 @@
         </div>
     </div>
 
+    <div class="modal fade" id="assetDetailModal" tabindex="-1" aria-labelledby="assetDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assetDetailModalLabel">Detail Aset</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img id="detailAssetImage" src="" class="img-fluid rounded mb-3" alt="Foto Aset" style="display: none; width: 100%; max-height: 300px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-7">
+                            <h3 id="detailAssetName">Nama Aset</h3>
+                            <h4><span id="detailAssetStatus" class="badge bg-success"></span></h4>
+                            <hr>
+                            <p class="mb-1"><strong>Nomor Aset:</strong> <span id="detailAssetNumber"></span></p>
+                            <p class="mb-1"><strong>Harga:</strong> <span id="detailAssetPrice"></span></p>
+                            <p class="mb-1"><strong>Tanggal Beli:</strong> <span id="detailAssetDate"></span></p>
+                            <p class="mb-1"><strong>Durasi Pakai:</strong> <span id="detailDuration"></span></p>
+                            <p class="mb-1"><strong>Kategori:</strong> <span id="detailCategory"></span></p>
+                            <p class="mb-1"><strong>Lokasi Beli:</strong> <span id="detailLocation"></span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="mb-1"><strong>Detail Lainnya:</strong></p>
+                    <p id="detailDetails" style="white-space: pre-wrap;"></p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <button type="button" id="detailDeleteButton" class="btn btn-danger"><i class="bi bi-trash-fill"></i> Hapus</button>
+                        <button type="button" id="detailEditButton" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</button>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -245,6 +301,7 @@
         let sortState = { key: null, direction: 'none' }; 
         let paginationState = { currentPage: 1, itemsPerPage: 50, totalPages: 1 };
         const assetModal = new bootstrap.Modal(document.getElementById('assetModal'));
+        const assetDetailModal = new bootstrap.Modal(document.getElementById('assetDetailModal'));
         
         // --- HELPER FUNCTIONS ---
         const formatCurrency = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value || 0);
@@ -278,6 +335,33 @@
                 }
             }
             return newNumber;
+        };
+
+        const calculateDuration = (isoDate) => {
+            if (!isoDate) return { string: 'N/A', totalDays: 0 };
+            
+            const purchaseDate = new Date(isoDate);
+            const today = new Date();
+            
+            purchaseDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            const diffTime = today.getTime() - purchaseDate.getTime();
+            
+            if (diffTime < 0) return { string: '0 Hari', totalDays: 0 }; 
+
+            const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            const years = Math.floor(totalDays / 365);
+            const remainingDays = totalDays % 365;
+            
+            let durationString = '';
+            if (years > 0) {
+                durationString += `${years} Tahun `;
+            }
+            durationString += `${remainingDays} Hari`;
+
+            return { string: durationString, totalDays: totalDays };
         };
         
         const getStatusBadge = (status) => {
@@ -338,21 +422,20 @@
             } else {
                 paginatedAssets.forEach((asset, index) => {
                     const itemNumber = startIndex + index + 1;
+                    const duration = calculateDuration(asset.date);
+                    // PERUBAHAN DI SINI: Menambahkan kembali 'text-nowrap'
                     const row = `
                         <tr>
                             <td class="text-nowrap">${itemNumber}</td>
                             <td class="text-nowrap">${asset.assetNumber || '-'}</td>
-                            <td>${asset.name}</td>
+                            <td class="asset-link" onclick="openDetailModal(${asset.id})">${asset.name}</td>
                             <td class="text-nowrap">${formatCurrency(asset.price)}</td>
                             <td class="text-nowrap">${formatDate(asset.date)}</td>
+                            <td class="text-nowrap">${duration.string}</td>
                             <td>${asset.category}</td>
                             <td>${asset.location}</td>
                             <td>${asset.details || ''}</td>
                             <td><span class="badge ${getStatusBadge(asset.status)}">${asset.status}</span></td>
-                            <td class="text-nowrap">
-                                <button class="btn btn-warning btn-sm" onclick="openEditModal(${asset.id})"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteAsset(${asset.id})"><i class="bi bi-trash-fill"></i></button>
-                            </td>
                         </tr>
                     `;
                     tableBody.innerHTML += row;
@@ -390,6 +473,7 @@
             document.getElementById('assetModalLabel').textContent = 'Tambah Aset Baru';
             document.getElementById('displayAssetNumber').textContent = '(Akan dibuat otomatis)';
             document.getElementById('purchaseDate').value = formatDate(new Date().toISOString());
+            document.getElementById('assetImage').value = '';
             document.getElementById('customCategoryWrapper').classList.add('d-none');
             document.getElementById('customCategory').value = '';
             document.getElementById('customStatusWrapper').classList.add('d-none');
@@ -398,7 +482,7 @@
         
         function saveAsset() {
             const id = document.getElementById('assetId').value;
-            const priceString = document.getElementById('assetPrice').value.replace(/\./g, '');
+            const priceString = document.getElementById('assetPrice').value.replace(/[^0-9]/g, '');
             let category = document.getElementById('assetCategory').value;
             if (category === 'other') {
                 category = document.getElementById('customCategory').value.trim();
@@ -411,6 +495,7 @@
             }
             const assetData = {
                 name: document.getElementById('assetName').value,
+                imageUrl: document.getElementById('assetImage').value,
                 details: document.getElementById('assetDetails').value,
                 price: parseInt(priceString, 10) || 0, 
                 date: parseDateString(document.getElementById('purchaseDate').value),
@@ -441,6 +526,7 @@
             document.getElementById('displayAssetNumber').textContent = asset.assetNumber || 'N/A';
             document.getElementById('assetId').value = asset.id;
             document.getElementById('assetName').value = asset.name;
+            document.getElementById('assetImage').value = asset.imageUrl || '';
             document.getElementById('assetDetails').value = asset.details || '';
             document.getElementById('assetPrice').value = (asset.price || '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             document.getElementById('purchaseDate').value = formatDate(asset.date);
@@ -472,14 +558,63 @@
                 filterAssets();
             }
         }
+
+        // --- FUNGSI MODAL DETAIL ---
+        function openDetailModal(id) {
+            const asset = originalAssets.find(a => a.id == id);
+            if (!asset) return;
+
+            const imgElement = document.getElementById('detailAssetImage');
+            if (asset.imageUrl) {
+                imgElement.src = asset.imageUrl;
+                imgElement.style.display = 'block';
+            } else {
+                imgElement.src = '';
+                imgElement.style.display = 'none';
+            }
+
+            document.getElementById('detailAssetName').textContent = asset.name;
+            document.getElementById('detailAssetNumber').textContent = asset.assetNumber || 'N/A';
+            document.getElementById('detailAssetPrice').textContent = formatCurrency(asset.price);
+            document.getElementById('detailAssetDate').textContent = formatDate(asset.date);
+            document.getElementById('detailDuration').textContent = calculateDuration(asset.date).string;
+            document.getElementById('detailCategory').textContent = asset.category;
+            document.getElementById('detailLocation').textContent = asset.location;
+            document.getElementById('detailDetails').textContent = asset.details || 'Tidak ada detail.';
+
+            const statusBadge = document.getElementById('detailAssetStatus');
+            statusBadge.textContent = asset.status;
+            statusBadge.className = `badge ${getStatusBadge(asset.status)}`;
+            
+            document.getElementById('detailEditButton').onclick = () => editFromDetail(id);
+            document.getElementById('detailDeleteButton').onclick = () => deleteFromDetail(id);
+
+            assetDetailModal.show();
+        }
+
+        function editFromDetail(id) {
+            assetDetailModal.hide();
+            openEditModal(id);
+        }
+
+        function deleteFromDetail(id) {
+            assetDetailModal.hide();
+            deleteAsset(id);
+        }
         
         // --- PENCARIAN & PAGINASI ---
         function filterAssets() {
             paginationState.currentPage = 1; 
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            displayedAssets = !searchTerm ? [...originalAssets] : originalAssets.filter(asset =>
-                Object.values(asset).some(val => String(val).toLowerCase().includes(searchTerm))
-            );
+            
+            displayedAssets = !searchTerm ? [...originalAssets] : originalAssets.filter(asset => {
+                const assetValues = Object.values(asset).map(val => String(val).toLowerCase());
+                const durationString = calculateDuration(asset.date).string.toLowerCase();
+                
+                return assetValues.some(val => val.includes(searchTerm)) || 
+                       durationString.includes(searchTerm);
+            });
+
             sortState = { key: null, direction: 'none' };
             updateSortIcons();
             render();
@@ -554,13 +689,19 @@
                             cleanPrice = asset.price;
                         }
                         
+                        let cleanDate = asset.date || new Date().toISOString().slice(0, 10);
+                        if (cleanDate && cleanDate.includes('/')) {
+                            cleanDate = parseDateString(cleanDate);
+                        }
+
                         return {
                             ...asset,
                             id: asset.id || Date.now() + index,
                             assetNumber: assetNumber,
                             price: cleanPrice,
                             name: asset.name || 'Tanpa Nama',
-                            date: asset.date || new Date().toISOString().slice(0, 10),
+                            imageUrl: asset.imageUrl || '',
+                            date: cleanDate,
                             category: asset.category || 'Tidak Dikategorikan',
                             location: asset.location || '-',
                             details: asset.details || '',
@@ -590,8 +731,10 @@
                 "No.": index + 1,
                 "Nomor Aset": asset.assetNumber,
                 "Nama Aset": asset.name,
+                "URL Gambar": asset.imageUrl,
                 "Harga": asset.price,
                 "Tanggal Beli": formatDate(asset.date),
+                "Durasi Pakai": calculateDuration(asset.date).string,
                 "Kategori": asset.category,
                 "Lokasi Beli": asset.location,
                 "Detail Aset": asset.details,
@@ -612,13 +755,15 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape' });
             
-            const head = [['No.', 'Nomor Aset', 'Nama Aset', 'Harga', 'Tanggal Beli', 'Kategori', 'Lokasi Beli', 'Detail Aset', 'Status']];
+            const head = [['No.', 'Nomor Aset', 'Nama Aset', 'Harga', 'Tanggal Beli', 'Durasi Pakai', 'Kategori', 'Lokasi Beli', 'Detail Aset', 'Status']];
+            
             const body = dataToUse.map((asset, index) => [
                     index + 1,
                     asset.assetNumber,
                     asset.name,
                     formatCurrency(asset.price),
                     formatDate(asset.date),
+                    calculateDuration(asset.date).string,
                     asset.category,
                     asset.location,
                     asset.details || '-',
@@ -662,6 +807,12 @@
                 filterAssets();
             } else {
                 displayedAssets.sort((a, b) => {
+                    if (key === 'duration') {
+                        const durationA = calculateDuration(a.date).totalDays;
+                        const durationB = calculateDuration(b.date).totalDays;
+                        return durationA - durationB;
+                    }
+                    
                     let valA = a[key], valB = b[key];
                     if (typeof valA === 'number') return valA - valB;
                     if (key === 'date') return new Date(valA) - new Date(valB);
