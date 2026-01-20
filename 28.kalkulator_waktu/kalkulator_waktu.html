@@ -2,261 +2,254 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Waktu Otomatis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kalkulator Waktu Fixed</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
-        .content { flex: 1; }
-        .card { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .nav-pills .nav-link.active { background-color: #0d6efd; border-radius: 10px; }
-        .header-section { background: #0d6efd; color: white; padding: 25px 0; border-radius: 0 0 25px 25px; }
-        .form-control-lg { border-radius: 12px; font-weight: 500; text-align: center; font-size: 1.5rem; letter-spacing: 2px; }
-        .input-group-text { border-radius: 12px; cursor: pointer; font-weight: bold; min-width: 65px; justify-content: center; background-color: #e9ecef; }
-        .btn-toggle { font-size: 0.85rem; font-weight: 600; padding: 8px 15px; }
-        .result-box { border-radius: 15px; background: #e7f1ff; border: 1px solid #b6d4fe; padding: 15px; margin-top: 20px; }
-        .reset-link { cursor: pointer; text-decoration: none; font-size: 0.85rem; color: #dc3545; font-weight: bold; }
-        .reset-link:hover { text-decoration: underline; }
-        footer { background: #fff; padding: 20px 0; text-align: center; color: #6c757d; font-size: 0.9rem; border-top: 1px solid #dee2e6; margin-top: 40px; }
+        :root { --primary: #0d6efd; --bg: #f4f7f6; }
+        body { 
+            background-color: var(--bg); 
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            height: 100vh; margin: 0; 
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
+        }
+        .main-card {
+            width: 95%; max-width: 400px; height: 90vh;
+            background: white; border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .card-header-custom {
+            background: var(--primary); color: white;
+            padding: 15px; text-align: center; flex-shrink: 0;
+        }
+        .nav-pills-custom {
+            padding: 10px; background: #fff; border-bottom: 1px solid #eee; flex-shrink: 0;
+        }
+        .nav-pills .nav-link { font-weight: 600; color: #6c757d; border-radius: 12px; }
+        .nav-pills .nav-link.active { background-color: var(--primary); }
+        
+        .card-body-content {
+            padding: 20px; flex-grow: 1; overflow-y: auto;
+        }
+        .form-label { font-size: 0.8rem; fw-bold; color: #666; margin-bottom: 4px; text-transform: uppercase; }
+        .form-control-lg { 
+            border-radius: 15px; font-size: 1.5rem; font-weight: 700; 
+            text-align: center; border: 2px solid #eee; 
+        }
+        .input-group-text { border-radius: 15px; border: 2px solid #eee; border-left: none; font-weight: bold; }
+        
+        .result-box {
+            border-radius: 20px; background: #f0f7ff; border: 1px solid #c2d9ff;
+            padding: 15px; margin-top: 20px; text-align: center;
+        }
+        .footer-custom {
+            padding: 12px; background: #f8f9fa; border-top: 1px solid #eee;
+            text-align: center; color: #adb5bd; font-size: 0.8rem; flex-shrink: 0;
+        }
+        .reset-btn { color: #dc3545; font-size: 0.8rem; text-decoration: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="content">
-    <div class="header-section text-center mb-4 shadow">
-        <h2 class="mb-0">⏱️ Kalkulator Waktu</h2>
-        <div id="realtimeClock" class="opacity-75 fw-bold" style="font-size: 1.1rem; margin-top: 5px;">00:00:00</div>
+<div class="main-card">
+    <div class="card-header-custom">
+        <h5 class="mb-0">⏱️ Kalkulator Waktu</h5>
+        <div id="realtimeClock" class="fw-bold opacity-90" style="font-size: 1rem;"></div>
     </div>
 
-    <div class="container" style="max-width: 450px;">
-        
-        <ul class="nav nav-pills nav-fill mb-4 bg-white p-2 rounded-pill shadow-sm" id="pills-tab" role="tablist">
+    <div class="nav-pills-custom">
+        <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
             <li class="nav-item">
-                <button class="nav-link active" id="tab-selisih" data-bs-toggle="pill" data-bs-target="#content-selisih">Selisih Durasi</button>
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-selisih">Selisih</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" id="tab-tambah" data-bs-toggle="pill" data-bs-target="#content-tambah">Tambah Waktu</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-tambah">Tambah</button>
             </li>
         </ul>
+    </div>
 
+    <div class="card-body-content">
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="content-selisih">
-                <div class="card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0">Hitung Durasi</h5>
-                        <span class="reset-link" onclick="setRealTime()">🔄 Reset Jam</span>
+            <div class="tab-pane fade show active" id="tab-selisih">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="btn-group btn-group-sm">
+                        <button id="btn24" class="btn btn-primary" onclick="setFormat(24)">24H</button>
+                        <button id="btn12" class="btn btn-outline-primary" onclick="setFormat(12)">12H</button>
                     </div>
-                    
-                    <div class="d-flex justify-content-center gap-2 mb-4">
-                        <button id="btn24" class="btn btn-primary btn-sm btn-toggle shadow-sm" onclick="setFormat(24)">24 JAM</button>
-                        <button id="btn12" class="btn btn-outline-secondary btn-sm btn-toggle shadow-sm" onclick="setFormat(12)">12 JAM</button>
-                    </div>
+                    <span class="reset-btn" onclick="resetAll()">🔄 Reset Jam</span>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">Mulai</label>
-                        <div class="input-group">
-                            <input type="text" id="mulai" class="form-control form-control-lg smart-input" placeholder="00:00" maxlength="5">
-                            <span class="input-group-text d-none ampm-toggle" id="suffixMulai">AM</span>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label">Waktu Mulai</label>
+                    <div class="input-group">
+                        <input type="text" id="mulai" class="form-control form-control-lg t-input" placeholder="00:00" maxlength="5">
+                        <span class="input-group-text d-none ampm-toggle" id="ampmMulai" onclick="toggleAMPM(this)">AM</span>
                     </div>
+                </div>
 
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold text-muted">Selesai</label>
-                        <div class="input-group">
-                            <input type="text" id="selesai" class="form-control form-control-lg smart-input" placeholder="00:00" maxlength="5">
-                            <span class="input-group-text d-none ampm-toggle" id="suffixSelesai">AM</span>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label">Waktu Selesai</label>
+                    <div class="input-group">
+                        <input type="text" id="selesai" class="form-control form-control-lg t-input" placeholder="00:00" maxlength="5">
+                        <span class="input-group-text d-none ampm-toggle" id="ampmSelesai" onclick="toggleAMPM(this)">AM</span>
                     </div>
+                </div>
 
-                    <div id="boxSelisih" class="result-box text-center">
-                        <span class="d-block small text-muted">Hasil Durasi:</span>
-                        <strong id="textSelisih" class="h3 text-primary">0 Jam 0 Menit</strong>
-                    </div>
+                <div class="result-box">
+                    <small class="text-muted d-block">DURASI HASIL</small>
+                    <h3 id="resSelisih" class="text-primary mb-0 fw-bold">0 Jam 0 Menit</h3>
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="content-tambah">
-                <div class="card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="mb-0">Tambah Durasi</h5>
-                        <span class="reset-link" onclick="setRealTime()">🔄 Reset Jam</span>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold text-muted">Dari Jam</label>
-                        <div class="input-group">
-                            <input type="text" id="awalTambah" class="form-control form-control-lg smart-input" maxlength="5">
-                            <span class="input-group-text d-none ampm-toggle" id="suffixTambah">AM</span>
-                        </div>
-                    </div>
+            <div class="tab-pane fade" id="tab-tambah">
+                <div class="d-flex justify-content-end mb-3">
+                    <span class="reset-btn" onclick="resetAll()">🔄 Reset Jam</span>
+                </div>
 
-                    <div class="row mb-4">
-                        <div class="col">
-                            <label class="small fw-bold text-muted">Jam</label>
-                            <input type="number" id="plusJam" class="form-control form-control-lg smart-input-num" value="0" min="0">
-                        </div>
-                        <div class="col">
-                            <label class="small fw-bold text-muted">Menit</label>
-                            <input type="number" id="plusMenit" class="form-control form-control-lg smart-input-num" value="30" min="0">
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label">Dari Jam</label>
+                    <div class="input-group">
+                        <input type="text" id="awalTambah" class="form-control form-control-lg t-input" maxlength="5">
+                        <span class="input-group-text d-none ampm-toggle" id="ampmTambah" onclick="toggleAMPM(this)">AM</span>
                     </div>
+                </div>
 
-                    <div id="boxPrediksi" class="result-box text-center border-success" style="background-color: #f0fff4;">
-                        <span class="d-block small text-muted">Prediksi Waktu Akhir:</span>
-                        <strong id="textPrediksi" class="h3 text-success">--:--</strong>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label">Tambah Jam</label>
+                        <input type="number" id="pJam" class="form-control form-control-lg num-input" value="0">
                     </div>
+                    <div class="col-6">
+                        <label class="form-label">Menit</label>
+                        <input type="number" id="pMenit" class="form-control form-control-lg num-input" value="30">
+                    </div>
+                </div>
+
+                <div class="result-box" style="background: #f0fff4; border-color: #b1e7c1;">
+                    <small class="text-muted d-block">ESTIMASI WAKTU</small>
+                    <h3 id="resTambah" class="text-success mb-0 fw-bold">--:--</h3>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<footer>
-    <div class="container">
+    <div class="footer-custom">
         Williyanto Adi &copy; 2026
     </div>
-</footer>
+</div>
 
 <script>
     let currentFormat = 24;
 
-    function updateHeaderClock() {
+    function updateClock() {
         const now = new Date();
-        document.getElementById('realtimeClock').innerText = now.toLocaleTimeString('id-ID');
+        document.getElementById('realtimeClock').innerText = now.toLocaleTimeString('id-ID', {hour12: false});
     }
 
-    window.onload = () => {
-        updateHeaderClock(); // Jalankan instan saat muat halaman
-        setRealTime();
-        initAutoLogic();
-        setInterval(updateHeaderClock, 1000); // Update setiap detik
-    };
-
-    function initAutoLogic() {
-        const inputs = document.querySelectorAll('.smart-input');
-        inputs.forEach(input => {
-            input.addEventListener('input', function() {
-                let val = this.value.replace(/\D/g, '');
-                if (val.length > 4) val = val.substring(0, 4);
-                if (val.length >= 3) {
-                    this.value = val.substring(0, val.length - 2) + ":" + val.substring(val.length - 2);
-                } else {
-                    this.value = val;
-                }
-                autoCalculate();
-            });
-
-            input.addEventListener('blur', function() {
-                formatOnBlur(this);
-                autoCalculate();
-            });
-        });
-
-        document.querySelectorAll('.smart-input-num').forEach(input => {
-            input.addEventListener('input', autoCalculate);
-        });
-
-        document.querySelectorAll('.ampm-toggle').forEach(t => {
-            t.onclick = function() { 
-                this.innerText = this.innerText === 'AM' ? 'PM' : 'AM';
-                autoCalculate();
-            };
-        });
-    }
-
-    function formatOnBlur(el) {
-        let val = el.value.replace(/\D/g, '');
-        if (!val) return;
-        let hh = parseInt(val.substring(0, val.length - 2)) || 0;
-        let mm = parseInt(val.substring(val.length - 2)) || 0;
-        if (hh > 23) hh = 23;
-        if (mm > 59) mm = 59;
-        el.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+    function toggleAMPM(el) {
+        el.innerText = el.innerText === 'AM' ? 'PM' : 'AM';
+        hitungSemua();
     }
 
     function setFormat(f) {
         currentFormat = f;
-        const suffixes = ['suffixMulai', 'suffixSelesai', 'suffixTambah'];
-        if (f === 12) {
-            suffixes.forEach(id => document.getElementById(id).classList.remove('d-none'));
-            document.getElementById('btn12').className = 'btn btn-primary btn-sm btn-toggle shadow-sm';
-            document.getElementById('btn24').className = 'btn btn-outline-secondary btn-sm btn-toggle shadow-sm';
+        const ampmEls = document.querySelectorAll('.ampm-toggle');
+        if(f === 12) {
+            ampmEls.forEach(el => el.classList.remove('d-none'));
+            document.getElementById('btn12').className = 'btn btn-primary';
+            document.getElementById('btn24').className = 'btn btn-outline-primary';
         } else {
-            suffixes.forEach(id => document.getElementById(id).classList.add('d-none'));
-            document.getElementById('btn24').className = 'btn btn-primary btn-sm btn-toggle shadow-sm';
-            document.getElementById('btn12').className = 'btn btn-outline-secondary btn-sm btn-toggle shadow-sm';
+            ampmEls.forEach(el => el.classList.add('d-none'));
+            document.getElementById('btn24').className = 'btn btn-primary';
+            document.getElementById('btn12').className = 'btn btn-outline-primary';
         }
-        autoCalculate();
+        hitungSemua();
     }
 
-    function setRealTime() {
+    function resetAll() {
         const now = new Date();
-        const hh = now.getHours();
+        const hh = String(now.getHours()).padStart(2, '0');
         const mm = String(now.getMinutes()).padStart(2, '0');
+        const time = `${hh}:${mm}`;
         
-        document.getElementById('mulai').value = `${String(hh).padStart(2, '0')}:${mm}`;
+        document.getElementById('mulai').value = time;
         document.getElementById('selesai').value = "";
-        document.getElementById('awalTambah').value = `${String(hh).padStart(2, '0')}:${mm}`;
-        document.getElementById('plusJam').value = 0;
-        document.getElementById('plusMenit').value = 30;
+        document.getElementById('awalTambah').value = time;
+        document.getElementById('pJam').value = 0;
+        document.getElementById('pMenit').value = 30;
         
-        // Reset AM/PM sesuai waktu sekarang jika mode 12h aktif
-        const ampm = hh >= 12 ? 'PM' : 'AM';
-        document.getElementById('suffixMulai').innerText = ampm;
-        document.getElementById('suffixTambah').innerText = ampm;
-        document.getElementById('suffixSelesai').innerText = ampm;
-
-        autoCalculate();
+        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+        document.querySelectorAll('.ampm-toggle').forEach(el => el.innerText = ampm);
+        
+        hitungSemua();
     }
 
-    function getMinutes(inputId, suffixId) {
-        const input = document.getElementById(inputId).value;
-        const raw = input.replace(/\D/g, '');
-        if (raw.length < 1) return null;
+    function getMins(id, ampmId) {
+        const val = document.getElementById(id).value.replace(/\D/g, '');
+        if (val.length < 1) return null;
+        let h, m;
+        if (val.length <= 2) { h = parseInt(val); m = 0; }
+        else { h = parseInt(val.slice(0, -2)); m = parseInt(val.slice(-2)); }
         
-        let hh = 0, mm = 0;
-        if (raw.length <= 2) {
-            hh = parseInt(raw);
-        } else {
-            hh = parseInt(raw.substring(0, raw.length - 2));
-            mm = parseInt(raw.substring(raw.length - 2));
-        }
-
         if (currentFormat === 12) {
-            const ampm = document.getElementById(suffixId).innerText;
-            if (ampm === 'PM' && hh < 12) hh += 12;
-            if (ampm === 'AM' && hh === 12) hh = 0;
+            const ampm = document.getElementById(ampmId).innerText;
+            if (ampm === 'PM' && h < 12) h += 12;
+            if (ampm === 'AM' && h === 12) h = 0;
         }
-        return (hh * 60) + mm;
+        return (h * 60) + m;
     }
 
-    function autoCalculate() {
-        // Tab 1: Selisih
-        const t1 = getMinutes('mulai', 'suffixMulai');
-        const t2 = getMinutes('selesai', 'suffixSelesai');
-        if (t1 !== null && t2 !== null) {
-            let diff = t2 - t1;
-            if (diff < 0) diff += 1440;
-            document.getElementById('textSelisih').innerText = `${Math.floor(diff/60)} Jam ${diff%60} Menit`;
-        } else {
-            document.getElementById('textSelisih').innerText = "0 Jam 0 Menit";
-        }
+    function hitungSemua() {
+        // Logika Selisih
+        const m1 = getMins('mulai', 'ampmMulai');
+        const m2 = getMins('selesai', 'ampmSelesai');
+        if (m1 !== null && m2 !== null) {
+            let d = m2 - m1;
+            if (d < 0) d += 1440;
+            document.getElementById('resSelisih').innerText = `${Math.floor(d/60)} Jam ${d%60} Menit`;
+        } else { document.getElementById('resSelisih').innerText = "0 Jam 0 Menit"; }
 
-        // Tab 2: Tambah
-        const t3 = getMinutes('awalTambah', 'suffixTambah');
-        const pJ = parseInt(document.getElementById('plusJam').value) || 0;
-        const pM = parseInt(document.getElementById('plusMenit').value) || 0;
-        if (t3 !== null) {
-            let total = t3 + (pJ * 60) + pM;
-            let d = new Date(); d.setHours(0, total, 0);
-            let rh = d.getHours(), rm = String(d.getMinutes()).padStart(2, '0');
+        // Logika Tambah
+        const m3 = getMins('awalTambah', 'ampmTambah');
+        const plusH = parseInt(document.getElementById('pJam').value) || 0;
+        const plusM = parseInt(document.getElementById('pMenit').value) || 0;
+        if (m3 !== null) {
+            let total = (m3 + (plusH * 60) + plusM) % 1440;
+            let rh = Math.floor(total/60);
+            let rm = String(total%60).padStart(2, '0');
             
-            let display = currentFormat === 12 ? 
-                `${rh % 12 || 12}:${rm} ${rh >= 12 ? 'PM' : 'AM'}` : 
-                `${String(rh).padStart(2, '0')}:${rm}`;
-            document.getElementById('textPrediksi').innerText = display;
+            if (currentFormat === 12) {
+                let ap = rh >= 12 ? 'PM' : 'AM';
+                let h12 = rh % 12 || 12;
+                document.getElementById('resTambah').innerText = `${h12}:${rm} ${ap}`;
+            } else {
+                document.getElementById('resTambah').innerText = `${String(rh).padStart(2, '0')}:${rm}`;
+            }
         }
     }
+
+    // Input Format Logic
+    document.querySelectorAll('.t-input').forEach(el => {
+        el.addEventListener('input', e => {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 4) v = v.slice(0, 4);
+            if (v.length >= 3) v = v.slice(0, -2) + ":" + v.slice(-2);
+            e.target.value = v;
+            hitungSemua();
+        });
+    });
+
+    document.querySelectorAll('.num-input').forEach(el => {
+        el.addEventListener('input', hitungSemua);
+    });
+
+    window.onload = () => {
+        updateClock();
+        setInterval(updateClock, 1000);
+        resetAll();
+    };
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
