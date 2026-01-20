@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalkulator Waktu & Tanggal Pro</title>
+    <title>Kalkulator Waktu Pro - Detail View</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,7 +13,7 @@
         body { display: flex; justify-content: center; align-items: center; padding: 10px; }
 
         .main-card {
-            width: 100%; max-width: 420px; height: 95vh; max-height: 800px;
+            width: 100%; max-width: 420px; height: 95vh; max-height: 850px;
             background: #fff; border-radius: 30px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             display: flex; flex-direction: column; overflow: hidden;
         }
@@ -35,41 +35,40 @@
         .form-label { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .input-group-custom { 
-            background: #f8fafc; 
-            border-radius: 12px; 
-            padding: 8px; 
-            border: 2px solid #e2e8f0; 
-            transition: 0.3s; 
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            height: 50px; /* Menyeragamkan tinggi kotak */
+            background: #f8fafc; border-radius: 12px; padding: 8px; border: 2px solid #e2e8f0; 
+            transition: 0.3s; margin-bottom: 10px; display: flex; align-items: center; height: 48px; 
         }
         .input-group-custom:focus-within { border-color: var(--primary); background: #fff; }
 
-        /* CSS UNTUK MENYERAGAMKAN FONT INPUT */
         .form-control-pro { 
-            background: transparent; 
-            border: none; 
-            font-size: 1rem; /* Ukuran font seragam */
-            font-weight: 700; 
-            text-align: center; 
-            color: #1e293b; 
-            width: 100%; 
-            font-family: 'Inter', sans-serif;
-            appearance: none;
-            -webkit-appearance: none;
+            background: transparent; border: none; font-size: 1rem; font-weight: 700; 
+            text-align: center; color: #1e293b; width: 100%; font-family: 'Inter', sans-serif;
         }
         .form-control-pro:focus { box-shadow: none; outline: none; }
-        
-        /* Font khusus untuk tab durasi yang berisi angka besar */
         .big-input { font-size: 1.4rem !important; }
 
-        .result-box { border-radius: 20px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #bfdbfe; padding: 15px; margin-top: 5px; }
+        .ampm-btn {
+            background: white; border: 1px solid #e2e8f0; border-radius: 8px;
+            font-weight: 700; color: var(--primary); padding: 2px 8px; font-size: 0.75rem; cursor: pointer;
+        }
+
+        .result-box { border-radius: 20px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #bfdbfe; padding: 12px; margin-top: 5px; }
+
+        /* Style Tabel Detail sesuai gambar */
+        .detail-table {
+            width: 100%; margin-top: 15px; border-radius: 15px; overflow: hidden;
+            background: #1e293b; color: white; font-size: 0.8rem;
+        }
+        .detail-table td { padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .detail-table tr:last-child td { border-bottom: none; }
+        .label-col { color: #94a3b8; font-weight: 500; }
+        .val-col { text-align: right; font-weight: 600; }
 
         .footer-custom { padding: 10px; background: #fff; text-align: center; color: #94a3b8; font-size: 0.7rem; border-top: 1px solid #f1f5f9; flex-shrink: 0; }
-
         .reset-btn { color: #ef4444; font-size: 0.75rem; font-weight: 700; text-decoration: none; cursor: pointer; }
+        .format-switcher { background: #f1f5f9; padding: 3px; border-radius: 10px; display: inline-flex; }
+        .format-btn { padding: 4px 12px; border-radius: 8px; border: none; font-size: 0.7rem; font-weight: 700; background: transparent; color: #64748b; }
+        .format-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -89,13 +88,26 @@
     </div>
 
     <div class="card-body-content">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="format-switcher">
+                <button id="btn24" class="format-btn active" onclick="setFormat(24)">24H</button>
+                <button id="btn12" class="format-btn" onclick="setFormat(12)">12H</button>
+            </div>
+            <a class="reset-btn" onclick="globalReset()">🔄 Reset Semua</a>
+        </div>
+
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab-selisih">
-                <div class="d-flex justify-content-end mb-3"><a class="reset-btn" onclick="resetAll()">🔄 Reset</a></div>
                 <label class="form-label">Waktu Mulai</label>
-                <div class="input-group-custom"><input type="text" id="mulai" class="form-control-pro big-input t-input" placeholder="00:00" maxlength="5"></div>
+                <div class="input-group-custom">
+                    <input type="text" id="mulai" class="form-control-pro big-input t-input" placeholder="00:00" maxlength="5">
+                    <button class="ampm-btn d-none ampm-toggle" onclick="toggleAMPM(this)">AM</button>
+                </div>
                 <label class="form-label">Waktu Selesai</label>
-                <div class="input-group-custom"><input type="text" id="selesai" class="form-control-pro big-input t-input" placeholder="00:00" maxlength="5"></div>
+                <div class="input-group-custom">
+                    <input type="text" id="selesai" class="form-control-pro big-input t-input" placeholder="00:00" maxlength="5">
+                    <button class="ampm-btn d-none ampm-toggle" onclick="toggleAMPM(this)">AM</button>
+                </div>
                 <div class="result-box text-center">
                     <small style="color: var(--primary); font-weight: 800; font-size: 0.6rem;">HASIL DURASI</small>
                     <h4 id="resSelisih" class="mb-0 fw-bold text-primary">0 Jam 0 Menit</h4>
@@ -103,9 +115,11 @@
             </div>
 
             <div class="tab-pane fade" id="tab-tambah">
-                <div class="d-flex justify-content-end mb-3"><a class="reset-btn" onclick="resetAll()">🔄 Reset</a></div>
                 <label class="form-label">Waktu Awal</label>
-                <div class="input-group-custom"><input type="text" id="awalTambah" class="form-control-pro big-input t-input" maxlength="5"></div>
+                <div class="input-group-custom">
+                    <input type="text" id="awalTambah" class="form-control-pro big-input t-input" maxlength="5">
+                    <button class="ampm-btn d-none ampm-toggle" onclick="toggleAMPM(this)">AM</button>
+                </div>
                 <div class="row g-2">
                     <div class="col-6"><label class="form-label">Jam</label><div class="input-group-custom"><input type="number" id="pJam" class="form-control-pro big-input num-input" value="0"></div></div>
                     <div class="col-6"><label class="form-label">Menit</label><div class="input-group-custom"><input type="number" id="pMenit" class="form-control-pro big-input num-input" value="30"></div></div>
@@ -117,34 +131,38 @@
             </div>
 
             <div class="tab-pane fade" id="tab-tanggal">
-                <div class="d-flex justify-content-end mb-2"><a class="reset-btn" onclick="resetDateFields()">🔄 Reset</a></div>
-                
                 <div class="row g-2 mb-1">
-                    <div class="col-6">
-                        <label class="form-label">Tanggal Mulai</label>
-                        <div class="input-group-custom"><input type="date" id="startDate" class="form-control-pro"></div>
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">Tanggal Selesai</label>
-                        <div class="input-group-custom"><input type="date" id="endDate" class="form-control-pro"></div>
-                    </div>
+                    <div class="col-6"><label class="form-label">Tgl Mulai</label><div class="input-group-custom"><input type="date" id="startDate" class="form-control-pro"></div></div>
+                    <div class="col-6"><label class="form-label">Tgl Selesai</label><div class="input-group-custom"><input type="date" id="endDate" class="form-control-pro"></div></div>
                 </div>
-
                 <div class="row g-2 mb-2">
-                    <div class="col-6">
-                        <label class="form-label">Waktu Mulai</label>
-                        <div class="input-group-custom"><input type="time" id="startTime" class="form-control-pro"></div>
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">Waktu Selesai</label>
-                        <div class="input-group-custom"><input type="time" id="endTime" class="form-control-pro"></div>
-                    </div>
+                    <div class="col-6"><label class="form-label">Jam Mulai</label><div class="input-group-custom"><input type="time" id="startTime" class="form-control-pro"></div></div>
+                    <div class="col-6"><label class="form-label">Jam Selesai</label><div class="input-group-custom"><input type="time" id="endTime" class="form-control-pro"></div></div>
+                </div>
+                
+                <div class="result-box text-center" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;">
+                    <small style="color: rgba(255,255,255,0.8); font-weight: 800; font-size: 0.6rem;">JARAK WAKTU UTAMA</small>
+                    <h5 id="resDate" class="mb-0 fw-bold text-white" style="font-size: 1.1rem;">0 Hari, 0 Jam, 0 Menit</h5>
                 </div>
 
-                <div class="result-box text-center" style="background: linear-gradient(135deg, #fff7ed, #ffedd5); border-color: #fed7aa;">
-                    <small style="color: #ea580c; font-weight: 800; font-size: 0.6rem;">HASIL PERHITUNGAN JARAK</small>
-                    <h5 id="resDate" class="mb-0 fw-bold" style="color: #9a3412; font-size: 1.1rem;">0 Hari, 0 Jam, 0 Menit</h5>
-                </div>
+                <table class="detail-table">
+                    <tr>
+                        <td class="label-col">Hari, Jam dan Menit</td>
+                        <td id="detFull" class="val-col">0 hari 0 jam 0 menit</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Jam dan Menit</td>
+                        <td id="detHrMin" class="val-col">0 jam 0 menit</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Total Jam</td>
+                        <td id="detTotalHr" class="val-col">0 jam</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Total Menit</td>
+                        <td id="detTotalMin" class="val-col">0 menit</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
@@ -153,71 +171,101 @@
 </div>
 
 <script>
+    let globalFormat = 24;
+
     function updateClock() {
         const now = new Date();
         document.getElementById('realtimeClock').innerText = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: false});
     }
 
-    function resetAll() {
-        const now = new Date();
-        const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        document.getElementById('mulai').value = time;
-        document.getElementById('selesai').value = "";
-        document.getElementById('awalTambah').value = time;
-        document.getElementById('pJam').value = 0;
-        document.getElementById('pMenit').value = 30;
+    function setFormat(f) {
+        globalFormat = f;
+        document.getElementById('btn24').classList.toggle('active', f === 24);
+        document.getElementById('btn12').classList.toggle('active', f === 12);
+        document.querySelectorAll('.ampm-toggle').forEach(el => el.classList.toggle('d-none', f === 24));
         hitungSemua();
-    }
-
-    function resetDateFields() {
-        const now = new Date();
-        const yyyy = now.getFullYear();
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        const hh = String(now.getHours()).padStart(2, '0');
-        const min = String(now.getMinutes()).padStart(2, '0');
-
-        document.getElementById('startDate').value = `${yyyy}-${mm}-${dd}`;
-        document.getElementById('endDate').value = `${yyyy}-${mm}-${dd}`;
-        document.getElementById('startTime').value = `${hh}:${min}`;
-        document.getElementById('endTime').value = `${hh}:${min}`;
         hitungTanggal();
     }
 
+    function toggleAMPM(el) {
+        el.innerText = el.innerText === 'AM' ? 'PM' : 'AM';
+        hitungSemua();
+    }
+
+    function globalReset() {
+        const now = new Date();
+        const y = now.getFullYear(), mon = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
+        const h = String(now.getHours()).padStart(2,'0'), m = String(now.getMinutes()).padStart(2,'0');
+
+        document.getElementById('mulai').value = `${h}:${m}`;
+        document.getElementById('selesai').value = "";
+        document.getElementById('awalTambah').value = `${h}:${m}`;
+        document.getElementById('pJam').value = 0; document.getElementById('pMenit').value = 30;
+
+        document.getElementById('startDate').value = `${y}-${mon}-${d}`;
+        document.getElementById('endDate').value = `${y}-${mon}-${d}`;
+        document.getElementById('startTime').value = `${h}:${m}`;
+        document.getElementById('endTime').value = `${h}:${m}`;
+
+        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+        document.querySelectorAll('.ampm-toggle').forEach(el => el.innerText = ampm);
+        hitungSemua(); hitungTanggal();
+    }
+
+    function getMins(id, elAMPM) {
+        const val = document.getElementById(id).value.replace(/\D/g, '');
+        if (val.length < 1) return null;
+        let h = val.length <= 2 ? parseInt(val) : parseInt(val.slice(0, -2));
+        let m = val.length <= 2 ? 0 : parseInt(val.slice(-2));
+        if (globalFormat === 12 && elAMPM) {
+            const ap = elAMPM.innerText;
+            if (ap === 'PM' && h < 12) h += 12;
+            if (ap === 'AM' && h === 12) h = 0;
+        }
+        return (h * 60) + m;
+    }
+
     function hitungSemua() {
-        const v1 = document.getElementById('mulai').value.replace(/\D/g, '');
-        const v2 = document.getElementById('selesai').value.replace(/\D/g, '');
-        if (v1.length >= 3 && v2.length >= 3) {
-            let m1 = parseInt(v1.slice(0, -2))*60 + parseInt(v1.slice(-2));
-            let m2 = parseInt(v2.slice(0, -2))*60 + parseInt(v2.slice(-2));
+        const am1 = document.querySelector('#tab-selisih .ampm-toggle:nth-of-type(1)');
+        const am2 = document.querySelector('#tab-selisih .ampm-toggle:nth-of-type(2)');
+        const m1 = getMins('mulai', am1), m2 = getMins('selesai', am2);
+        if (m1 !== null && m2 !== null) {
             let d = m2 - m1; if (d < 0) d += 1440;
             document.getElementById('resSelisih').innerText = `${Math.floor(d/60)} Jam ${d%60} Menit`;
         }
-        const v3 = document.getElementById('awalTambah').value.replace(/\D/g, '');
-        if (v3.length >= 3) {
-            let total = (parseInt(v3.slice(0, -2))*60 + parseInt(v3.slice(-2)) + (parseInt(document.getElementById('pJam').value)||0)*60 + (parseInt(document.getElementById('pMenit').value)||0)) % 1440;
+        const am3 = document.querySelector('#tab-tambah .ampm-toggle');
+        const m3 = getMins('awalTambah', am3);
+        if (m3 !== null) {
+            let total = (m3 + (parseInt(document.getElementById('pJam').value)||0)*60 + (parseInt(document.getElementById('pMenit').value)||0)) % 1440;
             let rh = Math.floor(total/60), rm = String(total%60).padStart(2, '0');
-            document.getElementById('resTambah').innerText = `${String(rh).padStart(2, '0')}:${rm}`;
+            if (globalFormat === 12) {
+                document.getElementById('resTambah').innerText = `${rh%12||12}:${rm} ${rh>=12?'PM':'AM'}`;
+            } else {
+                document.getElementById('resTambah').innerText = `${String(rh).padStart(2, '0')}:${rm}`;
+            }
         }
     }
 
     function hitungTanggal() {
-        const d1 = document.getElementById('startDate').value;
-        const t1 = document.getElementById('startTime').value;
-        const d2 = document.getElementById('endDate').value;
-        const t2 = document.getElementById('endTime').value;
+        const d1 = document.getElementById('startDate').value, t1 = document.getElementById('startTime').value;
+        const d2 = document.getElementById('endDate').value, t2 = document.getElementById('endTime').value;
         if (d1 && t1 && d2 && t2) {
-            const start = new Date(`${d1}T${t1}`);
-            const end = new Date(`${d2}T${t2}`);
-            let diffMs = end - start;
-            if (diffMs < 0) {
-                document.getElementById('resDate').innerText = "Waktu selesai harus setelah mulai";
+            const start = new Date(`${d1}T${t1}`), end = new Date(`${d2}T${t2}`);
+            let ms = end - start;
+            if (ms < 0) {
+                document.getElementById('resDate').innerText = "Waktu Selesai Tidak Valid";
                 return;
             }
-            let diffDays = Math.floor(diffMs / 86400000);
-            let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
-            let diffMins = Math.floor((diffMs % 3600000) / 60000);
-            document.getElementById('resDate').innerText = `${diffDays} Hari, ${diffHrs} Jam, ${diffMins} Menit`;
+            let totMin = Math.floor(ms / 60000);
+            let totHr = totMin / 60;
+            let d = Math.floor(totMin / 1440), h = Math.floor((totMin % 1440) / 60), m = totMin % 60;
+
+            // Update UI
+            document.getElementById('resDate').innerText = `${d} Hari, ${h} Jam, ${m} Menit`;
+            document.getElementById('detFull').innerText = `${d} hari ${h} jam ${m} menit`;
+            document.getElementById('detHrMin').innerText = `${Math.floor(totHr)} jam ${m} menit`;
+            document.getElementById('detTotalHr').innerText = `${totHr.toLocaleString('id-ID', {maximumFractionDigits: 2})} jam`;
+            document.getElementById('detTotalMin').innerText = `${totMin.toLocaleString('id-ID')} menit`;
         }
     }
 
@@ -229,13 +277,12 @@
             e.target.value = v; hitungSemua();
         });
     });
-
     document.querySelectorAll('.num-input').forEach(el => el.addEventListener('input', hitungSemua));
     ['startDate', 'startTime', 'endDate', 'endTime'].forEach(id => {
         document.getElementById(id).addEventListener('change', hitungTanggal);
     });
 
-    window.onload = () => { updateClock(); setInterval(updateClock, 1000); resetAll(); resetDateFields(); };
+    window.onload = () => { updateClock(); setInterval(updateClock, 1000); globalReset(); };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
