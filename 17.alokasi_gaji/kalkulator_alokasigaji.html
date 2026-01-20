@@ -92,7 +92,7 @@
         #print-footer { display: none; }
 
         @media print {
-            body { background-color: white !important; padding: 1.5cm 0.5cm; -webkit-print-color-adjust: exact; }
+            body { background-color: white !important; padding: 1.5cm 0.5cm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .card { box-shadow: none !important; border: 1px solid #ddd !important; }
             .main-container { margin: 0 !important; padding: 0 !important; }
             .col-md-5, #add-allocation-btn, .action-buttons, footer, #printBtn, #save-toast { display: none !important; }
@@ -295,14 +295,17 @@
             const formattedValue = value ? formatCurrency(value) : '';
             div.innerHTML = `
                 <span class="input-group-text allocation-number"></span>
-                <input type="text" class="form-control category-name-input" value="${name}" placeholder="Nama Alokasi">
-                <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" value="${formattedValue}" placeholder="Nilai Anggaran">
+                <input type="text" class="form-control category-name-input" placeholder="Nama Alokasi">
+                <input type="text" inputmode="numeric" class="form-control allocation-amount live-update currency-input" placeholder="Nilai Anggaran">
                 <button class="btn btn-outline-danger remove-allocation-btn" type="button"><i class="bi bi-trash-fill"></i></button>
             `;
             allocationContainer.appendChild(div);
+            const categoryInput = div.querySelector('.category-name-input');
             const newCurrencyInput = div.querySelector('.currency-input');
             const newLiveUpdateInput = div.querySelector('.live-update');
             const removeBtn = div.querySelector('.remove-allocation-btn');
+            categoryInput.value = name;
+            newCurrencyInput.value = formattedValue;
             newCurrencyInput.addEventListener('input', handleCurrencyInput);
             newLiveUpdateInput.addEventListener('input', updateSisa);
             removeBtn.addEventListener('click', () => {
@@ -398,7 +401,7 @@
             dataAlokasi.forEach(item => {
                 let badgeColorClass = 'bg-danger'; 
                 if (item.nama === 'Sisa') badgeColorClass = 'bg-success';
-                 hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${item.nama} <span class="badge ${badgeColorClass} rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
+                 hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center"><span>${item.nama}</span> <span class="badge ${badgeColorClass} rounded-pill">${formatRupiah(item.jumlah)}</span></li>`;
             });
             hasilHTML += `<li class="list-group-item d-flex justify-content-between align-items-center active"><strong>Total Gaji</strong> <strong>${formatRupiah(totalGaji)}</strong></li></ul>`;
             hasilDiv.innerHTML = hasilHTML;
