@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Waktu Otomatis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .nav-pills .nav-link.active { background-color: #0d6efd; border-radius: 10px; }
+        .header-section { background: #0d6efd; color: white; padding: 25px 0; border-radius: 0 0 25px 25px; }
+        .form-control-lg { border-radius: 12px; font-weight: 500; text-align: center; font-size: 1.5rem; letter-spacing: 2px; }
+        .input-group-text { border-radius: 12px; cursor: pointer; font-weight: bold; min-width: 65px; justify-content: center; background-color: #e9ecef; }
+        .btn-toggle { font-size: 0.85rem; font-weight: 600; padding: 8px 15px; }
+        .result-box { border-radius: 15px; background: #e7f1ff; border: 1px solid #b6d4fe; padding: 15px; margin-top: 20px; }
+        .reset-link { cursor: pointer; text-decoration: none; font-size: 0.85rem; color: #dc3545; font-weight: bold; }
+        .reset-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="header-section text-center mb-4 shadow">
+    <h2 class="mb-0">⏱️ Kalkulator Waktu</h2>
+    <small id="realtimeClock" class="opacity-75"></small>
+</div>
+
+<div class="container" style="max-width: 450px;">
+    
+    <ul class="nav nav-pills nav-fill mb-4 bg-white p-2 rounded-pill shadow-sm" id="pills-tab" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" id="tab-selisih" data-bs-toggle="pill" data-bs-target="#content-selisih">Selisih Durasi</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="tab-tambah" data-bs-toggle="pill" data-bs-target="#content-tambah">Tambah Waktu</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="content-selisih">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Hitung Durasi</h5>
+                    <span class="reset-link" onclick="setRealTime()">🔄 Reset Jam</span>
+                </div>
+                
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                    <button id="btn24" class="btn btn-primary btn-sm btn-toggle shadow-sm" onclick="setFormat(24)">24 JAM</button>
+                    <button id="btn12" class="btn btn-outline-secondary btn-sm btn-toggle shadow-sm" onclick="setFormat(12)">12 JAM</button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Mulai</label>
+                    <div class="input-group">
+                        <input type="text" id="mulai" class="form-control form-control-lg smart-input" placeholder="00:00" maxlength="5">
+                        <span class="input-group-text d-none ampm-toggle" id="suffixMulai">AM</span>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-muted">Selesai</label>
+                    <div class="input-group">
+                        <input type="text" id="selesai" class="form-control form-control-lg smart-input" placeholder="00:00" maxlength="5">
+                        <span class="input-group-text d-none ampm-toggle" id="suffixSelesai">AM</span>
+                    </div>
+                </div>
+
+                <div id="boxSelisih" class="result-box text-center">
+                    <span class="d-block small text-muted">Hasil Durasi:</span>
+                    <strong id="textSelisih" class="h3 text-primary">0 Jam 0 Menit</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="content-tambah">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0">Tambah Durasi</h5>
+                    <span class="reset-link" onclick="setRealTime()">🔄 Reset Jam</span>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">Dari Jam</label>
+                    <div class="input-group">
+                        <input type="text" id="awalTambah" class="form-control form-control-lg smart-input" maxlength="5">
+                        <span class="input-group-text d-none ampm-toggle" id="suffixTambah">AM</span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col">
+                        <label class="small fw-bold text-muted">Jam</label>
+                        <input type="number" id="plusJam" class="form-control form-control-lg smart-input-num" value="0" min="0">
+                    </div>
+                    <div class="col">
+                        <label class="small fw-bold text-muted">Menit</label>
+                        <input type="number" id="plusMenit" class="form-control form-control-lg smart-input-num" value="30" min="0">
+                    </div>
+                </div>
+
+                <div id="boxPrediksi" class="result-box text-center border-success" style="background-color: #f0fff4;">
+                    <span class="d-block small text-muted">Prediksi Waktu Akhir:</span>
+                    <strong id="textPrediksi" class="h3 text-success">--:--</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentFormat = 24;
+
+    window.onload = () => {
+        setRealTime();
+        initAutoLogic();
+        // Jam Header
+        setInterval(() => {
+            document.getElementById('realtimeClock').innerText = new Date().toLocaleTimeString('id-ID');
+        }, 1000);
+    };
+
+    function initAutoLogic() {
+        // Logika untuk input jam (00:00)
+        const inputs = document.querySelectorAll('.smart-input');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                let val = this.value.replace(/\D/g, '');
+                if (val.length > 4) val = val.substring(0, 4);
+                if (val.length >= 3) {
+                    this.value = val.substring(0, val.length - 2) + ":" + val.substring(val.length - 2);
+                } else {
+                    this.value = val;
+                }
+                autoCalculate(); // Hitung otomatis saat ngetik
+            });
+
+            input.addEventListener('blur', function() {
+                formatOnBlur(this);
+                autoCalculate();
+            });
+        });
+
+        // Logika untuk input angka (Tab 2)
+        document.querySelectorAll('.smart-input-num').forEach(input => {
+            input.addEventListener('input', autoCalculate);
+        });
+
+        // Logika Klik AM/PM
+        document.querySelectorAll('.ampm-toggle').forEach(t => {
+            t.onclick = function() { 
+                this.innerText = this.innerText === 'AM' ? 'PM' : 'AM';
+                autoCalculate();
+            };
+        });
+    }
+
+    function formatOnBlur(el) {
+        let val = el.value.replace(/\D/g, '');
+        if (!val) return;
+        let hh = parseInt(val.substring(0, val.length - 2)) || 0;
+        let mm = parseInt(val.substring(val.length - 2)) || 0;
+        if (hh > 23) hh = 23;
+        if (mm > 59) mm = 59;
+        el.value = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+    }
+
+    function setFormat(f) {
+        currentFormat = f;
+        const suffixes = ['suffixMulai', 'suffixSelesai', 'suffixTambah'];
+        if (f === 12) {
+            suffixes.forEach(id => document.getElementById(id).classList.remove('d-none'));
+            document.getElementById('btn12').className = 'btn btn-primary btn-sm btn-toggle shadow-sm';
+            document.getElementById('btn24').className = 'btn btn-outline-secondary btn-sm btn-toggle shadow-sm';
+        } else {
+            suffixes.forEach(id => document.getElementById(id).classList.add('d-none'));
+            document.getElementById('btn24').className = 'btn btn-primary btn-sm btn-toggle shadow-sm';
+            document.getElementById('btn12').className = 'btn btn-outline-secondary btn-sm btn-toggle shadow-sm';
+        }
+        autoCalculate();
+    }
+
+    function setRealTime() {
+        const now = new Date();
+        const val = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        document.getElementById('mulai').value = val;
+        document.getElementById('selesai').value = "";
+        document.getElementById('awalTambah').value = val;
+        document.getElementById('plusJam').value = 0;
+        document.getElementById('plusMenit').value = 30;
+        autoCalculate();
+    }
+
+    function getMinutes(inputId, suffixId) {
+        const input = document.getElementById(inputId).value;
+        const raw = input.replace(/\D/g, '');
+        if (raw.length < 1) return null;
+        
+        let hh = 0, mm = 0;
+        if (raw.length <= 2) {
+            hh = parseInt(raw);
+        } else {
+            hh = parseInt(raw.substring(0, raw.length - 2));
+            mm = parseInt(raw.substring(raw.length - 2));
+        }
+
+        if (currentFormat === 12) {
+            const ampm = document.getElementById(suffixId).innerText;
+            if (ampm === 'PM' && hh < 12) hh += 12;
+            if (ampm === 'AM' && hh === 12) hh = 0;
+        }
+        return (hh * 60) + mm;
+    }
+
+    function autoCalculate() {
+        // Hitung Tab 1
+        const t1 = getMinutes('mulai', 'suffixMulai');
+        const t2 = getMinutes('selesai', 'suffixSelesai');
+        if (t1 !== null && t2 !== null) {
+            let diff = t2 - t1;
+            if (diff < 0) diff += 1440;
+            document.getElementById('textSelisih').innerText = `${Math.floor(diff/60)} Jam ${diff%60} Menit`;
+        } else {
+            document.getElementById('textSelisih').innerText = "0 Jam 0 Menit";
+        }
+
+        // Hitung Tab 2
+        const t3 = getMinutes('awalTambah', 'suffixTambah');
+        const pJ = parseInt(document.getElementById('plusJam').value) || 0;
+        const pM = parseInt(document.getElementById('plusMenit').value) || 0;
+        if (t3 !== null) {
+            let total = t3 + (pJ * 60) + pM;
+            let d = new Date(); d.setHours(0, total, 0);
+            let rh = d.getHours(), rm = String(d.getMinutes()).padStart(2, '0');
+            
+            let display = currentFormat === 12 ? 
+                `${rh % 12 || 12}:${rm} ${rh >= 12 ? 'PM' : 'AM'}` : 
+                `${String(rh).padStart(2, '0')}:${rm}`;
+            document.getElementById('textPrediksi').innerText = display;
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

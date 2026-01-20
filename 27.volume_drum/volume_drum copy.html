@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Drum Kabel - Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .img-guide { width: 100%; max-width: 400px; border-radius: 10px; }
+        .label-custom { font-weight: bold; color: #0d6efd; margin-bottom: 5px; display: block; }
+        .btn-convert { font-size: 0.75rem; padding: 2px 8px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h3 class="mb-4">Kalkulator Kapasitas</h3>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="label-custom">D (Diameter Flange) mm</label>
+                        <input type="number" id="inputD" class="form-control" placeholder="Garis lurus D">
+                        <button class="btn btn-outline-secondary btn-convert" onclick="konversiPrompt('inputD')">Ukur Melingkar? Klik Sini</button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="label-custom">D1 (Diameter Barrel) mm</label>
+                        <input type="number" id="inputD1" class="form-control" placeholder="Garis lurus D1">
+                        <button class="btn btn-outline-secondary btn-convert" onclick="konversiPrompt('inputD1')">Ukur Melingkar? Klik Sini</button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="label-custom">L (Lebar Dalam) mm</label>
+                        <input type="number" id="inputL" class="form-control" placeholder="Jarak antar dinding">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="label-custom">d (Diameter Kabel) mm</label>
+                        <input type="number" id="inputKabel" class="form-control" value="10">
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button onclick="hitungKapasitas()" class="btn btn-primary w-100 btn-lg">Hitung Kapasitas</button>
+                    </div>
+                </div>
+
+                <div id="hasil" class="mt-4 p-3 bg-light border rounded text-center d-none">
+                    <h5>Hasil Estimasi:</h5>
+                    <h2 class="text-primary fw-bold"><span id="resPanjang">0</span> Meter</h2>
+                    <div id="statusCukup"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 text-center">
+            <div class="card p-4 h-100">
+                <h5 class="mb-3">Cara Ukur Diameter</h5>
+                
+                <div class="text-start mt-3 small">
+                    <p>✅ <strong>Benar:</strong> Ukur lurus menyeberangi titik tengah.</p>
+                    <p>❌ <strong>Salah:</strong> Jangan mengukur melengkung mengikuti pinggiran kayu.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fungsi bantuan jika user hanya bisa ukur keliling
+    function konversiPrompt(targetId) {
+        let keliling = prompt("Masukkan hasil pengukuran melingkar (Keliling) dalam mm:");
+        if (keliling) {
+            let diameter = Math.round(parseFloat(keliling) / 3.14159);
+            document.getElementById(targetId).value = diameter;
+            alert("Hasil Konversi: Diameter adalah " + diameter + " mm");
+        }
+    }
+
+    function hitungKapasitas() {
+        const D = parseFloat(document.getElementById('inputD').value);
+        const D1 = parseFloat(document.getElementById('inputD1').value);
+        const L = parseFloat(document.getElementById('inputL').value);
+        const dk = parseFloat(document.getElementById('inputKabel').value);
+        const target = 5000;
+
+        if (D > D1 && L > 0 && dk > 0) {
+            // Rumus Kapasitas dengan Safety Factor 0.8 (80%)
+            const kapasitasM = Math.floor(((L * (Math.pow(D, 2) - Math.pow(D1, 2))) / (1.56 * Math.pow(dk, 2))) / 1000 * 0.8);
+            
+            document.getElementById('hasil').classList.remove('d-none');
+            document.getElementById('resPanjang').innerText = kapasitasM.toLocaleString('id-ID');
+
+            const status = document.getElementById('statusCukup');
+            if (kapasitasM >= target) {
+                status.innerHTML = "<span class='text-success fw-bold'>✅ MUAT untuk 5 km</span>";
+            } else {
+                status.innerHTML = "<span class='text-danger fw-bold'>❌ TIDAK MUAT (Kurang " + (target - kapasitasM) + " m)</span>";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

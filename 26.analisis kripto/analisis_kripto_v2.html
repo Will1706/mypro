@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Profit Analyzer (IDR) - Kalkulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .profit {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .loss {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .neutral {
+            background-color: #ffeeba;
+            color: #856404;
+            border: 1px solid #ffeb85;
+        }
+        .footer-note {
+            font-size: 0.85em;
+            margin-top: 30px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <h1 class="text-center mb-4">💰 Analisis Profit Kripto (IDR)</h1>
+            <p class="lead text-center">Gunakan alat ini untuk menghitung perkiraan profit/loss transaksi Anda.</p>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Input Transaksi</h3>
+                    <form id="crypto-analyzer-form">
+                        
+                        <div class="mb-3">
+                            <label for="hargaBeli" class="form-label">Harga Beli per Koin (IDR)</label>
+                            <input type="number" class="form-control" id="hargaBeli" required min="0" step="1">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="jumlahKoin" class="form-label">Jumlah Koin yang Dibeli</label>
+                            <input type="number" class="form-control" id="jumlahKoin" required min="0.00000001" step="any">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="hargaJualTarget" class="form-label">Harga Jual Target per Koin (IDR)</label>
+                            <input type="number" class="form-control" id="hargaJualTarget" required min="0" step="1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="biayaTransaksi" class="form-label">Total Biaya Transaksi (%)</label>
+                            <input type="number" class="form-control" id="biayaTransaksi" value="0.22" min="0" step="0.01">
+                            <div class="form-text">Contoh: 0.22 (untuk 0.22% beli dan 0.22% jual = total estimasi 0.44%)</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Hitung Profit/Loss</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="hasil-analisis" class="d-none">
+                <h3 class="text-center mt-5 mb-3">📈 Hasil Analisis</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Modal Awal (IDR)</h5>
+                                <p class="card-text fs-4" id="modalAwal"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Penjualan Bersih (IDR)</h5>
+                                <p class="card-text fs-4" id="penjualanBersih"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="result-display" class="result-box">
+                    <h4>Profit/Loss Bersih (IDR)</h4>
+                    <p class="fs-1" id="pl-idr">Rp 0</p>
+                    <h4>Persentase Profit/Loss (%)</h4>
+                    <p class="fs-2" id="pl-persen">0.00%</p>
+                </div>
+
+                <h3 class="text-center mt-5 mb-3">💡 Panduan Strategi Sederhana</h3>
+                <div id="strategi-guide" class="alert alert-info" role="alert">
+                    <p class="mb-0" id="strategi-text"></p>
+                </div>
+            </div>
+
+            <p class="footer-note text-center">*Disclaimer: Alat ini hanya memberikan perhitungan teoritis dan tidak menjamin profit. Perdagangan kripto berisiko tinggi.</p>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('crypto-analyzer-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // 1. Ambil Nilai dari Form
+        const hargaBeli = parseFloat(document.getElementById('hargaBeli').value);
+        const jumlahKoin = parseFloat(document.getElementById('jumlahKoin').value);
+        const hargaJualTarget = parseFloat(document.getElementById('hargaJualTarget').value);
+        const biayaTransaksiPersen = parseFloat(document.getElementById('biayaTransaksi').value);
+        
+        // Cek input valid
+        if (isNaN(hargaBeli) || isNaN(jumlahKoin) || isNaN(hargaJualTarget) || isNaN(biayaTransaksiPersen)) {
+            alert("Mohon masukkan semua nilai dengan benar.");
+            return;
+        }
+
+        // 2. Perhitungan Biaya dan Modal
+        // Total biaya transaksi (Biaya beli + Biaya jual) dalam persen dari nilai transaksi.
+        // Asumsi: Biaya Beli = Biaya Jual = Biaya Transaksi Persen
+        const totalBiayaPersen = biayaTransaksiPersen * 2; // Total biaya (beli dan jual)
+
+        const nilaiBeliKotor = hargaBeli * jumlahKoin;
+        
+        // Biaya Beli (asumsi hanya satu sisi)
+        const biayaBeliIDR = nilaiBeliKotor * (biayaTransaksiPersen / 100);
+        
+        // Total Modal (nilai beli kotor + biaya beli)
+        const modalAwal = nilaiBeliKotor + biayaBeliIDR;
+
+        // 3. Perhitungan Penjualan dan Profit
+        const nilaiJualKotor = hargaJualTarget * jumlahKoin;
+        
+        // Biaya Jual (asumsi dihitung dari nilai jual kotor)
+        const biayaJualIDR = nilaiJualKotor * (biayaTransaksiPersen / 100);
+
+        // Total Penjualan Bersih (setelah dikurangi biaya jual)
+        const penjualanBersih = nilaiJualKotor - biayaJualIDR;
+
+        // Profit/Loss Bersih
+        const plIDR = penjualanBersih - modalAwal;
+
+        // Persentase Profit/Loss
+        const plPersen = (plIDR / modalAwal) * 100;
+
+        // 4. Update Tampilan Hasil
+        document.getElementById('hasil-analisis').classList.remove('d-none');
+        document.getElementById('modalAwal').textContent = formatRupiah(modalAwal);
+        document.getElementById('penjualanBersih').textContent = formatRupiah(penjualanBersih);
+        
+        document.getElementById('pl-idr').textContent = formatRupiah(plIDR);
+        document.getElementById('pl-persen').textContent = plPersen.toFixed(2) + '%';
+        
+        // Update Styling dan Strategi
+        const resultDisplay = document.getElementById('result-display');
+        const strategiText = document.getElementById('strategi-text');
+        resultDisplay.classList.remove('profit', 'loss', 'neutral');
+
+        if (plIDR > 0) {
+            resultDisplay.classList.add('profit');
+            strategiText.innerHTML = "🎉 **KEUNTUNGAN!** Jika harga mencapai **Rp " + hargaJualTarget.toLocaleString('id-ID') + "**, Anda mendapatkan keuntungan bersih.<br>Strategi: Pertimbangkan untuk **JUAL** saat harga mendekati atau mencapai target ini. Selalu pertimbangkan target profit yang realistis.";
+        } else if (plIDR < 0) {
+            resultDisplay.classList.add('loss');
+            strategiText.innerHTML = "📉 **KERUGIAN!** Jika harga mencapai **Rp " + hargaJualTarget.toLocaleString('id-ID') + "**, Anda mengalami kerugian bersih.<br>Strategi: Jika target harga Anda lebih rendah dari harga beli Anda, ini adalah **Target Stop Loss** yang perlu dipertimbangkan untuk membatasi kerugian. Jika ini adalah target profit, **naikkan target** Anda.";
+        } else {
+            resultDisplay.classList.add('neutral');
+            strategiText.innerHTML = "⚖️ **TITIK IMPAS (BREAK EVEN).** Setelah memperhitungkan biaya transaksi, harga jual ini hanya akan menutupi modal Anda.<br>Strategi: Jangan **JUAL** pada harga ini, karena tidak ada keuntungan. Naikkan target jual Anda agar mendapat profit bersih.";
+        }
+    });
+
+    // Fungsi untuk memformat angka menjadi format Rupiah
+    function formatRupiah(angka) {
+        let number_string = angka.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return 'Rp ' + number_string.replace('.', ',');
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

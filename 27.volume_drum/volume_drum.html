@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Kapasitas Drum Kabel - Dengan Panduan Visual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; font-family: sans-serif; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .guide-box { background: #fff; border: 1px solid #dee2e6; border-radius: 10px; padding: 15px; }
+        .dimension-label { font-weight: bold; color: #0d6efd; }
+        .drum-image-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 350px; /* Lebar maksimal gambar */
+            margin: 0 auto 20px auto;
+        }
+        .drum-image { 
+            width: 100%; 
+            height: auto; 
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        /* Style untuk penempatan teks D, D1, L pada gambar */
+        .img-label {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .label-D { top: 5%; left: 50%; transform: translateX(-50%); }
+        .label-D1 { top: 45%; left: 50%; transform: translateX(-50%); }
+        .label-L { bottom: 5%; left: 50%; transform: translateX(-50%); }
+        /* Panah indikator (opsional, bisa dibuat dengan CSS lebih kompleks atau langsung di gambar) */
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h3 class="mb-4 text-primary">Kalkulator Kapasitas Lilitan Kabel</h3>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">D (Diameter Flange) mm</label>
+                        <input type="number" id="inputD" class="form-control form-control-lg" placeholder="Ukur piringan luar">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">D1 (Diameter Barrel) mm</label>
+                        <input type="number" id="inputD1" class="form-control form-control-lg" placeholder="Ukur as tengah">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">L (Lebar Dalam) mm</label>
+                        <input type="number" id="inputL" class="form-control form-control-lg" placeholder="Jarak antar dinding">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">d (Diameter Kabel) mm</label>
+                        <input type="number" id="inputKabel" class="form-control form-control-lg" value="10">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Kapasitas Pengisian</label>
+                        <select id="fillRate" class="form-select form-select-lg">
+                            <option value="1.0">100% (Penuh rata flange)</option>
+                            <option value="0.8" selected>80% (Rekomendasi Aman)</option>
+                            <option value="0.5">50% (Setengah isi)</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <button onclick="hitungKapasitas()" class="btn btn-primary w-100 btn-lg shadow-sm">Hitung Panjang Kabel</button>
+                    </div>
+                </div>
+
+                <div id="hasil" class="mt-4 p-3 border rounded bg-light d-none text-center">
+                    <p class="mb-1 text-secondary">Estimasi Panjang Kabel:</p>
+                    <h2 class="display-6 fw-bold text-primary"><span id="resPanjang">0</span> Meter</h2>
+                    <div id="statusCukup" class="mt-2 fw-bold"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="guide-box h-100 d-flex flex-column align-items-center justify-content-center text-center">
+                <h5 class="mb-3 text-primary">Panduan Pengukuran Visual</h5>
+                
+                <div class="drum-image-container">
+                    <img src="./drum.png" alt="Panduan Ukur Drum Kabel" class="drum-image">
+                    <span class="img-label label-D" style="top: 5%; left: 50%; transform: translate(-50%, -50%);">D</span>
+                    <span class="img-label label-D1" style="top: 45%; left: 50%; transform: translate(-50%, -50%);">D1</span>
+                    <span class="img-label label-L" style="bottom: 5%; left: 50%; transform: translate(-50%, 50%);">L</span>
+                </div>
+
+                <div class="text-start mt-4 w-100 px-3">
+                    <p><span class="dimension-label">D (Diameter Flange):</span> Ukur diameter **luar** piringan drum.</p>
+                    <p><span class="dimension-label">D1 (Diameter Barrel):</span> Ukur diameter **luar** inti silinder tengah tempat kabel digulung.</p>
+                    <p><span class="dimension-label">L (Lebar Dalam):</span> Ukur jarak **bersih** antara dua piringan drum bagian dalam.</p>
+                    <p class="text-danger small font-italic mt-3">*Semua pengukuran harus dalam milimeter (mm).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function hitungKapasitas() {
+        const D = parseFloat(document.getElementById('inputD').value);
+        const D1 = parseFloat(document.getElementById('inputD1').value);
+        const L = parseFloat(document.getElementById('inputL').value);
+        const dk = parseFloat(document.getElementById('inputKabel').value);
+        const rate = parseFloat(document.getElementById('fillRate').value);
+        const targetKabel = 5000; // Target 5 km
+
+        if (isNaN(D) || isNaN(D1) || isNaN(L) || isNaN(dk) || D <= 0 || D1 <= 0 || L <= 0 || dk <= 0) {
+            alert("Harap masukkan semua dimensi dengan angka yang valid dan positif.");
+            return;
+        }
+
+        if (D <= D1) {
+            alert("Diameter Flange (D) harus lebih besar dari Diameter Barrel (D1).");
+            return;
+        }
+
+        // Rumus: L_total = (L * (D^2 - D1^2)) / (1.56 * dk^2)
+        const kapasitasMm = (L * (Math.pow(D, 2) - Math.pow(D1, 2))) / (1.56 * Math.pow(dk, 2));
+        const kapasitasM = Math.floor((kapasitasMm / 1000) * rate);
+
+        document.getElementById('hasil').classList.remove('d-none');
+        document.getElementById('resPanjang').innerText = kapasitasM.toLocaleString('id-ID');
+
+        const status = document.getElementById('statusCukup');
+        if(kapasitasM >= targetKabel) {
+            status.className = "text-success";
+            status.innerHTML = `✅ Cukup untuk ${targetKabel} meter kabel.<br><small>Kapasitas drum: ${kapasitasM.toLocaleString('id-ID')} meter (${(rate*100)}%)</small>`;
+        } else {
+            status.className = "text-danger";
+            status.innerHTML = `❌ Tidak cukup untuk ${targetKabel} meter kabel.<br><small>Dibutuhkan ${targetKabel - kapasitasM} meter lebih banyak.</small>`;
+        }
+    }
+</script>
+
+</body>
+</html>

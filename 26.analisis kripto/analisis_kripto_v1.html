@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harga BTC Real-Time & Kalkulasi Keuntungan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px; }
+        .price-display { font-size: 2.5rem; font-weight: bold; }
+        .time-display { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.5rem; } /* Style untuk Jam */
+        .refresh-group .btn { margin-right: 5px; }
+        /* Mengatur agar input teks sejajar kanan untuk mata uang */
+        .form-control.currency-input {
+            text-align: right;
+        }
+        .result-box {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card p-4 bg-dark text-white">
+                <h2 class="card-title text-center mb-4 text-warning">Harga Bitcoin & Kalkulasi Keuntungan 💰</h2>
+                
+                <div class="text-center mb-4">
+                    <p class="time-display text-light" id="currentTime">Loading...</p> 
+                </div>
+
+                <div class="text-center mb-4">
+                    <p class="mb-0 text-secondary">Harga BTC Saat Ini:</p>
+                    <p class="price-display text-success" id="currentBtcPriceDisplay">Rp1.500.000.000</p>
+                    <small class="text-info" id="lastUpdated">Loading...</small>
+                </div>
+                
+                <hr class="bg-secondary">
+
+                <div class="card bg-light text-dark p-3 mb-4">
+                    <h5 class="text-center mb-3">Input Investasi Anda</h5>
+                    <div class="mb-3">
+                        <label for="buyPrice" class="form-label">Harga Beli 1 BTC (IDR)</label>
+                        <input type="text" class="form-control currency-input" id="buyPrice" value="1.500.000.000" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="investment" class="form-label">Total Saldo Investasi (IDR)</label>
+                        <input type="text" class="form-control currency-input" id="investment" value="1.000.000" required>
+                    </div>
+
+                    <div id="calculationResults" class="result-box text-dark mt-3">
+                        <h6 class="text-center mb-3">Analisis Portofolio</h6>
+                        <p>Jumlah BTC Dimiliki: <strong id="btcAmount">0 BTC</strong></p>
+                        <p>Nilai Portofolio Saat Ini: <strong id="portfolioValue">Rp0</strong></p>
+                        <hr>
+                        <p>Total Keuntungan/Kerugian: <strong id="profit" class="text-success">Rp0</strong></p>
+                    </div>
+                </div>
+
+                <hr class="bg-secondary">
+                
+                <div class="d-grid mb-4">
+                    <button id="manualRefreshBtn" class="btn btn-warning btn-lg">
+                        <i class="fas fa-sync-alt"></i> Refresh Harga & Kalkulasi
+                    </button>
+                </div>
+
+                <h5 class="text-center mb-3">Otomatis Refresh Setiap:</h5>
+                
+                <div class="d-flex flex-wrap justify-content-center refresh-group">
+                    <button class="btn btn-outline-light mb-2" data-interval="5000">5 Detik</button>
+                    <button class="btn btn-outline-light mb-2" data-interval="10000">10 Detik</button>
+                    <button class="btn btn-outline-light mb-2" data-interval="60000">1 Menit</button>
+                    <button class="btn btn-outline-light mb-2" data-interval="3600000">1 Jam</button>
+                    <button id="disableRefreshBtn" class="btn btn-danger mb-2">
+                        <i class="fas fa-times-circle"></i> Non-aktifkan Auto-Refresh
+                    </button>
+                </div>
+
+                <small class="mt-3 text-center text-secondary">Status Auto-Refresh: <strong id="refreshStatus" class="text-danger">Non-aktif</strong></small>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let refreshIntervalId = null;
+    let currentInterval = 0;
+    let currentBtcPrice = 1500000000; 
+
+    // --- UTILITY FUNCTIONS ---
+    
+    const formatCurrency = (number) => {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+    };
+
+    const formatNumber = (number) => {
+        return new Intl.NumberFormat('id-ID').format(number);
+    };
+
+    const cleanAndParse = (value) => {
+        const cleaned = value.replace(/\./g, ''); 
+        return parseFloat(cleaned);
+    };
+
+    const mockFetchPrice = () => {
+        const basePrice = 1500000000;
+        const volatility = 5000000; 
+        const randomChange = (Math.random() - 0.5) * 2 * volatility;
+        return basePrice + randomChange;
+    };
+    
+    // --- REAL-TIME CLOCK FUNCTION ---
+    const updateTime = () => {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('id-ID', {
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: false // Menggunakan format 24 jam
+        });
+        document.getElementById('currentTime').textContent = `Waktu Server Lokal: ${timeString}`;
+    };
+    
+    // --- KALKULASI KEUNTUNGAN ---
+    
+    const calculateBTCProfit = () => {
+        const buyPrice = cleanAndParse(document.getElementById('buyPrice').value);
+        const investment = cleanAndParse(document.getElementById('investment').value);
+        const sellPrice = currentBtcPrice; 
+
+        if (isNaN(buyPrice) || isNaN(investment) || buyPrice <= 0 || investment <= 0) {
+             document.getElementById('btcAmount').textContent = '0 BTC';
+             document.getElementById('portfolioValue').textContent = 'Rp0';
+             document.getElementById('profit').textContent = 'Rp0';
+             document.getElementById('profit').classList.remove('text-success', 'text-danger');
+             document.getElementById('profit').classList.add('text-dark');
+             return;
+        }
+
+        const btcAmount = investment / buyPrice;
+        const portfolioValue = btcAmount * sellPrice;
+        const profit = portfolioValue - investment;
+
+        document.getElementById('btcAmount').textContent = btcAmount.toFixed(8) + ' BTC';
+        document.getElementById('portfolioValue').textContent = formatCurrency(portfolioValue);
+        document.getElementById('profit').textContent = formatCurrency(profit);
+
+        const profitElement = document.getElementById('profit');
+        profitElement.classList.remove('text-success', 'text-danger', 'text-dark');
+        
+        if (profit > 0) {
+            profitElement.classList.add('text-success');
+        } else if (profit < 0) {
+            profitElement.classList.add('text-danger');
+        } else {
+            profitElement.classList.add('text-dark');
+        }
+    };
+    
+    // --- FETCH & UPDATE DISPLAY ---
+
+    const fetchBtcPrice = () => {
+        // KODE DEMO: Menggunakan data simulasi (MOCK)
+        const price = mockFetchPrice();
+        
+        currentBtcPrice = price; 
+        
+        document.getElementById('currentBtcPriceDisplay').textContent = formatCurrency(price);
+        document.getElementById('lastUpdated').textContent = `Diperbarui pada: ${new Date().toLocaleTimeString('id-ID')}`;
+
+        calculateBTCProfit(); 
+    };
+
+    // --- AUTO-REFRESH LOGIC ---
+
+    const startAutoRefresh = (interval) => {
+        clearInterval(refreshIntervalId);
+        
+        refreshIntervalId = setInterval(() => {
+            fetchBtcPrice(); 
+        }, interval);
+        
+        currentInterval = interval;
+        
+        document.getElementById('refreshStatus').textContent = `Aktif (${interval / 1000} detik)`;
+        document.getElementById('refreshStatus').classList.remove('text-danger', 'text-dark');
+        document.getElementById('refreshStatus').classList.add('text-success');
+        
+        updateButtonStyles(interval);
+    };
+
+    const disableAutoRefresh = () => {
+        clearInterval(refreshIntervalId);
+        refreshIntervalId = null;
+        currentInterval = 0;
+
+        document.getElementById('refreshStatus').textContent = 'Non-aktif';
+        document.getElementById('refreshStatus').classList.remove('text-success', 'text-dark');
+        document.getElementById('refreshStatus').classList.add('text-danger');
+
+        updateButtonStyles(0);
+    };
+    
+    const updateButtonStyles = (activeInterval) => {
+        const buttons = document.querySelectorAll('.refresh-group button[data-interval]');
+        buttons.forEach(btn => {
+            const btnInterval = parseInt(btn.getAttribute('data-interval'));
+            if (btnInterval === activeInterval) {
+                btn.classList.remove('btn-outline-light');
+                btn.classList.add('btn-primary');
+            } else {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline-light');
+            }
+        });
+        
+        const disableBtn = document.getElementById('disableRefreshBtn');
+        if (activeInterval === 0) {
+            disableBtn.classList.remove('btn-danger');
+            disableBtn.classList.add('btn-dark');
+        } else {
+            disableBtn.classList.add('btn-danger');
+            disableBtn.classList.remove('btn-dark');
+        }
+    }
+
+    // --- INPUT FORMATTING AND CALCULATION TRIGGER ---
+    const setupInputListeners = () => {
+        const currencyInputs = document.querySelectorAll('.currency-input');
+        currencyInputs.forEach(input => {
+            input.addEventListener('keyup', function() {
+                let value = this.value;
+                let cleanedValue = value.replace(/\./g, '');
+                
+                if (!isNaN(cleanedValue) && cleanedValue !== '') {
+                    this.value = formatNumber(cleanedValue);
+                } else if (value === '') {
+                    this.value = '';
+                }
+                
+                calculateBTCProfit();
+            });
+            
+            input.addEventListener('DOMContentLoaded', calculateBTCProfit);
+        });
+    };
+
+
+    // --- INITIALIZATION ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Setup Input Listeners
+        setupInputListeners();
+        
+        // 2. Ambil harga pertama kali & kalkulasi awal
+        fetchBtcPrice(); 
+        
+        // 3. Setup Jam Real-Time: Perbarui setiap 1 detik
+        setInterval(updateTime, 1000); 
+        updateTime(); // Panggil sekali untuk inisialisasi awal
+        
+        // 4. Event listener untuk tombol refresh manual
+        document.getElementById('manualRefreshBtn').addEventListener('click', fetchBtcPrice);
+
+        // 5. Event listener untuk semua tombol auto-refresh
+        document.querySelectorAll('.refresh-group button[data-interval]').forEach(button => {
+            button.addEventListener('click', function() {
+                const interval = parseInt(this.getAttribute('data-interval'));
+                startAutoRefresh(interval);
+            });
+        });
+
+        // 6. Event listener untuk tombol non-aktifkan
+        document.getElementById('disableRefreshBtn').addEventListener('click', disableAutoRefresh);
+        
+        // 7. Set auto refresh default (misalnya 10 detik)
+        startAutoRefresh(10000); 
+    });
+
+</script>
+</body>
+</html>
