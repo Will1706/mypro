@@ -3,255 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalkulator Waktu Fixed</title>
+    <title>Kalkulator Waktu & Tanggal Pro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0d6efd; --bg: #f4f7f6; }
-        body { 
-            background-color: var(--bg); 
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            height: 100vh; margin: 0; 
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden;
-        }
+        :root { --primary: #4361ee; --secondary: #3f37c9; --bg: #f1f5f9; }
+        
+        body, html { height: 100%; margin: 0; overflow: hidden; background-color: var(--bg); font-family: 'Inter', sans-serif; }
+        body { display: flex; justify-content: center; align-items: center; padding: 10px; }
+
         .main-card {
-            width: 95%; max-width: 400px; height: 90vh;
-            background: white; border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%; max-width: 420px; height: 95vh; max-height: 800px;
+            background: #fff; border-radius: 30px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             display: flex; flex-direction: column; overflow: hidden;
         }
+
         .card-header-custom {
-            background: var(--primary); color: white;
-            padding: 15px; text-align: center; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; padding: 15px; text-align: center; flex-shrink: 0;
         }
-        .nav-pills-custom {
-            padding: 10px; background: #fff; border-bottom: 1px solid #eee; flex-shrink: 0;
-        }
-        .nav-pills .nav-link { font-weight: 600; color: #6c757d; border-radius: 12px; }
+
+        .clock-badge { background: rgba(255, 255, 255, 0.2); padding: 2px 12px; border-radius: 12px; font-size: 0.8rem; margin-top: 5px; display: inline-block; }
+
+        .nav-pills-custom { padding: 8px; background: #fff; border-bottom: 1px solid #f1f5f9; flex-shrink: 0; }
+        .nav-pills .nav-link { font-weight: 600; color: #94a3b8; border-radius: 10px; font-size: 0.75rem; padding: 8px 5px; }
         .nav-pills .nav-link.active { background-color: var(--primary); }
+
+        .card-body-content { padding: 15px 20px; flex-grow: 1; overflow-y: auto; scrollbar-width: none; }
+        .card-body-content::-webkit-scrollbar { display: none; }
+
+        .form-label { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .input-group-custom { 
+            background: #f8fafc; 
+            border-radius: 12px; 
+            padding: 8px; 
+            border: 2px solid #e2e8f0; 
+            transition: 0.3s; 
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            height: 50px; /* Menyeragamkan tinggi kotak */
+        }
+        .input-group-custom:focus-within { border-color: var(--primary); background: #fff; }
+
+        /* CSS UNTUK MENYERAGAMKAN FONT INPUT */
+        .form-control-pro { 
+            background: transparent; 
+            border: none; 
+            font-size: 1rem; /* Ukuran font seragam */
+            font-weight: 700; 
+            text-align: center; 
+            color: #1e293b; 
+            width: 100%; 
+            font-family: 'Inter', sans-serif;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .form-control-pro:focus { box-shadow: none; outline: none; }
         
-        .card-body-content {
-            padding: 20px; flex-grow: 1; overflow-y: auto;
-        }
-        .form-label { font-size: 0.8rem; fw-bold; color: #666; margin-bottom: 4px; text-transform: uppercase; }
-        .form-control-lg { 
-            border-radius: 15px; font-size: 1.5rem; font-weight: 700; 
-            text-align: center; border: 2px solid #eee; 
-        }
-        .input-group-text { border-radius: 15px; border: 2px solid #eee; border-left: none; font-weight: bold; }
-        
-        .result-box {
-            border-radius: 20px; background: #f0f7ff; border: 1px solid #c2d9ff;
-            padding: 15px; margin-top: 20px; text-align: center;
-        }
-        .footer-custom {
-            padding: 12px; background: #f8f9fa; border-top: 1px solid #eee;
-            text-align: center; color: #adb5bd; font-size: 0.8rem; flex-shrink: 0;
-        }
-        .reset-btn { color: #dc3545; font-size: 0.8rem; text-decoration: none; font-weight: bold; cursor: pointer; }
+        /* Font khusus untuk tab durasi yang berisi angka besar */
+        .big-input { font-size: 1.4rem !important; }
+
+        .result-box { border-radius: 20px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #bfdbfe; padding: 15px; margin-top: 5px; }
+
+        .footer-custom { padding: 10px; background: #fff; text-align: center; color: #94a3b8; font-size: 0.7rem; border-top: 1px solid #f1f5f9; flex-shrink: 0; }
+
+        .reset-btn { color: #ef4444; font-size: 0.75rem; font-weight: 700; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="main-card">
     <div class="card-header-custom">
-        <h5 class="mb-0">⏱️ Kalkulator Waktu</h5>
-        <div id="realtimeClock" class="fw-bold opacity-90" style="font-size: 1rem;"></div>
+        <h6 class="mb-0 fw-bold">⏱️ Kalkulator Waktu & Tanggal</h6>
+        <div class="clock-badge"><span id="realtimeClock">00:00:00</span></div>
     </div>
 
     <div class="nav-pills-custom">
-        <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
-            <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-selisih">Selisih</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-tambah">Tambah</button>
-            </li>
+        <ul class="nav nav-pills nav-fill" role="tablist">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-selisih">Durasi</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-tambah">Tambah</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-tanggal">Tanggal</button></li>
         </ul>
     </div>
 
     <div class="card-body-content">
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab-selisih">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="btn-group btn-group-sm">
-                        <button id="btn24" class="btn btn-primary" onclick="setFormat(24)">24H</button>
-                        <button id="btn12" class="btn btn-outline-primary" onclick="setFormat(12)">12H</button>
-                    </div>
-                    <span class="reset-btn" onclick="resetAll()">🔄 Reset Jam</span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Waktu Mulai</label>
-                    <div class="input-group">
-                        <input type="text" id="mulai" class="form-control form-control-lg t-input" placeholder="00:00" maxlength="5">
-                        <span class="input-group-text d-none ampm-toggle" id="ampmMulai" onclick="toggleAMPM(this)">AM</span>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Waktu Selesai</label>
-                    <div class="input-group">
-                        <input type="text" id="selesai" class="form-control form-control-lg t-input" placeholder="00:00" maxlength="5">
-                        <span class="input-group-text d-none ampm-toggle" id="ampmSelesai" onclick="toggleAMPM(this)">AM</span>
-                    </div>
-                </div>
-
-                <div class="result-box">
-                    <small class="text-muted d-block">DURASI HASIL</small>
-                    <h3 id="resSelisih" class="text-primary mb-0 fw-bold">0 Jam 0 Menit</h3>
+                <div class="d-flex justify-content-end mb-3"><a class="reset-btn" onclick="resetAll()">🔄 Reset</a></div>
+                <label class="form-label">Waktu Mulai</label>
+                <div class="input-group-custom"><input type="text" id="mulai" class="form-control-pro big-input t-input" placeholder="00:00" maxlength="5"></div>
+                <label class="form-label">Waktu Selesai</label>
+                <div class="input-group-custom"><input type="text" id="selesai" class="form-control-pro big-input t-input" placeholder="00:00" maxlength="5"></div>
+                <div class="result-box text-center">
+                    <small style="color: var(--primary); font-weight: 800; font-size: 0.6rem;">HASIL DURASI</small>
+                    <h4 id="resSelisih" class="mb-0 fw-bold text-primary">0 Jam 0 Menit</h4>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="tab-tambah">
-                <div class="d-flex justify-content-end mb-3">
-                    <span class="reset-btn" onclick="resetAll()">🔄 Reset Jam</span>
+                <div class="d-flex justify-content-end mb-3"><a class="reset-btn" onclick="resetAll()">🔄 Reset</a></div>
+                <label class="form-label">Waktu Awal</label>
+                <div class="input-group-custom"><input type="text" id="awalTambah" class="form-control-pro big-input t-input" maxlength="5"></div>
+                <div class="row g-2">
+                    <div class="col-6"><label class="form-label">Jam</label><div class="input-group-custom"><input type="number" id="pJam" class="form-control-pro big-input num-input" value="0"></div></div>
+                    <div class="col-6"><label class="form-label">Menit</label><div class="input-group-custom"><input type="number" id="pMenit" class="form-control-pro big-input num-input" value="30"></div></div>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Dari Jam</label>
-                    <div class="input-group">
-                        <input type="text" id="awalTambah" class="form-control form-control-lg t-input" maxlength="5">
-                        <span class="input-group-text d-none ampm-toggle" id="ampmTambah" onclick="toggleAMPM(this)">AM</span>
-                    </div>
+                <div class="result-box text-center" style="background: #f0fdf4; border-color: #bbf7d0;">
+                    <small style="color: #16a34a; font-weight: 800; font-size: 0.6rem;">ESTIMASI SELESAI</small>
+                    <h4 id="resTambah" class="mb-0 fw-bold text-success">--:--</h4>
                 </div>
+            </div>
 
-                <div class="row g-2 mb-3">
+            <div class="tab-pane fade" id="tab-tanggal">
+                <div class="d-flex justify-content-end mb-2"><a class="reset-btn" onclick="resetDateFields()">🔄 Reset</a></div>
+                
+                <div class="row g-2 mb-1">
                     <div class="col-6">
-                        <label class="form-label">Tambah Jam</label>
-                        <input type="number" id="pJam" class="form-control form-control-lg num-input" value="0">
+                        <label class="form-label">Tanggal Mulai</label>
+                        <div class="input-group-custom"><input type="date" id="startDate" class="form-control-pro"></div>
                     </div>
                     <div class="col-6">
-                        <label class="form-label">Menit</label>
-                        <input type="number" id="pMenit" class="form-control form-control-lg num-input" value="30">
+                        <label class="form-label">Tanggal Selesai</label>
+                        <div class="input-group-custom"><input type="date" id="endDate" class="form-control-pro"></div>
                     </div>
                 </div>
 
-                <div class="result-box" style="background: #f0fff4; border-color: #b1e7c1;">
-                    <small class="text-muted d-block">ESTIMASI WAKTU</small>
-                    <h3 id="resTambah" class="text-success mb-0 fw-bold">--:--</h3>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label">Waktu Mulai</label>
+                        <div class="input-group-custom"><input type="time" id="startTime" class="form-control-pro"></div>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Waktu Selesai</label>
+                        <div class="input-group-custom"><input type="time" id="endTime" class="form-control-pro"></div>
+                    </div>
+                </div>
+
+                <div class="result-box text-center" style="background: linear-gradient(135deg, #fff7ed, #ffedd5); border-color: #fed7aa;">
+                    <small style="color: #ea580c; font-weight: 800; font-size: 0.6rem;">HASIL PERHITUNGAN JARAK</small>
+                    <h5 id="resDate" class="mb-0 fw-bold" style="color: #9a3412; font-size: 1.1rem;">0 Hari, 0 Jam, 0 Menit</h5>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="footer-custom">
-        Williyanto Adi &copy; 2026
-    </div>
+    <div class="footer-custom">&copy; 2026 • Williyanto Adi</div>
 </div>
 
 <script>
-    let currentFormat = 24;
-
     function updateClock() {
         const now = new Date();
-        document.getElementById('realtimeClock').innerText = now.toLocaleTimeString('id-ID', {hour12: false});
-    }
-
-    function toggleAMPM(el) {
-        el.innerText = el.innerText === 'AM' ? 'PM' : 'AM';
-        hitungSemua();
-    }
-
-    function setFormat(f) {
-        currentFormat = f;
-        const ampmEls = document.querySelectorAll('.ampm-toggle');
-        if(f === 12) {
-            ampmEls.forEach(el => el.classList.remove('d-none'));
-            document.getElementById('btn12').className = 'btn btn-primary';
-            document.getElementById('btn24').className = 'btn btn-outline-primary';
-        } else {
-            ampmEls.forEach(el => el.classList.add('d-none'));
-            document.getElementById('btn24').className = 'btn btn-primary';
-            document.getElementById('btn12').className = 'btn btn-outline-primary';
-        }
-        hitungSemua();
+        document.getElementById('realtimeClock').innerText = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: false});
     }
 
     function resetAll() {
         const now = new Date();
-        const hh = String(now.getHours()).padStart(2, '0');
-        const mm = String(now.getMinutes()).padStart(2, '0');
-        const time = `${hh}:${mm}`;
-        
+        const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         document.getElementById('mulai').value = time;
         document.getElementById('selesai').value = "";
         document.getElementById('awalTambah').value = time;
         document.getElementById('pJam').value = 0;
         document.getElementById('pMenit').value = 30;
-        
-        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-        document.querySelectorAll('.ampm-toggle').forEach(el => el.innerText = ampm);
-        
         hitungSemua();
     }
 
-    function getMins(id, ampmId) {
-        const val = document.getElementById(id).value.replace(/\D/g, '');
-        if (val.length < 1) return null;
-        let h, m;
-        if (val.length <= 2) { h = parseInt(val); m = 0; }
-        else { h = parseInt(val.slice(0, -2)); m = parseInt(val.slice(-2)); }
-        
-        if (currentFormat === 12) {
-            const ampm = document.getElementById(ampmId).innerText;
-            if (ampm === 'PM' && h < 12) h += 12;
-            if (ampm === 'AM' && h === 12) h = 0;
-        }
-        return (h * 60) + m;
+    function resetDateFields() {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+
+        document.getElementById('startDate').value = `${yyyy}-${mm}-${dd}`;
+        document.getElementById('endDate').value = `${yyyy}-${mm}-${dd}`;
+        document.getElementById('startTime').value = `${hh}:${min}`;
+        document.getElementById('endTime').value = `${hh}:${min}`;
+        hitungTanggal();
     }
 
     function hitungSemua() {
-        // Logika Selisih
-        const m1 = getMins('mulai', 'ampmMulai');
-        const m2 = getMins('selesai', 'ampmSelesai');
-        if (m1 !== null && m2 !== null) {
-            let d = m2 - m1;
-            if (d < 0) d += 1440;
+        const v1 = document.getElementById('mulai').value.replace(/\D/g, '');
+        const v2 = document.getElementById('selesai').value.replace(/\D/g, '');
+        if (v1.length >= 3 && v2.length >= 3) {
+            let m1 = parseInt(v1.slice(0, -2))*60 + parseInt(v1.slice(-2));
+            let m2 = parseInt(v2.slice(0, -2))*60 + parseInt(v2.slice(-2));
+            let d = m2 - m1; if (d < 0) d += 1440;
             document.getElementById('resSelisih').innerText = `${Math.floor(d/60)} Jam ${d%60} Menit`;
-        } else { document.getElementById('resSelisih').innerText = "0 Jam 0 Menit"; }
-
-        // Logika Tambah
-        const m3 = getMins('awalTambah', 'ampmTambah');
-        const plusH = parseInt(document.getElementById('pJam').value) || 0;
-        const plusM = parseInt(document.getElementById('pMenit').value) || 0;
-        if (m3 !== null) {
-            let total = (m3 + (plusH * 60) + plusM) % 1440;
-            let rh = Math.floor(total/60);
-            let rm = String(total%60).padStart(2, '0');
-            
-            if (currentFormat === 12) {
-                let ap = rh >= 12 ? 'PM' : 'AM';
-                let h12 = rh % 12 || 12;
-                document.getElementById('resTambah').innerText = `${h12}:${rm} ${ap}`;
-            } else {
-                document.getElementById('resTambah').innerText = `${String(rh).padStart(2, '0')}:${rm}`;
-            }
+        }
+        const v3 = document.getElementById('awalTambah').value.replace(/\D/g, '');
+        if (v3.length >= 3) {
+            let total = (parseInt(v3.slice(0, -2))*60 + parseInt(v3.slice(-2)) + (parseInt(document.getElementById('pJam').value)||0)*60 + (parseInt(document.getElementById('pMenit').value)||0)) % 1440;
+            let rh = Math.floor(total/60), rm = String(total%60).padStart(2, '0');
+            document.getElementById('resTambah').innerText = `${String(rh).padStart(2, '0')}:${rm}`;
         }
     }
 
-    // Input Format Logic
+    function hitungTanggal() {
+        const d1 = document.getElementById('startDate').value;
+        const t1 = document.getElementById('startTime').value;
+        const d2 = document.getElementById('endDate').value;
+        const t2 = document.getElementById('endTime').value;
+        if (d1 && t1 && d2 && t2) {
+            const start = new Date(`${d1}T${t1}`);
+            const end = new Date(`${d2}T${t2}`);
+            let diffMs = end - start;
+            if (diffMs < 0) {
+                document.getElementById('resDate').innerText = "Waktu selesai harus setelah mulai";
+                return;
+            }
+            let diffDays = Math.floor(diffMs / 86400000);
+            let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+            let diffMins = Math.floor((diffMs % 3600000) / 60000);
+            document.getElementById('resDate').innerText = `${diffDays} Hari, ${diffHrs} Jam, ${diffMins} Menit`;
+        }
+    }
+
     document.querySelectorAll('.t-input').forEach(el => {
         el.addEventListener('input', e => {
             let v = e.target.value.replace(/\D/g, '');
             if (v.length > 4) v = v.slice(0, 4);
             if (v.length >= 3) v = v.slice(0, -2) + ":" + v.slice(-2);
-            e.target.value = v;
-            hitungSemua();
+            e.target.value = v; hitungSemua();
         });
     });
 
-    document.querySelectorAll('.num-input').forEach(el => {
-        el.addEventListener('input', hitungSemua);
+    document.querySelectorAll('.num-input').forEach(el => el.addEventListener('input', hitungSemua));
+    ['startDate', 'startTime', 'endDate', 'endTime'].forEach(id => {
+        document.getElementById(id).addEventListener('change', hitungTanggal);
     });
 
-    window.onload = () => {
-        updateClock();
-        setInterval(updateClock, 1000);
-        resetAll();
-    };
+    window.onload = () => { updateClock(); setInterval(updateClock, 1000); resetAll(); resetDateFields(); };
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
