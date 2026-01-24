@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Kapasitas Rak Kabel - Auto</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f8f9fa; color: #333; }
+        .container { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #202124; text-align: center; margin-bottom: 25px; font-size: 22px; border-bottom: 3px solid #4285f4; display: inline-block; width: 100%; padding-bottom: 10px; }
+        
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #5f6368; }
+        
+        select, input { 
+            width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; 
+            box-sizing: border-box; font-size: 16px; transition: border-color 0.3s; 
+        }
+        select:focus, input:focus { border-color: #4285f4; outline: none; }
+
+        .checkbox-container {
+            display: flex; align-items: center; background: #f1f3f4; padding: 12px;
+            border-radius: 10px; margin: 20px 0; cursor: pointer;
+        }
+        .checkbox-container input { width: auto; margin-right: 12px; transform: scale(1.3); }
+        .checkbox-container label { margin-bottom: 0; cursor: pointer; color: #202124; }
+
+        .hidden { display: none; }
+
+        /* Style Box Hasil */
+        .result-card {
+            margin-top: 25px; padding: 20px; border-radius: 12px;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white; text-align: center; box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+        }
+        .result-label { font-size: 14px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+        #jumlahKabel { font-size: 48px; font-weight: 800; display: block; margin: 5px 0; }
+        .result-unit { font-size: 18px; font-weight: 500; }
+        
+        #keterangan { margin-top: 10px; font-size: 12px; font-style: italic; opacity: 0.8; }
+        .footer { font-size: 11px; color: #9aa0a6; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Kalkulator Kabel</h2>
+    
+    <div class="input-group">
+        <label>Tipe/Lebar Rak:</label>
+        <select id="tipeRak" onchange="handleInputChange()">
+            <option value="30">Rak Single Burner (30 cm)</option>
+            <option value="70" selected>Rak Double Burner (70 cm)</option>
+            <option value="custom">Lainnya (Custom)</option>
+        </select>
+    </div>
+
+    <div id="customInputDiv" class="input-group hidden">
+        <label>Lebar Rak Custom (cm):</label>
+        <input type="number" id="lebarCustom" placeholder="0" oninput="handleInputChange()">
+    </div>
+    
+    <div class="input-group">
+        <label>Diameter Kabel (cm):</label>
+        <input type="number" id="diameterKabel" value="5.5" step="0.1" oninput="handleInputChange()">
+    </div>
+
+    <div class="checkbox-container" onclick="toggleSpasiDirect()">
+        <input type="checkbox" id="pakaiSpasi" onchange="handleInputChange()">
+        <label for="pakaiSpasi">Gunakan Jarak Antar Kabel</label>
+    </div>
+
+    <div id="spasiInputDiv" class="input-group hidden">
+        <label>Jarak / Gap (cm):</label>
+        <input type="number" id="jarakKabel" value="1.0" step="0.1" oninput="handleInputChange()">
+    </div>
+
+    <div class="result-card">
+        <span class="result-label">Kapasitas Maksimal</span>
+        <span id="jumlahKabel">0</span>
+        <span class="result-unit">Batang Kabel</span>
+        <p id="keterangan"></p>
+    </div>
+
+    <div class="footer">
+        Perhitungan otomatis berdasarkan input yang Anda masukkan.
+    </div>
+</div>
+
+<script>
+    // Fungsi pembantu untuk klik pada area checkbox
+    function toggleSpasiDirect() {
+        const cb = document.getElementById('pakaiSpasi');
+        // Hanya toggle jika yang diklik bukan inputnya sendiri (mencegah double toggle)
+        if (event.target !== cb) {
+            cb.checked = !cb.checked;
+            handleInputChange();
+        }
+    }
+
+    function handleInputChange() {
+        const tipeRak = document.getElementById('tipeRak').value;
+        const customDiv = document.getElementById('customInputDiv');
+        const spasiDiv = document.getElementById('spasiInputDiv');
+        const pakaiSpasi = document.getElementById('pakaiSpasi').checked;
+
+        // Tampilkan/Sembunyikan Input
+        customDiv.classList.toggle('hidden', tipeRak !== 'custom');
+        spasiDiv.classList.toggle('hidden', !pakaiSpasi);
+
+        hitungKabel();
+    }
+
+    function hitungKabel() {
+        const tipeRakValue = document.getElementById('tipeRak').value;
+        const diameterKabel = parseFloat(document.getElementById('diameterKabel').value);
+        const pakaiSpasi = document.getElementById('pakaiSpasi').checked;
+        const jarak = pakaiSpasi ? parseFloat(document.getElementById('jarakKabel').value) : 0;
+        
+        let lebarRak;
+        if (tipeRakValue === 'custom') {
+            lebarRak = parseFloat(document.getElementById('lebarCustom').value);
+        } else {
+            lebarRak = parseFloat(tipeRakValue);
+        }
+
+        if (lebarRak > 0 && diameterKabel > 0) {
+            let jumlah;
+            if (pakaiSpasi && jarak > 0) {
+                // Rumus: (Lebar + Jarak) / (Diameter + Jarak)
+                jumlah = Math.floor((lebarRak + jarak) / (diameterKabel + jarak));
+            } else {
+                jumlah = Math.floor(lebarRak / diameterKabel);
+            }
+
+            document.getElementById('jumlahKabel').innerText = jumlah;
+            document.getElementById('keterangan').innerText = `Update: Rak ${lebarRak}cm, Kabel Ø${diameterKabel}cm ${pakaiSpasi ? '(Gap '+jarak+'cm)' : '(Rapat)'}`;
+        } else {
+            document.getElementById('jumlahKabel').innerText = "0";
+            document.getElementById('keterangan').innerText = "Masukkan data yang valid";
+        }
+    }
+
+    // Jalankan hitungan pertama kali saat halaman dimuat
+    window.onload = hitungKabel;
+</script>
+
+</body>
+</html>
