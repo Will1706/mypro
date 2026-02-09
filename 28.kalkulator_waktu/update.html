@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Waktu Indonesia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body { 
+            background-color: #f4f7f6; 
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card { 
+            border: none; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            overflow: hidden;
+        }
+        .card-header {
+            background: #0d6efd;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border: none;
+        }
+        .result-box { 
+            background-color: #ffffff; 
+            border: 2px solid #0d6efd;
+            border-radius: 15px; 
+            padding: 20px; 
+            display: none; 
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-control { border-radius: 10px; padding: 12px; }
+        .btn-primary { border-radius: 12px; padding: 14px; font-weight: 600; }
+        #finalDate { font-size: 1.4rem; font-weight: 800; color: #212529; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">⏳ Kalkulator Waktu</h4>
+                    <small>Format: Hari, DD/MM/YYYY 24 Jam</small>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Waktu Awal:</label>
+                        <input type="text" id="startTime" class="form-control bg-white" placeholder="Pilih waktu...">
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <label class="form-label fw-bold">Tambah Jam:</label>
+                            <input type="number" id="addHours" class="form-control" value="0" min="0">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold">Tambah Menit:</label>
+                            <input type="number" id="addMinutes" class="form-control" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <button onclick="hitungWaktu()" class="btn btn-primary w-100 shadow-sm mb-2">
+                        Hitung Waktu Kedepan
+                    </button>
+
+                    <div id="resultArea" class="result-box text-center">
+                        <p class="text-muted small mb-1 text-uppercase">Waktu di Masa Depan:</p>
+                        <div id="finalDate"></div>
+                        <hr>
+                        <small id="diffText" class="text-primary fw-bold"></small>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="btn btn-link btn-sm text-decoration-none text-muted" onclick="location.reload()">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
+<script>
+    // Konfigurasi Input agar formatnya: Senin, 09/02/2026 13.00
+    const fp = flatpickr("#startTime", {
+        locale: "id",          // Menggunakan bahasa Indonesia
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "l, d/m/Y H.i", // l = Nama Hari, d/m/Y = Tanggal, H.i = Jam 24 jam
+        defaultDate: new Date()
+    });
+
+    function hitungWaktu() {
+        const selectedDates = fp.selectedDates;
+        if (selectedDates.length === 0) return;
+
+        let targetDate = new Date(selectedDates[0]);
+        const addHours = parseInt(document.getElementById('addHours').value) || 0;
+        const addMinutes = parseInt(document.getElementById('addMinutes').value) || 0;
+
+        // Proses Tambah Waktu
+        targetDate.setHours(targetDate.getHours() + addHours);
+        targetDate.setMinutes(targetDate.getMinutes() + addMinutes);
+
+        // Format Nama Hari Manual untuk Output
+        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const dayName = days[targetDate.getDay()];
+        
+        // Format Tanggal & Jam
+        const d = String(targetDate.getDate()).padStart(2, '0');
+        const m = String(targetDate.getMonth() + 1).padStart(2, '0');
+        const y = targetDate.getFullYear();
+        const hh = String(targetDate.getHours()).padStart(2, '0');
+        const mm = String(targetDate.getMinutes()).padStart(2, '0');
+
+        const hasilLengkap = `${dayName}, ${d}/${m}/${y} ${hh}.${mm}`;
+
+        // Tampilkan Hasil
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('finalDate').innerText = hasilLengkap;
+        
+        const diffDays = Math.floor((addHours + addMinutes/60) / 24);
+        document.getElementById('diffText').innerText = diffDays > 0 ? 
+            `Berubah ke ${diffDays} hari berikutnya` : "Waktu di hari yang sama";
+    }
+</script>
+
+</body>
+</html>
