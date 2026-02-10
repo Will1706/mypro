@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dunia Angka Anak Pintar</title>
+    <title>Dunia Belajar Anak Pintar</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
         :root { --primary-color: #ff7f50; --secondary-color: #6c5ce7; }
         body {
@@ -20,50 +22,68 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 40px; padding: 40px;
             border: 8px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            position: relative; z-index: 10;
         }
         .title-font { font-family: 'Fredoka One', cursive; color: var(--primary-color); }
         .mode-card {
-            cursor: pointer; transition: 0.3s; border-radius: 25px; padding: 30px;
+            cursor: pointer; transition: 0.3s; border-radius: 25px; padding: 20px;
             background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border: 4px solid transparent;
+            height: 100%;
         }
         .mode-card:hover { transform: translateY(-10px); border-color: var(--primary-color); }
-        .number-btn {
+        
+        .btn-item {
             width: 75px; height: 75px; border-radius: 20px; border: none; color: white;
             font-family: 'Fredoka One', cursive; font-size: 2rem; cursor: pointer;
-            transition: 0.2s; box-shadow: 0 6px 0px rgba(0,0,0,0.15);
+            transition: all 0.1s; box-shadow: 0 6px 0px rgba(0,0,0,0.15); user-select: none;
         }
-        .number-btn:active { transform: translateY(4px); box-shadow: none; }
-        .btn-1 { background: #ff4757; } .btn-2 { background: #2ed573; }
-        .btn-3 { background: #1e90ff; } .btn-4 { background: #ffa502; }
-        .btn-5 { background: #3742fa; } .btn-6 { background: #ff6b81; }
-        .btn-7 { background: #70a1ff; } .btn-8 { background: #7bed9f; }
-        .btn-9 { background: #5352ed; } .btn-10 { background: #eccc68; }
+        .btn-item:active { transform: translateY(4px); box-shadow: none; filter: brightness(0.9); }
+        
+        /* Palette Warna Tombol */
+        .c-1 { background: #ff4757; } .c-2 { background: #2ed573; }
+        .c-3 { background: #1e90ff; } .c-4 { background: #ffa502; }
+        .c-5 { background: #3742fa; } .c-6 { background: #ff6b81; }
+        .c-7 { background: #70a1ff; } .c-8 { background: #7bed9f; }
+        .c-9 { background: #5352ed; } .c-10 { background: #eccc68; }
+
         .hidden { display: none !important; }
-        #output-text { font-family: 'Fredoka One', cursive; font-size: 2.5rem; min-height: 100px; display: flex; align-items: center; justify-content: center; }
-        footer { padding: 20px; text-align: center; font-weight: bold; color: #555; background: rgba(255,255,255,0.5); margin-top: auto; }
+        #output-text { font-family: 'Fredoka One', cursive; font-size: 2.2rem; min-height: 120px; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
+        footer { padding: 15px; text-align: center; font-weight: bold; color: #555; background: rgba(255,255,255,0.5); margin-top: auto; }
         .streak-info { font-size: 0.85rem; color: #666; font-weight: 600; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="main-wrapper">
-    <div class="container" style="max-width: 850px;">
+    <div class="container" style="max-width: 950px;">
         <div class="glass-card text-center animate__animated animate__fadeIn">
             
             <div id="main-menu">
-                <h1 class="title-font display-4 mb-3">Halo Anak Pintar!</h1>
-                <p class="text-muted mb-5 fs-5">Pilih mode untuk mulai bermain:</p>
-                <div class="row g-4">
-                    <div class="col-md-6" onclick="switchMode('belajar')">
-                        <div class="mode-card shadow-sm h-100">
-                            <div class="display-3 mb-2">📖</div>
-                            <h3 class="title-font">Mode Belajar</h3>
+                <h1 class="title-font display-5 mb-2">Halo Anak Pintar!</h1>
+                <p class="text-muted mb-4 fs-5">Pilih mode belajar & bermain:</p>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3" onclick="switchMode('belajar_angka')">
+                        <div class="mode-card shadow-sm">
+                            <div class="fs-1 mb-2">1️⃣</div>
+                            <h6 class="title-font">Belajar Angka</h6>
                         </div>
                     </div>
-                    <div class="col-md-6" onclick="switchMode('tebak')">
-                        <div class="mode-card shadow-sm h-100">
-                            <div class="display-3 mb-2">🎯</div>
-                            <h3 class="title-font">Tebak Angka</h3>
+                    <div class="col-6 col-md-3" onclick="switchMode('tebak_angka')">
+                        <div class="mode-card shadow-sm">
+                            <div class="fs-1 mb-2">🎯</div>
+                            <h6 class="title-font">Tebak Angka</h6>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" onclick="switchMode('belajar_huruf')">
+                        <div class="mode-card shadow-sm">
+                            <div class="fs-1 mb-2">🅰️</div>
+                            <h6 class="title-font">Belajar Huruf</h6>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" onclick="switchMode('tebak_huruf')">
+                        <div class="mode-card shadow-sm">
+                            <div class="fs-1 mb-2">🧩</div>
+                            <h6 class="title-font">Tebak Huruf</h6>
                         </div>
                     </div>
                 </div>
@@ -71,24 +91,18 @@
 
             <div id="game-area" class="hidden">
                 <div class="d-flex justify-content-between align-items-start mb-4">
-                    <button class="btn btn-outline-secondary rounded-pill fw-bold" onclick="goHome()">🏠 Menu</button>
+                    <button class="btn btn-outline-secondary rounded-pill fw-bold shadow-sm" onclick="goHome()">🏠 Menu</button>
                     <div id="score-container" class="hidden text-end">
                         <span class="badge bg-primary rounded-pill p-2 px-4 fs-6">Skor: <span id="skor">0</span></span>
-                        <div class="streak-info">Streak: <span id="streak-count">0</span> | Gagal: <span id="fail-count">0</span></div>
+                        <div class="streak-info">Beruntun: <span id="streak-count">0</span> | Gagal: <span id="fail-count">0</span></div>
                     </div>
                 </div>
 
-                <div id="display-screen" class="p-4 mb-5 bg-white rounded-4 border border-4 shadow-sm" style="min-height: 180px; display: flex; align-items: center; justify-content: center;">
+                <div id="display-screen" class="p-3 mb-4 bg-white rounded-4 border border-4 shadow-sm">
                     <div id="output-text" class="animate__animated text-primary text-center">Ayo mulai!</div>
                 </div>
 
-                <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <script>
-                        for(let i=1; i<=10; i++) {
-                            document.write(`<button class="number-btn btn-${i}" onclick="handleNumberClick(${i})">${i}</button>`);
-                        }
-                    </script>
-                </div>
+                <div id="button-container" class="d-flex flex-wrap justify-content-center gap-3"></div>
             </div>
         </div>
     </div>
@@ -98,35 +112,74 @@
 
 <script>
     let currentMode = '';
-    let targetAngka = 0;
+    let targetObj = ''; 
     let skor = 0;
     let streak = 0;
     let failStreak = 0;
     let audioAktif = null;
+    let isProcessing = false;
+    const hurufArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+    function selebrasi() {
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 999 });
+    }
 
     async function putarAudio(namaFile) {
         if (audioAktif) { audioAktif.pause(); audioAktif.currentTime = 0; }
-        try {
-            audioAktif = new Audio(`audio/${namaFile}.mp3`);
-            audioAktif.load();
-            await audioAktif.play();
-        } catch (e) { console.error("Audio error:", namaFile); }
+        return new Promise((resolve) => {
+            audioAktif = new Audio(`audio/${namaFile.toString().toLowerCase()}.mp3`);
+            audioAktif.onended = resolve;
+            audioAktif.onerror = resolve; // Pencegahan jika file audio tidak ditemukan
+            audioAktif.play().catch(e => resolve());
+        });
     }
 
     function switchMode(mode) {
         currentMode = mode;
+        isProcessing = false;
+        skor = 0; streak = 0; failStreak = 0;
+        
         document.getElementById('main-menu').classList.add('hidden');
         document.getElementById('game-area').classList.remove('hidden');
-        if (mode === 'belajar') {
+        
+        const container = document.getElementById('button-container');
+        container.innerHTML = '';
+        const out = document.getElementById('output-text');
+
+        if (mode === 'belajar_angka') {
             document.getElementById('score-container').classList.add('hidden');
+            out.innerText = "Klik angka di bawah!";
+            for(let i=1; i<=10; i++) buatTombol(i, i);
             putarAudio('belajar_pilih');
-        } else {
-            skor = 0; streak = 0; failStreak = 0;
-            updateDisplayScore();
+        } 
+        else if (mode === 'belajar_huruf') {
+            document.getElementById('score-container').classList.add('hidden');
+            out.innerText = "Klik huruf di bawah!";
+            hurufArr.forEach((h, i) => buatTombol(h, i+1));
+            putarAudio('belajar_huruf');
+        } 
+        else if (mode === 'tebak_angka') {
             document.getElementById('score-container').classList.remove('hidden');
-            putarAudio('tebak_mulai');
-            setTimeout(buatPertanyaanBaru, 2200);
+            updateDisplayScore();
+            for(let i=1; i<=10; i++) buatTombol(i, i);
+            putarAudio('tebak_angka'); // Suara mulai tebak angka
+            setTimeout(buatPertanyaanBaru, 2000);
         }
+        else if (mode === 'tebak_huruf') {
+            document.getElementById('score-container').classList.remove('hidden');
+            updateDisplayScore();
+            hurufArr.forEach((h, i) => buatTombol(h, i+1));
+            putarAudio('tebak_huruf'); // Suara mulai tebak huruf
+            setTimeout(buatPertanyaanBaru, 2000);
+        }
+    }
+
+    function buatTombol(label, colorIdx) {
+        const btn = document.createElement('button');
+        btn.className = `btn-item c-${((colorIdx - 1) % 10) + 1}`;
+        btn.innerText = label;
+        btn.onclick = () => handleItemClick(label);
+        document.getElementById('button-container').appendChild(btn);
     }
 
     function updateDisplayScore() {
@@ -135,76 +188,81 @@
         document.getElementById('fail-count').innerText = failStreak;
     }
 
-    function handleNumberClick(n) {
+    async function handleItemClick(val) {
+        if (isProcessing) return;
         const el = document.getElementById('output-text');
-        if (currentMode === 'belajar') {
-            el.innerHTML = `Ini Angka <span class="text-danger">${n}</span>`;
+        
+        if (currentMode.startsWith('belajar')) {
+            el.innerHTML = `Ini <span class="text-danger">${val}</span>`;
             el.className = "animate__animated animate__bounceIn text-primary";
-            putarAudio(n);
-        } else {
-            if (n === targetAngka) {
-                skor += 10;
-                streak++;
-                failStreak = 0;
+            putarAudio(val);
+        } 
+        else {
+            isProcessing = true;
+            if (val.toString() === targetObj.toString()) {
+                skor += 10; streak++; failStreak = 0;
                 updateDisplayScore();
-                el.innerHTML = "Yeyy! Kamu Benar! 🎉";
+                el.innerHTML = "Yeyy! Benar! 🎉";
                 el.className = "animate__animated animate__tada text-success";
                 
-                if (streak === 3) {
-                    // RANDOM PILIH ANTARA bonus1, bonus2, bonus3
-                    const randomBonus = Math.floor(Math.random() * 3) + 1;
-                    putarAudio(`bonus${randomBonus}`);
-                    streak = 0; // Reset streak setelah bonus keluar
-                    updateDisplayScore();
-                    setTimeout(buatPertanyaanBaru, 4500); 
+                if (streak >= 3) {
+                    selebrasi();
+                    const r = Math.floor(Math.random() * 3) + 1;
+                    await putarAudio(`bonus${r}`);
+                    streak = 0;
                 } else {
-                    putarAudio('benar');
-                    setTimeout(buatPertanyaanBaru, 2500);
+                    await putarAudio('benar');
                 }
+                setTimeout(() => { isProcessing = false; buatPertanyaanBaru(); }, 1200);
             } else {
-                failStreak++;
-                streak = 0;
+                failStreak++; streak = 0;
                 updateDisplayScore();
                 if ("vibrate" in navigator) navigator.vibrate(200);
-                el.innerHTML = "Oow! Salah, <br>ayo coba lagi! ⛔";
+                el.innerHTML = "Oow! Salah ⛔";
                 el.className = "animate__animated animate__shakeX text-danger";
                 
-                if (failStreak === 3) {
-                    putarAudio('semangat');
+                if (failStreak >= 3) {
+                    await putarAudio('semangat');
                     failStreak = 0;
-                    setTimeout(ulangiPertanyaan, 4500);
                 } else {
-                    putarAudio('salah');
-                    setTimeout(ulangiPertanyaan, 2000);
+                    await putarAudio('salah');
                 }
+                setTimeout(() => { isProcessing = false; ulangiPertanyaan(); }, 1200);
             }
         }
     }
 
     function buatPertanyaanBaru() {
-        if (currentMode !== 'tebak') return;
-        targetAngka = Math.floor(Math.random() * 10) + 1;
+        if (!currentMode.startsWith('tebak')) return;
+        if (currentMode === 'tebak_angka') {
+            targetObj = Math.floor(Math.random() * 10) + 1;
+        } else {
+            targetObj = hurufArr[Math.floor(Math.random() * hurufArr.length)];
+        }
         ulangiPertanyaan();
     }
 
     async function ulangiPertanyaan() {
-        if (currentMode !== 'tebak') return;
+        if (!currentMode.startsWith('tebak')) return;
         const el = document.getElementById('output-text');
-        el.innerText = `Mana angka ${targetAngka}?`;
+        
+        el.innerText = `Mana ${currentMode === 'tebak_angka' ? 'angka' : 'huruf'} ${targetObj}?`;
         el.className = "animate__animated animate__pulse animate__infinite text-dark";
         
-        await putarAudio('cari_angka');
+        // Memilih audio instruksi yang tepat
+        const instruksi = (currentMode === 'tebak_angka') ? 'cari_angka' : 'cari_huruf';
         
+        await putarAudio(instruksi); 
         setTimeout(() => {
-            if (currentMode === 'tebak') putarAudio(targetAngka);
-        }, 1500); 
+            if (currentMode.startsWith('tebak')) putarAudio(targetObj);
+        }, 500); 
     }
 
     function goHome() {
         document.getElementById('main-menu').classList.remove('hidden');
         document.getElementById('game-area').classList.add('hidden');
         currentMode = '';
-        if (audioAktif) { audioAktif.pause(); audioAktif.currentTime = 0; }
+        if (audioAktif) { audioAktif.pause(); audioAktif = null; }
     }
 </script>
 </body>
