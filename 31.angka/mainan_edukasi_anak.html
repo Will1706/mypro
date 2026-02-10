@@ -12,27 +12,30 @@
         :root {
             --primary-color: #ff7f50;
             --secondary-color: #6c5ce7;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             background: #f0f2f5;
-            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-image: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
             align-items: center;
+            overflow-x: hidden;
         }
 
         .main-container {
             max-width: 800px;
             margin: auto;
+            padding: 20px;
         }
 
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 40px;
             padding: 40px;
-            border: 10px solid white;
+            border: 8px solid white;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
 
@@ -47,25 +50,27 @@
             cursor: pointer;
             transition: all 0.3s;
             border-radius: 25px;
-            padding: 20px;
-            border: 3px solid transparent;
+            padding: 30px;
+            border: 4px solid transparent;
+            background: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
 
         .mode-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-10px);
             border-color: var(--primary-color);
             background: #fff9f0;
         }
 
         /* Tombol Angka */
         .number-btn {
-            width: 75px;
-            height: 75px;
+            width: 70px;
+            height: 70px;
             border-radius: 20px;
             border: none;
             color: white;
             font-family: 'Fredoka One', cursive;
-            font-size: 2rem;
+            font-size: 1.8rem;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 6px 0px rgba(0,0,0,0.15);
@@ -87,41 +92,45 @@
 
         #output-text {
             font-family: 'Fredoka One', cursive;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .score-badge {
             background: var(--secondary-color);
             color: white;
-            padding: 10px 25px;
+            padding: 8px 20px;
             border-radius: 50px;
             font-weight: bold;
+            box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
         }
     </style>
 </head>
 <body>
 
 <div class="container main-container">
-    <div class="glass-card text-center animate__animated animate__zoomIn">
+    <div class="glass-card text-center animate__animated animate__fadeIn">
         
         <div id="main-menu">
-            <h1 class="title-font display-3 mb-4">Halo Teman-Teman!</h1>
-            <p class="text-muted mb-5 fs-5">Pilih mode bermain yang kamu suka:</p>
+            <h1 class="title-font display-4 mb-3">Halo Anak Pintar!</h1>
+            <p class="text-muted mb-5">Pilih mode untuk mulai bermain:</p>
             
             <div class="row g-4">
                 <div class="col-md-6" onclick="switchMode('belajar')">
-                    <div class="mode-card bg-light shadow-sm">
-                        <div class="fs-1 mb-2">📚</div>
-                        <h3 class="title-font">Belajar Angka</h3>
-                        <p class="small text-muted">Klik angka untuk tahu namanya</p>
+                    <div class="mode-card">
+                        <div class="display-4 mb-2">📖</div>
+                        <h3 class="title-font">Mode Belajar</h3>
+                        <p class="small text-muted">Mengenal nama-nama angka</p>
                     </div>
                 </div>
                 <div class="col-md-6" onclick="switchMode('tebak')">
-                    <div class="mode-card bg-light shadow-sm">
-                        <div class="fs-1 mb-2">🎮</div>
+                    <div class="mode-card">
+                        <div class="display-4 mb-2">🎯</div>
                         <h3 class="title-font">Tebak Angka</h3>
-                        <p class="small text-muted">Ayo uji kepintaranmu!</p>
+                        <p class="small text-muted">Ayo uji hafalanmu!</p>
                     </div>
                 </div>
             </div>
@@ -129,17 +138,17 @@
 
         <div id="game-area" class="hidden">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="goHome()">🏠 Menu Utama</button>
+                <button class="btn btn-outline-secondary rounded-pill fw-bold" onclick="goHome()">🏠 Menu</button>
                 <div id="score-container" class="hidden">
                     <span class="score-badge">Skor: <span id="skor">0</span></span>
                 </div>
             </div>
 
-            <h2 id="mode-title" class="title-font mb-4">Mode Belajar</h2>
+            <h2 id="mode-title" class="title-font mb-4 h4">Mode Belajar</h2>
             
-            <div id="display-screen" class="p-4 mb-4 bg-light rounded-4 border border-2">
-                <div id="output-text" class="animate__animated text-primary">
-                    Klik salah satu angka!
+            <div id="display-screen" class="p-4 mb-4 bg-white rounded-4 border border-3 shadow-sm" style="min-height: 150px; display: flex; align-items: center; justify-content: center;">
+                <div id="output-text" class="animate__animated text-primary text-center">
+                    Ayo pilih angka!
                 </div>
             </div>
 
@@ -160,17 +169,29 @@
 </div>
 
 <script>
-    let currentMode = ''; // 'belajar' atau 'tebak'
+    let currentMode = '';
     let targetAngka = 0;
     let skor = 0;
     const daftarNama = ["Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh"];
     const synth = window.speechSynthesis;
+    let idVoice = null;
+
+    // Load suara Bahasa Indonesia terbaik
+    function loadVoices() {
+        const voices = synth.getVoices();
+        idVoice = voices.find(v => v.lang.includes('id-ID') || v.lang.includes('id_ID'));
+    }
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+    }
 
     function bicara(teks) {
         synth.cancel();
         const utterance = new SpeechSynthesisUtterance(teks);
+        if (idVoice) utterance.voice = idVoice;
         utterance.lang = 'id-ID';
-        utterance.pitch = 1.2;
+        utterance.pitch = 1.1;
+        utterance.rate = 0.95;
         synth.speak(utterance);
     }
 
@@ -183,8 +204,7 @@
             document.getElementById('mode-title').innerText = "Belajar Mengenal Angka";
             document.getElementById('score-container').classList.add('hidden');
             document.getElementById('output-text').innerText = "Klik angka di bawah!";
-            document.getElementById('output-text').className = "animate__animated text-primary";
-            bicara("Ayo kita belajar mengenal angka!");
+            bicara("Ayo kita belajar mengenal angka. Pilih salah satu angka ya!");
         } else {
             document.getElementById('mode-title').innerText = "Tantangan Tebak Angka";
             document.getElementById('score-container').classList.remove('hidden');
@@ -203,29 +223,19 @@
 
     function handleNumberClick(n) {
         if (currentMode === 'belajar') {
-            modeBelajar(n);
+            const text = daftarNama[n-1];
+            const el = document.getElementById('output-text');
+            el.innerHTML = `Ini Angka <span class="text-danger">${text}</span>`;
+            el.className = "animate__animated animate__bounceIn text-primary";
+            bicara(`Ini angka ${text}`);
         } else {
             modeTebak(n);
         }
     }
 
-    // LOGIKA MODE BELAJAR
-    function modeBelajar(n) {
-        const text = daftarNama[n-1];
-        const el = document.getElementById('output-text');
-        
-        el.innerText = `Ini Angka ${text}`;
-        el.className = "animate__animated animate__bounceIn text-primary";
-        bicara(`Ini angka ${text}`);
-        
-        setTimeout(() => el.classList.remove('animate__bounceIn'), 500);
-    }
-
-    // LOGIKA MODE TEBAK
     function buatPertanyaanBaru() {
         targetAngka = Math.floor(Math.random() * 10) + 1;
         const el = document.getElementById('output-text');
-        
         el.innerText = `Mana angka ${targetAngka}?`;
         el.className = "animate__animated animate__pulse animate__infinite text-dark";
         bicara(`Coba cari, mana angka ${daftarNama[targetAngka-1]}?`);
@@ -236,19 +246,27 @@
         el.classList.remove('animate__infinite', 'animate__pulse');
 
         if (n === targetAngka) {
+            // BENAR
             skor += 10;
             document.getElementById('skor').innerText = skor;
-            el.innerText = "Yeyy! Kamu Benar! 🎉";
+            el.innerHTML = "Yeyy! Kamu Benar! 🎉";
             el.className = "animate__animated animate__tada text-success";
             bicara("Yeyy! Kamu benar! Hebat!");
-            
-            setTimeout(buatPertanyaanBaru, 2000);
+            setTimeout(buatPertanyaanBaru, 2500);
         } else {
-            el.innerText = "Oow! Coba lagi ya! ⛔";
-            el.className = "animate__animated animate__shakeX text-danger";
-            bicara("O ow! Salah, ayo coba lagi!");
+            // SALAH
+            // Efek Getar (Vibrate) - Bergetar selama 200ms
+            if ("vibrate" in navigator) {
+                navigator.vibrate(200);
+            }
+            
+            el.innerHTML = "Oow! Salah, <br>ayo coba lagi! ⛔";
+            el.className = "animate__animated animate__shakeX text-danger text-center";
+            bicara("O ow! Kamu salah, ayo coba lagi!");
         }
     }
+
+    loadVoices();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
