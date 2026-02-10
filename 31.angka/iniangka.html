@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktif - Smooth Transition</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .number-box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 12px;
+        }
+        
+        .number-box:hover {
+            transform: scale(1.15);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        }
+
+        /* Animasi Masuk */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animasi Keluar */
+        @keyframes fadeOutDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .animate-out {
+            animation: fadeOutDown 0.3s ease forwards;
+        }
+
+        #output-card {
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Pilih Deret Angka</h2>
+        <p class="text-secondary">Klik angka untuk melihat transisi teks yang halus</p>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+        <script>
+            const daftarTeks = ["Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh"];
+            for (let i = 1; i <= 10; i++) {
+                document.write(`
+                    <button class="btn btn-outline-primary number-box fw-bold" onclick="updateOutput('${daftarTeks[i-1]}')">
+                        ${i}
+                    </button>
+                `);
+            }
+        </script>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div id="output-card" class="card shadow-sm border-0 bg-white">
+                <div id="wrapper-pesan">
+                    <h3 id="pesan-teks" class="text-primary m-0" style="opacity: 0;">Silakan klik angka</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isAnimating = false;
+
+    function updateOutput(teksBaru) {
+        if (isAnimating) return; // Mencegah klik ganda saat animasi berjalan
+        
+        const el = document.getElementById('pesan-teks');
+        isAnimating = true;
+
+        // 1. Jalankan Animasi Keluar
+        el.classList.remove('animate-in');
+        el.classList.add('animate-out');
+
+        // 2. Tunggu animasi keluar selesai (300ms)
+        setTimeout(() => {
+            // 3. Ganti Teks
+            el.innerText = "Ini angka " + teksBaru;
+            
+            // 4. Jalankan Animasi Masuk
+            el.classList.remove('animate-out');
+            el.classList.add('animate-in');
+            
+            isAnimating = false;
+        }, 300);
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
