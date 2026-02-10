@@ -13,9 +13,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            min-height: 100vh; display: flex; flex-direction: column; margin: 0;
         }
         .main-wrapper { flex: 1; display: flex; align-items: center; padding: 20px 0; }
         .glass-card {
@@ -30,8 +28,8 @@
         }
         .mode-card:hover { transform: translateY(-10px); border-color: var(--primary-color); }
         .number-btn {
-            width: 70px; height: 70px; border-radius: 20px; border: none; color: white;
-            font-family: 'Fredoka One', cursive; font-size: 1.8rem; cursor: pointer;
+            width: 75px; height: 75px; border-radius: 20px; border: none; color: white;
+            font-family: 'Fredoka One', cursive; font-size: 2rem; cursor: pointer;
             transition: 0.2s; box-shadow: 0 6px 0px rgba(0,0,0,0.15);
         }
         .number-btn:active { transform: translateY(4px); box-shadow: none; }
@@ -41,44 +39,49 @@
         .btn-7 { background: #70a1ff; } .btn-8 { background: #7bed9f; }
         .btn-9 { background: #5352ed; } .btn-10 { background: #eccc68; }
         .hidden { display: none !important; }
-        footer { padding: 20px; text-align: center; font-weight: bold; color: #555; background: rgba(255,255,255,0.5); }
+        #output-text { font-family: 'Fredoka One', cursive; font-size: 2.5rem; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        footer { padding: 20px; text-align: center; font-weight: bold; color: #555; background: rgba(255,255,255,0.5); margin-top: auto; }
+        .streak-info { font-size: 0.85rem; color: #666; font-weight: 600; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="main-wrapper">
-    <div class="container" style="max-width: 800px;">
+    <div class="container" style="max-width: 850px;">
         <div class="glass-card text-center animate__animated animate__fadeIn">
             
             <div id="main-menu">
                 <h1 class="title-font display-4 mb-3">Halo Anak Pintar!</h1>
-                <p class="text-muted mb-5">Pilih mode untuk mulai bermain:</p>
+                <p class="text-muted mb-5 fs-5">Pilih mode untuk mulai bermain:</p>
                 <div class="row g-4">
                     <div class="col-md-6" onclick="switchMode('belajar')">
-                        <div class="mode-card shadow-sm">
-                            <div class="display-4 mb-2">📖</div>
-                            <h3 class="title-font h4">Mode Belajar</h3>
+                        <div class="mode-card shadow-sm h-100">
+                            <div class="display-3 mb-2">📖</div>
+                            <h3 class="title-font">Mode Belajar</h3>
                         </div>
                     </div>
                     <div class="col-md-6" onclick="switchMode('tebak')">
-                        <div class="mode-card shadow-sm">
-                            <div class="display-4 mb-2">🎯</div>
-                            <h3 class="title-font h4">Tebak Angka</h3>
+                        <div class="mode-card shadow-sm h-100">
+                            <div class="display-3 mb-2">🎯</div>
+                            <h3 class="title-font">Tebak Angka</h3>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="game-area" class="hidden">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="goHome()">🏠 Menu</button>
-                    <div id="score-container" class="hidden">
-                        <span class="badge bg-primary rounded-pill p-2 px-3">Skor: <span id="skor">0</span></span>
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <button class="btn btn-outline-secondary rounded-pill fw-bold" onclick="goHome()">🏠 Menu</button>
+                    <div id="score-container" class="hidden text-end">
+                        <span class="badge bg-primary rounded-pill p-2 px-4 fs-6">Skor: <span id="skor">0</span></span>
+                        <div class="streak-info">Streak: <span id="streak-count">0</span> | Gagal: <span id="fail-count">0</span></div>
                     </div>
                 </div>
-                <div id="display-screen" class="p-4 mb-4 bg-white rounded-4 border border-3 shadow-sm" style="min-height: 120px; display:flex; align-items:center; justify-content:center;">
-                    <div id="output-text" class="animate__animated text-primary fw-bold fs-2"></div>
+
+                <div id="display-screen" class="p-4 mb-5 bg-white rounded-4 border border-4 shadow-sm" style="min-height: 180px; display: flex; align-items: center; justify-content: center;">
+                    <div id="output-text" class="animate__animated text-primary text-center">Ayo mulai!</div>
                 </div>
+
                 <div class="d-flex flex-wrap justify-content-center gap-3">
                     <script>
                         for(let i=1; i<=10; i++) {
@@ -91,41 +94,45 @@
     </div>
 </div>
 
-<footer>
-    Mainan Edukasi by : Williyanto Adi 2026
-</footer>
+<footer>Mainan Edukasi by : Williyanto Adi 2026</footer>
 
 <script>
     let currentMode = '';
     let targetAngka = 0;
     let skor = 0;
+    let streak = 0;
+    let failStreak = 0;
     let audioAktif = null;
 
-    // Fungsi putar file MP3
-    function putarSuara(namaFile) {
-        if (audioAktif) {
-            audioAktif.pause();
-            audioAktif.currentTime = 0;
-        }
-        audioAktif = new Audio(`audio/${namaFile}.mp3`); // Diasumsikan file ada di folder 'audio'
-        audioAktif.play().catch(e => console.log("Audio belum siap/tidak ditemukan"));
+    async function putarAudio(namaFile) {
+        if (audioAktif) { audioAktif.pause(); audioAktif.currentTime = 0; }
+        try {
+            audioAktif = new Audio(`audio/${namaFile}.mp3`);
+            audioAktif.load();
+            await audioAktif.play();
+        } catch (e) { console.error("Audio error:", namaFile); }
     }
 
     function switchMode(mode) {
         currentMode = mode;
         document.getElementById('main-menu').classList.add('hidden');
         document.getElementById('game-area').classList.remove('hidden');
-        
         if (mode === 'belajar') {
             document.getElementById('score-container').classList.add('hidden');
-            document.getElementById('output-text').innerText = "Ayo pilih angka!";
-            putarSuara('belajar_pilih');
+            putarAudio('belajar_pilih');
         } else {
+            skor = 0; streak = 0; failStreak = 0;
+            updateDisplayScore();
             document.getElementById('score-container').classList.remove('hidden');
-            skor = 0; document.getElementById('skor').innerText = skor;
-            putarSuara('tebak_mulai');
-            setTimeout(buatPertanyaanBaru, 2000);
+            putarAudio('tebak_mulai');
+            setTimeout(buatPertanyaanBaru, 2200);
         }
+    }
+
+    function updateDisplayScore() {
+        document.getElementById('skor').innerText = skor;
+        document.getElementById('streak-count').innerText = streak;
+        document.getElementById('fail-count').innerText = failStreak;
     }
 
     function handleNumberClick(n) {
@@ -133,37 +140,71 @@
         if (currentMode === 'belajar') {
             el.innerHTML = `Ini Angka <span class="text-danger">${n}</span>`;
             el.className = "animate__animated animate__bounceIn text-primary";
-            putarSuara(n); // Memanggil 1.mp3, 2.mp3, dst
+            putarAudio(n);
         } else {
             if (n === targetAngka) {
-                skor += 10; document.getElementById('skor').innerText = skor;
+                skor += 10;
+                streak++;
+                failStreak = 0;
+                updateDisplayScore();
                 el.innerHTML = "Yeyy! Kamu Benar! 🎉";
                 el.className = "animate__animated animate__tada text-success";
-                putarSuara('benar');
-                setTimeout(buatPertanyaanBaru, 2500);
+                
+                if (streak === 3) {
+                    // RANDOM PILIH ANTARA bonus1, bonus2, bonus3
+                    const randomBonus = Math.floor(Math.random() * 3) + 1;
+                    putarAudio(`bonus${randomBonus}`);
+                    streak = 0; // Reset streak setelah bonus keluar
+                    updateDisplayScore();
+                    setTimeout(buatPertanyaanBaru, 4500); 
+                } else {
+                    putarAudio('benar');
+                    setTimeout(buatPertanyaanBaru, 2500);
+                }
             } else {
+                failStreak++;
+                streak = 0;
+                updateDisplayScore();
                 if ("vibrate" in navigator) navigator.vibrate(200);
-                el.innerHTML = "Oow! Salah! ⛔";
+                el.innerHTML = "Oow! Salah, <br>ayo coba lagi! ⛔";
                 el.className = "animate__animated animate__shakeX text-danger";
-                putarSuara('salah');
+                
+                if (failStreak === 3) {
+                    putarAudio('semangat');
+                    failStreak = 0;
+                    setTimeout(ulangiPertanyaan, 4500);
+                } else {
+                    putarAudio('salah');
+                    setTimeout(ulangiPertanyaan, 2000);
+                }
             }
         }
     }
 
     function buatPertanyaanBaru() {
+        if (currentMode !== 'tebak') return;
         targetAngka = Math.floor(Math.random() * 10) + 1;
-        document.getElementById('output-text').innerText = `Mana angka ${targetAngka}?`;
-        document.getElementById('output-text').className = "animate__animated animate__pulse animate__infinite text-dark";
+        ulangiPertanyaan();
+    }
+
+    async function ulangiPertanyaan() {
+        if (currentMode !== 'tebak') return;
+        const el = document.getElementById('output-text');
+        el.innerText = `Mana angka ${targetAngka}?`;
+        el.className = "animate__animated animate__pulse animate__infinite text-dark";
         
-        // Memutar suara instruksi: "Cari angka..." kemudian suara angkanya
-        putarSuara('cari_angka');
-        setTimeout(() => putarSuara(targetAngka), 1500);
+        await putarAudio('cari_angka');
+        
+        setTimeout(() => {
+            if (currentMode === 'tebak') putarAudio(targetAngka);
+        }, 1500); 
     }
 
     function goHome() {
         document.getElementById('main-menu').classList.remove('hidden');
         document.getElementById('game-area').classList.add('hidden');
-        if(audioAktif) audioAktif.pause();
+        currentMode = '';
+        if (audioAktif) { audioAktif.pause(); audioAktif.currentTime = 0; }
     }
 </script>
 </body>
