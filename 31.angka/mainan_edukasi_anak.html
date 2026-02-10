@@ -9,190 +9,106 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --primary-color: #ff7f50;
-            --secondary-color: #6c5ce7;
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
+        :root { --primary-color: #ff7f50; --secondary-color: #6c5ce7; }
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f0f2f5;
-            background-image: var(--bg-gradient);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            overflow-x: hidden;
+            flex-direction: column;
         }
-
-        .main-container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-        }
-
+        .main-wrapper { flex: 1; display: flex; align-items: center; padding: 20px 0; }
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 40px;
-            padding: 40px;
-            border: 8px solid white;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border-radius: 40px; padding: 40px;
+            border: 8px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
-
-        .title-font {
-            font-family: 'Fredoka One', cursive;
-            color: var(--primary-color);
-            text-shadow: 2px 2px 0px #fff;
-        }
-
-        /* Tombol Menu */
+        .title-font { font-family: 'Fredoka One', cursive; color: var(--primary-color); }
         .mode-card {
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 25px;
-            padding: 30px;
-            border: 4px solid transparent;
-            background: #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            cursor: pointer; transition: 0.3s; border-radius: 25px; padding: 30px;
+            background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border: 4px solid transparent;
         }
-
-        .mode-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-color);
-            background: #fff9f0;
-        }
-
-        /* Tombol Angka */
+        .mode-card:hover { transform: translateY(-10px); border-color: var(--primary-color); }
         .number-btn {
-            width: 70px;
-            height: 70px;
-            border-radius: 20px;
-            border: none;
-            color: white;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 6px 0px rgba(0,0,0,0.15);
+            width: 70px; height: 70px; border-radius: 20px; border: none; color: white;
+            font-family: 'Fredoka One', cursive; font-size: 1.8rem; cursor: pointer;
+            transition: 0.2s; box-shadow: 0 6px 0px rgba(0,0,0,0.15);
         }
-
-        .number-btn:active {
-            transform: translateY(4px);
-            box-shadow: none;
-        }
-
-        /* Warna Tombol */
+        .number-btn:active { transform: translateY(4px); box-shadow: none; }
         .btn-1 { background: #ff4757; } .btn-2 { background: #2ed573; }
         .btn-3 { background: #1e90ff; } .btn-4 { background: #ffa502; }
         .btn-5 { background: #3742fa; } .btn-6 { background: #ff6b81; }
         .btn-7 { background: #70a1ff; } .btn-8 { background: #7bed9f; }
         .btn-9 { background: #5352ed; } .btn-10 { background: #eccc68; }
-
         .hidden { display: none !important; }
-
-        #output-text {
-            font-family: 'Fredoka One', cursive;
-            font-size: 2.2rem;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .score-badge {
-            background: var(--secondary-color);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
-        }
+        footer { padding: 20px; text-align: center; font-weight: bold; color: #555; background: rgba(255,255,255,0.5); }
     </style>
 </head>
 <body>
 
-<div class="container main-container">
-    <div class="glass-card text-center animate__animated animate__fadeIn">
-        
-        <div id="main-menu">
-            <h1 class="title-font display-4 mb-3">Halo Anak Pintar!</h1>
-            <p class="text-muted mb-5">Pilih mode untuk mulai bermain:</p>
+<div class="main-wrapper">
+    <div class="container" style="max-width: 800px;">
+        <div class="glass-card text-center animate__animated animate__fadeIn">
             
-            <div class="row g-4">
-                <div class="col-md-6" onclick="switchMode('belajar')">
-                    <div class="mode-card">
-                        <div class="display-4 mb-2">📖</div>
-                        <h3 class="title-font">Mode Belajar</h3>
-                        <p class="small text-muted">Mengenal nama-nama angka</p>
+            <div id="main-menu">
+                <h1 class="title-font display-4 mb-3">Halo Anak Pintar!</h1>
+                <p class="text-muted mb-5">Pilih mode untuk mulai bermain:</p>
+                <div class="row g-4">
+                    <div class="col-md-6" onclick="switchMode('belajar')">
+                        <div class="mode-card shadow-sm">
+                            <div class="display-4 mb-2">📖</div>
+                            <h3 class="title-font h4">Mode Belajar</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-6" onclick="switchMode('tebak')">
+                        <div class="mode-card shadow-sm">
+                            <div class="display-4 mb-2">🎯</div>
+                            <h3 class="title-font h4">Tebak Angka</h3>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6" onclick="switchMode('tebak')">
-                    <div class="mode-card">
-                        <div class="display-4 mb-2">🎯</div>
-                        <h3 class="title-font">Tebak Angka</h3>
-                        <p class="small text-muted">Ayo uji hafalanmu!</p>
+            </div>
+
+            <div id="game-area" class="hidden">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="goHome()">🏠 Menu</button>
+                    <div id="score-container" class="hidden">
+                        <span class="badge bg-primary rounded-pill p-2 px-3">Skor: <span id="skor">0</span></span>
                     </div>
+                </div>
+                <div id="display-screen" class="p-4 mb-4 bg-white rounded-4 border border-3 shadow-sm" style="min-height: 120px; display:flex; align-items:center; justify-content:center;">
+                    <div id="output-text" class="animate__animated text-primary fw-bold fs-2"></div>
+                </div>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <script>
+                        for(let i=1; i<=10; i++) {
+                            document.write(`<button class="number-btn btn-${i}" onclick="handleNumberClick(${i})">${i}</button>`);
+                        }
+                    </script>
                 </div>
             </div>
         </div>
-
-        <div id="game-area" class="hidden">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <button class="btn btn-outline-secondary rounded-pill fw-bold" onclick="goHome()">🏠 Menu</button>
-                <div id="score-container" class="hidden">
-                    <span class="score-badge">Skor: <span id="skor">0</span></span>
-                </div>
-            </div>
-
-            <h2 id="mode-title" class="title-font mb-4 h4">Mode Belajar</h2>
-            
-            <div id="display-screen" class="p-4 mb-4 bg-white rounded-4 border border-3 shadow-sm" style="min-height: 150px; display: flex; align-items: center; justify-content: center;">
-                <div id="output-text" class="animate__animated text-primary text-center">
-                    Ayo pilih angka!
-                </div>
-            </div>
-
-            <div class="d-flex flex-wrap justify-content-center gap-3">
-                <script>
-                    for(let i=1; i<=10; i++) {
-                        document.write(`
-                            <button class="number-btn btn-${i}" onclick="handleNumberClick(${i})">
-                                ${i}
-                            </button>
-                        `);
-                    }
-                </script>
-            </div>
-        </div>
-
     </div>
 </div>
+
+<footer>
+    Mainan Edukasi by : Williyanto Adi 2026
+</footer>
 
 <script>
     let currentMode = '';
     let targetAngka = 0;
     let skor = 0;
-    const daftarNama = ["Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh"];
-    const synth = window.speechSynthesis;
-    let idVoice = null;
+    let audioAktif = null;
 
-    // Load suara Bahasa Indonesia terbaik
-    function loadVoices() {
-        const voices = synth.getVoices();
-        idVoice = voices.find(v => v.lang.includes('id-ID') || v.lang.includes('id_ID'));
-    }
-    if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = loadVoices;
-    }
-
-    function bicara(teks) {
-        synth.cancel();
-        const utterance = new SpeechSynthesisUtterance(teks);
-        if (idVoice) utterance.voice = idVoice;
-        utterance.lang = 'id-ID';
-        utterance.pitch = 1.1;
-        utterance.rate = 0.95;
-        synth.speak(utterance);
+    // Fungsi putar file MP3
+    function putarSuara(namaFile) {
+        if (audioAktif) {
+            audioAktif.pause();
+            audioAktif.currentTime = 0;
+        }
+        audioAktif = new Audio(`audio/${namaFile}.mp3`); // Diasumsikan file ada di folder 'audio'
+        audioAktif.play().catch(e => console.log("Audio belum siap/tidak ditemukan"));
     }
 
     function switchMode(mode) {
@@ -201,74 +117,54 @@
         document.getElementById('game-area').classList.remove('hidden');
         
         if (mode === 'belajar') {
-            document.getElementById('mode-title').innerText = "Belajar Mengenal Angka";
             document.getElementById('score-container').classList.add('hidden');
-            document.getElementById('output-text').innerText = "Klik angka di bawah!";
-            bicara("Ayo kita belajar mengenal angka. Pilih salah satu angka ya!");
+            document.getElementById('output-text').innerText = "Ayo pilih angka!";
+            putarSuara('belajar_pilih');
         } else {
-            document.getElementById('mode-title').innerText = "Tantangan Tebak Angka";
             document.getElementById('score-container').classList.remove('hidden');
-            skor = 0;
-            document.getElementById('skor').innerText = skor;
-            buatPertanyaanBaru();
+            skor = 0; document.getElementById('skor').innerText = skor;
+            putarSuara('tebak_mulai');
+            setTimeout(buatPertanyaanBaru, 2000);
         }
     }
 
-    function goHome() {
-        document.getElementById('main-menu').classList.remove('hidden');
-        document.getElementById('game-area').classList.add('hidden');
-        currentMode = '';
-        synth.cancel();
-    }
-
     function handleNumberClick(n) {
+        const el = document.getElementById('output-text');
         if (currentMode === 'belajar') {
-            const text = daftarNama[n-1];
-            const el = document.getElementById('output-text');
-            el.innerHTML = `Ini Angka <span class="text-danger">${text}</span>`;
+            el.innerHTML = `Ini Angka <span class="text-danger">${n}</span>`;
             el.className = "animate__animated animate__bounceIn text-primary";
-            bicara(`Ini angka ${text}`);
+            putarSuara(n); // Memanggil 1.mp3, 2.mp3, dst
         } else {
-            modeTebak(n);
+            if (n === targetAngka) {
+                skor += 10; document.getElementById('skor').innerText = skor;
+                el.innerHTML = "Yeyy! Kamu Benar! 🎉";
+                el.className = "animate__animated animate__tada text-success";
+                putarSuara('benar');
+                setTimeout(buatPertanyaanBaru, 2500);
+            } else {
+                if ("vibrate" in navigator) navigator.vibrate(200);
+                el.innerHTML = "Oow! Salah! ⛔";
+                el.className = "animate__animated animate__shakeX text-danger";
+                putarSuara('salah');
+            }
         }
     }
 
     function buatPertanyaanBaru() {
         targetAngka = Math.floor(Math.random() * 10) + 1;
-        const el = document.getElementById('output-text');
-        el.innerText = `Mana angka ${targetAngka}?`;
-        el.className = "animate__animated animate__pulse animate__infinite text-dark";
-        bicara(`Coba cari, mana angka ${daftarNama[targetAngka-1]}?`);
+        document.getElementById('output-text').innerText = `Mana angka ${targetAngka}?`;
+        document.getElementById('output-text').className = "animate__animated animate__pulse animate__infinite text-dark";
+        
+        // Memutar suara instruksi: "Cari angka..." kemudian suara angkanya
+        putarSuara('cari_angka');
+        setTimeout(() => putarSuara(targetAngka), 1500);
     }
 
-    function modeTebak(n) {
-        const el = document.getElementById('output-text');
-        el.classList.remove('animate__infinite', 'animate__pulse');
-
-        if (n === targetAngka) {
-            // BENAR
-            skor += 10;
-            document.getElementById('skor').innerText = skor;
-            el.innerHTML = "Yeyy! Kamu Benar! 🎉";
-            el.className = "animate__animated animate__tada text-success";
-            bicara("Yeyy! Kamu benar! Hebat!");
-            setTimeout(buatPertanyaanBaru, 2500);
-        } else {
-            // SALAH
-            // Efek Getar (Vibrate) - Bergetar selama 200ms
-            if ("vibrate" in navigator) {
-                navigator.vibrate(200);
-            }
-            
-            el.innerHTML = "Oow! Salah, <br>ayo coba lagi! ⛔";
-            el.className = "animate__animated animate__shakeX text-danger text-center";
-            bicara("O ow! Kamu salah, ayo coba lagi!");
-        }
+    function goHome() {
+        document.getElementById('main-menu').classList.remove('hidden');
+        document.getElementById('game-area').classList.add('hidden');
+        if(audioAktif) audioAktif.pause();
     }
-
-    loadVoices();
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
