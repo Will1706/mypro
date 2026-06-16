@@ -1,122 +1,358 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Konversi GΩ ke MΩ·km</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen p-4">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>IR Calculator Pro - Williyanto Adi</title>
+    <style>
+      /* Reset & Base Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+          sans-serif;
+      }
 
-    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
-        
-        <h1 class="text-xl font-bold text-center text-gray-800 pb-4 mb-6 border-b border-gray-200">
-            Kalkulator Konversi GΩ ke MΩ·km
-        </h1>
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: #f8fafc;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        overflow-y: auto;
+      }
 
-        <div class="space-y-4">
-            
-            <div class="flex gap-4">
-                <div class="w-1/2">
-                    <label for="pembacaanGigaOhm" class="block text-sm font-bold text-gray-700">Pembacaan Alat (GΩ)</label>
-                    <input type="text" inputmode="decimal" name="pembacaanGigaOhm" id="pembacaanGigaOhm" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan GΩ">
-                </div>
-                <div class="w-1/2">
-                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang (m)</label>
-                    <input type="text" inputmode="numeric" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="dalam satuan meter">
-                </div>
-            </div>
+      /* Glassmorphism Container */
+      .app-container {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 430px;
+        padding: 16px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
 
-            <div class="pt-2">
-                <label for="hasilKonversi" class="block text-sm font-bold text-gray-700">Hasil Konversi (MΩ·km)</label>
-                <input type="text" name="hasilKonversi" id="hasilKonversi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
-            </div>
-            
-            <div class="pt-4 flex flex-wrap gap-2">
-                <button type="button" onclick="history.back()" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Kembali
-                </button>
-                <button type="button" id="hapusBtn" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                    Hapus
-                </button>
-                <a href="/" class="flex-1 text-center justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    Beranda
-                </a>
-            </div>
+      header {
+        text-align: center;
+      }
 
+      header h1 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #38bdf8;
+        letter-spacing: 0.5px;
+      }
+
+      header p {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin-top: 2px;
+      }
+
+      /* Card Panels */
+      .card {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      label {
+        font-size: 0.8rem;
+        color: #cbd5e1;
+        font-weight: 500;
+      }
+
+      .row-inputs {
+        display: flex;
+        gap: 8px;
+      }
+
+      input,
+      select {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #f8fafc;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #38bdf8;
+      }
+
+      input {
+        flex: 1;
+      }
+      select {
+        cursor: pointer;
+      }
+      .unit-select {
+        width: 85px;
+      }
+
+      /* Results Layout (Single Box) */
+      .results-container {
+        display: block;
+      }
+
+      .result-card {
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.05),
+          rgba(37, 99, 235, 0.05)
+        );
+        border: 1px solid rgba(56, 189, 248, 0.15);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 85px;
+      }
+
+      .result-title {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+      }
+
+      .result-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #38bdf8;
+        word-break: break-all;
+      }
+
+      .result-unit {
+        font-size: 0.8rem;
+        color: #cbd5e1;
+        margin-top: 2px;
+      }
+
+      /* Formula Breakdown Card */
+      .breakdown-card {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(56, 189, 248, 0.1);
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 0.78rem;
+        line-height: 1.4;
+        color: #cbd5e1;
+      }
+
+      .breakdown-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #38bdf8;
+        margin-bottom: 6px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 4px;
+      }
+
+      .step-item {
+        margin-bottom: 6px;
+        padding-left: 8px;
+        border-left: 2px solid rgba(56, 189, 248, 0.3);
+      }
+
+      .step-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .math-text {
+        font-family: "Courier New", Courier, monospace;
+        color: #f472b6;
+        font-weight: bold;
+        display: block;
+        margin-top: 2px;
+      }
+
+      .btn-clear {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #94a3b8;
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .btn-clear:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      footer {
+        margin-top: 10px;
+        font-size: 0.75rem;
+        color: #64748b;
+        text-align: center;
+        letter-spacing: 0.5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <header>
+        <h1>IR Calculator Pro</h1>
+        <p>Standarisasi Hasil ke Satuan MΩ·km</p>
+      </header>
+
+      <div class="card">
+        <div class="input-group">
+          <label for="irValue">Nilai IR Aktual Pengukuran</label>
+          <div class="row-inputs">
+            <input
+              type="number"
+              id="irValue"
+              placeholder="Nilai"
+              step="any"
+              value="3.45"
+            />
+            <select id="irUnit" class="unit-select">
+              <option value="k">kΩ</option>
+              <option value="M" selected>MΩ</option>
+              <option value="G">GΩ</option>
+              <option value="T">TΩ</option>
+            </select>
+          </div>
         </div>
 
-        <footer class="text-center text-gray-500 text-sm mt-6 pt-4 border-t border-gray-200">
-            Williyanto Adi 2025
-        </footer>
+        <div class="input-group">
+          <label for="lengthValue">Panjang Kabel (Meter)</label>
+          <input
+            type="number"
+            id="lengthValue"
+            placeholder="Panjang"
+            step="any"
+            value="315"
+          />
+        </div>
 
+        <button class="btn-clear" id="clearBtn">Clear Data</button>
+      </div>
+
+      <div class="results-container">
+        <div class="result-card">
+          <div class="result-title">Hasil Konversi</div>
+          <div class="result-value" id="calcResult">-</div>
+          <div class="result-unit">MΩ·km</div>
+        </div>
+      </div>
+
+      <div class="breakdown-card" id="breakdownPanel">
+        <div class="breakdown-title">Rincian Langkah Kalkulasi:</div>
+        <div id="breakdownContent"></div>
+      </div>
     </div>
 
+    <footer>Williyanto Adi</footer>
+
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+      const irInput = document.getElementById("irValue");
+      const irUnitSelect = document.getElementById("irUnit");
+      const lengthInput = document.getElementById("lengthValue");
+      const calcResultDisplay = document.getElementById("calcResult");
+      const clearBtn = document.getElementById("clearBtn");
+      const breakdownContent = document.getElementById("breakdownContent");
 
-        // Ambil elemen dari DOM
-        const pembacaanGigaOhmInput = document.getElementById('pembacaanGigaOhm');
-        const panjangInput = document.getElementById('panjang');
-        const hasilKonversiInput = document.getElementById('hasilKonversi');
-        const hapusBtn = document.getElementById('hapusBtn');
+      const unitFactors = { k: 0.001, M: 1, G: 1000, T: 1000000 };
 
-        // Fungsi untuk memvalidasi input GigaOhm (membolehkan desimal)
-        function validateDecimalInput(event) {
-            event.target.value = event.target.value.replace(/[^0-9.]/g, '');
+      function formatLocale(num) {
+        return num.toLocaleString("id-ID", { maximumFractionDigits: 4 });
+      }
+
+      function calculateIR() {
+        const rawIR = parseFloat(irInput.value);
+        const rawLength = parseFloat(lengthInput.value);
+        const unit = irUnitSelect.value;
+
+        if (isNaN(rawIR) || isNaN(rawLength) || rawLength <= 0 || rawIR <= 0) {
+          calcResultDisplay.textContent = "-";
+          breakdownContent.innerHTML =
+            "<span style='color:#94a3b8;'>Silakan masukkan data pengukuran yang valid.</span>";
+          return;
         }
 
-        // Fungsi utama untuk menghitung konversi
-        function hitungKonversi() {
-            const gigaOhm = parseFloat(pembacaanGigaOhmInput.value);
-            // Hapus titik pemisah sebelum melakukan kalkulasi
-            const panjangMeter = parseFloat(panjangInput.value.replace(/\./g, ''));
+        // 1. Konversi input ke basis Mega Ohm (MΩ)
+        const irInMegaOhmAktual = rawIR * unitFactors[unit];
 
-            if (!isNaN(gigaOhm) && !isNaN(panjangMeter)) {
-                const hasil = gigaOhm * panjangMeter;
-                // Bulatkan hasil ke integer terdekat
-                const hasilBulat = Math.round(hasil);
-                // Format hasil dengan pemisah ribuan (menggunakan lokal Indonesia)
-                hasilKonversiInput.value = hasilBulat.toLocaleString('id-ID');
-            } else {
-                hasilKonversiInput.value = '';
-            }
-        }
-        
-        // Fungsi untuk menghapus semua input
-        function hapus() {
-            pembacaanGigaOhmInput.value = '';
-            panjangInput.value = '';
-            hitungKonversi(); // Memanggil ini akan mengosongkan hasil
-        }
-        
-        // --- Tambahkan semua event listener ---
+        // 2. Konversi panjang meter ke kilometer, lalu hitung R_std (R_aktual * L_km)
+        const lengthInKm = rawLength / 1000;
+        const resultM_OhmKm = irInMegaOhmAktual * lengthInKm;
 
-        // Listener untuk input GigaOhm
-        pembacaanGigaOhmInput.addEventListener('input', validateDecimalInput);
-        pembacaanGigaOhmInput.addEventListener('input', hitungKonversi);
+        // Tampilkan Hasil Utama
+        calcResultDisplay.textContent = formatLocale(
+          Number(resultM_OhmKm.toFixed(4)),
+        );
 
-        // Listener khusus untuk input Panjang agar otomatis format ribuan
-        panjangInput.addEventListener('input', (e) => {
-            // 1. Ambil nilai & bersihkan dari karakter non-angka
-            let cleanValue = e.target.value.replace(/\D/g, '');
-            
-            // 2. Jika ada nilai, format dengan pemisah ribuan
-            if (cleanValue) {
-                const formattedValue = parseInt(cleanValue, 10).toLocaleString('id-ID');
-                e.target.value = formattedValue;
-            } else {
-                e.target.value = '';
-            }
-            
-            // 3. Panggil fungsi kalkulasi setelah memformat
-            hitungKonversi();
-        });
+        // 3. Render Teks Rincian Logika Matematika secara Dinamis
+        breakdownContent.innerHTML = `
+                <div class="step-item">
+                    <strong>1. Penyeragaman Satuan Basis:</strong><br>
+                    Mengubah nilai input ${rawIR} ${unit}Ω menjadi satuan dasar Mega Ohm (MΩ):
+                    <span class="math-text">R_aktual = ${formatLocale(irInMegaOhmAktual)} MΩ</span>
+                </div>
+                <div class="step-item">
+                    <strong>2. Normalisasi Panjang per 1 Kilometer:</strong><br>
+                    Mengonversi panjang kabel (${rawLength} m = ${lengthInKm} km), lalu dikalikan nilai R_aktual sesuai rumus <code style="color:#38bdf8">R_std = R_aktual × L_km</code>:
+                    <span class="math-text">Hasil = ${formatLocale(irInMegaOhmAktual)} MΩ × ${lengthInKm} km</span>
+                    <span class="math-text" style="color:#38bdf8; margin-top:4px;">= ${formatLocale(Number(resultM_OhmKm.toFixed(4)))} MΩ·km</span>
+                </div>
+            `;
+      }
 
-        // Listener untuk tombol Hapus
-        hapusBtn.addEventListener('click', hapus);
-    });
+      // Action Clear
+      clearBtn.addEventListener("click", () => {
+        irInput.value = "";
+        lengthInput.value = "";
+        calcResultDisplay.textContent = "-";
+        breakdownContent.innerHTML =
+          "<span style='color:#94a3b8;'>Data dikosongkan.</span>";
+        irInput.focus();
+      });
+
+      // Trigger hitung otomatis
+      [irInput, irUnitSelect, lengthInput].forEach((element) => {
+        element.addEventListener("input", calculateIR);
+        element.addEventListener("change", calculateIR);
+      });
+
+      // Kalkulasi awal otomatis saat aplikasi web pertama kali dimuat
+      window.addEventListener("DOMContentLoaded", calculateIR);
     </script>
-
-</body>
+  </body>
 </html>
