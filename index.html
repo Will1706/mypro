@@ -3,602 +3,1149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPro - Portal Proyek Williyanto Adi</title>
     
-    <title>Daftar Proyek - Williyanto Adi</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="MyPro - Koleksi lengkap alat utilitas interaktif, kalkulator teknik elektrikal, pengujian material, dan produk keuangan dari Williyanto Adi.">
+    <meta name="keywords" content="kalkulator hambatan, uji bending, volume drum silinder, alokasi gaji, mainan anak edukatif, portofolio web">
+    <meta name="author" content="Williyanto Adi">
+
+    <!-- Favicon & Fonts -->
     <link rel="icon" type="image/png" href="./icons/williyanto_logo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        /* --- Variabel Tema untuk Mode Gelap/Terang --- */
+        /* --- Variabel Tema & Sistem Desain Premium --- */
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg-color: #ffffff;
-            --text-color: #333;
-            --muted-text-color: #888;
-            --border-color: #dee2e6;
-            --header-bg-color: rgba(255, 255, 255, 0.7);
-            --shadow-color: rgba(0,0,0,0.05);
+            --font-primary: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            
+            /* Light Mode HSL Colors */
+            --bg-body: radial-gradient(at top left, #f8fafc, #f1f5f9);
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: rgba(226, 232, 240, 0.8);
+            --header-bg: rgba(255, 255, 255, 0.75);
+            --header-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --shadow-hover: 0 20px 40px -15px rgba(79, 70, 229, 0.12), 0 0 0 1px rgba(79, 70, 229, 0.05);
+            
+            /* Category Colors (Light) */
+            --cat-electrical-bg: rgba(245, 158, 11, 0.1);
+            --cat-electrical-text: #b45309;
+            --cat-testing-bg: rgba(20, 184, 166, 0.1);
+            --cat-testing-text: #0f766e;
+            --cat-math-bg: rgba(59, 130, 246, 0.1);
+            --cat-math-text: #1d4ed8;
+            --cat-finance-bg: rgba(244, 63, 94, 0.1);
+            --cat-finance-text: #be123c;
+            --cat-edu-bg: rgba(139, 92, 246, 0.1);
+            --cat-edu-text: #6d28d9;
         }
 
         body.dark-mode {
-            --bg-color: #121212;
-            --card-bg-color: #1e1e1e;
-            --text-color: #e0e0e0;
-            --muted-text-color: #888;
-            --border-color: #444;
-            --header-bg-color: rgba(30, 30, 30, 0.7);
-            --shadow-color: rgba(255,255,255,0.05);
+            /* Dark Mode HSL Colors */
+            --bg-body: radial-gradient(at top left, #0b0f19, #111827);
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(51, 65, 85, 0.5);
+            --header-bg: rgba(15, 23, 42, 0.8);
+            --header-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.15);
+            --shadow-hover: 0 20px 40px -15px rgba(124, 58, 237, 0.3), 0 0 0 1px rgba(124, 58, 237, 0.15);
+
+            /* Category Colors (Dark) */
+            --cat-electrical-bg: rgba(245, 158, 11, 0.18);
+            --cat-electrical-text: #fbbf24;
+            --cat-testing-bg: rgba(20, 184, 166, 0.18);
+            --cat-testing-text: #2dd4bf;
+            --cat-math-bg: rgba(59, 130, 246, 0.18);
+            --cat-math-text: #60a5fa;
+            --cat-finance-bg: rgba(244, 63, 94, 0.18);
+            --cat-finance-text: #fb7185;
+            --cat-edu-bg: rgba(139, 92, 246, 0.18);
+            --cat-edu-text: #a78bfa;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding-top: 130px; 
-            transition: background-color 0.3s, color 0.3s;
+            font-family: var(--font-primary);
+            background: var(--bg-body);
+            color: var(--text-main);
+            padding-top: 150px; 
+            transition: background 0.4s ease, color 0.4s ease;
+            min-height: 100vh;
         }
 
-        body.dark-mode .text-muted {
-            color: var(--muted-text-color) !important;
-        }
-        
-        /* --- Header & Jam --- */
+        /* --- Header Section (Glassmorphism) --- */
         .header-section {
-            background-color: var(--header-bg-color);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            box-shadow: 0 4px 8px var(--shadow-color);
+            background: var(--header-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 1.25rem 0;
+            box-shadow: var(--header-shadow);
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 1000;
-            transition: background-color 0.3s;
-        }
-        .header-section h1 {
-            color: #0d6efd;
-            font-weight: 700;
-            font-size: 1.8rem; 
-        }
-        #live-clock-container {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--muted-text-color);
-            transition: color 0.3s;
-        }
-
-        /* --- Kontrol (Pencarian, Toggle Layout) --- */
-        .controls-container {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            align-items: center;
-        }
-        .search-input {
-            flex-grow: 1;
-            background-color: var(--card-bg-color);
-            color: var(--text-color);
-            border-color: var(--border-color);
-        }
-        .search-input:focus {
-            background-color: var(--card-bg-color);
-            color: var(--text-color);
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-        /* Perbaikan placeholder pada mode gelap */
-        body.dark-mode .search-input::placeholder {
-            color: var(--muted-text-color);
-        }
-
-        /* --- Styling Proyek (List & Grid) --- */
-        .list-group-item {
-            border-radius: 0.5rem;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--border-color);
-            background-color: var(--card-bg-color);
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-        }
-        .list-group-item + .list-group-item {
-            border-top-width: 1px;
-        }
-        .list-group-item:hover {
-            background-color: #e9f5ff;
-            border-color: #0d6efd;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
-        }
-        body.dark-mode .list-group-item:hover {
-            background-color: #0d6efd20;
-        }
-        .list-group-item strong, .list-group-item i {
-            color: #0d6efd;
-        }
-        .list-group-item i {
-            font-size: 1.5rem;
-            margin-right: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
         }
         
-        /* --- Layout Grid --- */
-        .list-group.grid-view {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-        .list-group.grid-view .list-group-item {
-            margin-bottom: 0;
-            flex-direction: column;
-            text-align: center;
-            padding: 1.5rem;
-        }
-        .list-group.grid-view .list-group-item i {
-            margin-right: 0;
-            margin-bottom: 1rem;
+        .header-section h1 {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
             font-size: 2rem;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.5px;
+        }
+        
+        #live-clock-container {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            background: rgba(0, 0, 0, 0.03);
+            display: inline-block;
+            padding: 0.25rem 0.85rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+        }
+        body.dark-mode #live-clock-container {
+            background: rgba(255, 255, 255, 0.03);
         }
 
-        /* --- Animasi Scroll --- */
+        /* --- Controls & Filter Section --- */
+        .controls-container {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            transition: background 0.4s, border-color 0.4s;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .search-input {
+            background: rgba(0, 0, 0, 0.01);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px 12px 42px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+        }
+
+        .layout-toggle-btn {
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.01);
+            color: var(--text-main);
+            transition: all 0.3s;
+        }
+        .layout-toggle-btn:hover {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: var(--text-muted);
+        }
+        body.dark-mode .layout-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* --- Category Pills --- */
+        .category-chip {
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+
+        .category-chip:hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
+            transform: translateY(-1px);
+        }
+
+        .category-chip.active {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-color: transparent !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        /* --- Grid/List Project Layouts --- */
+        .list-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+
+        .list-group.grid-view {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+
+        @media (min-width: 768px) {
+            .list-group.grid-view {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+
+        /* --- Dashboard Card Item Design --- */
         .list-group-item {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-        .list-group-item.visible {
-            opacity: 1;
-            transform: translateY(0);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px !important;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        box-shadow 0.3s ease, 
+                        border-color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-main);
+            animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        /* --- Kontainer Tombol Bawah --- */
-        .bottom-right-controls {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .list-group-item:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: #7c3aed;
+            background: var(--bg-card);
+            z-index: 10;
+        }
+
+        /* --- Category Badge --- */
+        .category-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: 50px;
+        }
+
+        /* --- Circle Icon Wrap --- */
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .list-group-item:hover .icon-wrapper {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Grid specific card styling */
+        .list-group.grid-view .list-group-item {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            padding-top: 2.5rem;
+        }
+
+        .list-group.grid-view .list-group-item .icon-wrapper {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- Category Visual Map --- */
+        .list-group-item[data-category="electrical"] .icon-wrapper {
+            background: var(--cat-electrical-bg);
+            color: var(--cat-electrical-text);
+        }
+        .list-group-item[data-category="electrical"] .category-badge {
+            background: var(--cat-electrical-bg);
+            color: var(--cat-electrical-text);
+        }
+
+        .list-group-item[data-category="testing"] .icon-wrapper {
+            background: var(--cat-testing-bg);
+            color: var(--cat-testing-text);
+        }
+        .list-group-item[data-category="testing"] .category-badge {
+            background: var(--cat-testing-bg);
+            color: var(--cat-testing-text);
+        }
+
+        .list-group-item[data-category="math"] .icon-wrapper {
+            background: var(--cat-math-bg);
+            color: var(--cat-math-text);
+        }
+        .list-group-item[data-category="math"] .category-badge {
+            background: var(--cat-math-bg);
+            color: var(--cat-math-text);
+        }
+
+        .list-group-item[data-category="finance"] .icon-wrapper {
+            background: var(--cat-finance-bg);
+            color: var(--cat-finance-text);
+        }
+        .list-group-item[data-category="finance"] .category-badge {
+            background: var(--cat-finance-bg);
+            color: var(--cat-finance-text);
+        }
+
+        .list-group-item[data-category="edu"] .icon-wrapper {
+            background: var(--cat-edu-bg);
+            color: var(--cat-edu-text);
+        }
+        .list-group-item[data-category="edu"] .category-badge {
+            background: var(--cat-edu-bg);
+            color: var(--cat-edu-text);
+        }
+
+        /* Card Content Formatting */
+        .project-details {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .project-details strong {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .project-details small {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* --- Footer & Scroll Control --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            margin-top: 4rem !important;
+        }
+
+        .bottom-right-controls {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fab-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        #theme-toggle {
+            background: var(--bg-card);
+            color: var(--text-main);
+        }
+        #theme-toggle:hover {
+            transform: rotate(30deg);
         }
 
         #back-to-top {
-            display: none;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: #ffffff;
+            border: none;
             opacity: 0;
-            transition: opacity 0.3s;
+            transform: scale(0.8);
+            pointer-events: none;
         }
         #back-to-top.show {
-            display: inline-block;
             opacity: 1;
-        }
-        
-        #additional-projects {
-            display: none;
+            transform: scale(1);
+            pointer-events: auto;
         }
 
-        /* --- Garis di atas Footer --- */
-        footer {
-            border-top: 1px solid var(--border-color);
-            padding-top: 1.5rem;
-            margin-top: 3rem !important; /* Memberi jarak lebih */
-            transition: border-color 0.3s;
+        #toggle-projects-btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 24px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+            transition: all 0.3s;
+        }
+        #toggle-projects-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        #additional-projects {
+            display: none;
+            margin-top: 1.25rem;
+        }
+        
+        /* Adjust layout spacing inside collapsed list */
+        #additional-projects.show-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.25rem;
+        }
+        @media (min-width: 768px) {
+            #additional-projects.show-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Header (Glassmorphism) -->
     <div class="header-section text-center">
         <div class="container position-relative">
-            <h1><i class="bi bi-folder-fill me-2"></i>Daftar Proyek Saya</h1>
+            <h1><i class="bi bi-grid-fill me-2" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>Portal MyPro</h1>
             <div id="live-clock-container">
-                <span id="live-clock"></span>
+                <span id="live-clock">Memuat waktu...</span>
             </div>
         </div>
     </div>
 
+    <!-- Main Container -->
     <div class="container mb-5">
         
-        <div class="controls-container">
-            <input type="search" id="search-input" class="form-control search-input" placeholder="Cari proyek...">
-            <button class="btn btn-outline-secondary" id="layout-toggle" title="Ubah Tampilan"><i class="bi bi-grid-3x2-gap-fill"></i></button>
+        <!-- Controls Container -->
+        <div class="controls-container flex-column align-items-stretch">
+            <div class="d-flex w-100 gap-3">
+                <div class="search-input-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="search" id="search-input" class="form-control search-input" placeholder="Cari proyek berdasarkan judul atau kategori...">
+                </div>
+                <button class="layout-toggle-btn" id="layout-toggle" title="Ubah Tampilan"><i class="bi bi-grid-3x2-gap-fill"></i></button>
+            </div>
+            
+            <!-- Category Filter Pills -->
+            <div class="d-flex flex-wrap gap-2 mt-4 justify-content-center" id="category-filters">
+                <button class="category-chip active" data-category="all">Semua Proyek</button>
+                <button class="category-chip" data-category="electrical">⚡ Elektrikal & Kabel</button>
+                <button class="category-chip" data-category="testing">🧪 Uji Material</button>
+                <button class="category-chip" data-category="math">🔢 Matematika & Kalkulator</button>
+                <button class="category-chip" data-category="finance">💼 Finansial & Kerja</button>
+                <button class="category-chip" data-category="edu">🎮 Edukasi & Media</button>
+            </div>
         </div>
         
+        <!-- Projects Card Grid/List -->
         <div class="list-group" id="project-list">
-            <a href="./1.kalkulator_hambatan_konduktor/index_kalkulator_hambatan.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-globe"></i> 
-                <div>
-                    <strong>Proyek 1: Kalkulator Hambatan</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung hambatan listrik.</small>
+            <!-- Proyek 1 -->
+            <a href="./1.kalkulator_hambatan_konduktor/index_kalkulator_hambatan.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-lightning-charge"></i>
                 </div>
-            </a>
-            <a href="./2.konverter_hambatan/index_konverter_hambatan_ir.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-phone"></i>
-                <div>
-                    <strong>Proyek 2: Koverter Hambatan IR</strong><br>
-                    <small class="text-muted">Aplikasi web untuk mengonversi hambatan dalam rangkaian listrik.</small>
-                </div>
-            </a>
-            <a href="./3.konverter_panjang/konverter_panjang.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-github"></i>
-                <div>
-                    <strong>Proyek 3: Konverter Panjang</strong><br>
-                    <small class="text-muted">Aplikasi web untuk mengonversi satuan panjang.</small>
-                </div>
-            </a>
-            <a href="./4.kalkulator_dimensi/kalkulator_dimensi.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-stack"></i>
-                <div>
-                    <strong>Proyek 4: Kalkulator Dimensi</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung dimensi objek.</small>
-                </div>
-            </a>
-            <a href="./5.hitungpanjangkabel_didrum/hitungpanjangkabel_didrum.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-code-slash"></i>
-                <div>
-                    <strong>Proyek 5: Hitung Panjang Kabel di Drum</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung panjang kabel yang terpasang di drum.</small>
-                </div>
-            </a>
-            <a href="./6.uji_tekuk_bending_fix/8.uji_tekuk_bending_fix.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-lightbulb"></i>
-                <div>
-                    <strong>Proyek 6: Kalkulator Uji Bending</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung hasil uji bending pada material.</small>
-                </div>
-            </a>
-            <a href="./7.coldbending_test/coldbending_test.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-bar-chart-line"></i>
-                <div>
-                    <strong>Proyek 7: Uji Cold Bending</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung hasil uji cold bending pada material.</small>
-                </div>
-            </a>
-            <a href="./8.heatshock_test/heatshock_test.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-camera"></i>
-                <div>
-                    <strong>Proyek 8: Uji Heat Shock</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung hasil uji heat shock pada material.</small>
-                </div>
-            </a>
-            <a href="./9. generator_angka/generator_angka.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-chat-dots"></i>
-                <div>
-                    <strong>Proyek 9: Aplikasi Generator Angka</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghasilkan angka acak.</small>
-                </div>
-            </a>
-            <a href="./10.kalkulator_resistor/kalkulator_resistor.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-book"></i>
-                <div>
-                    <strong>Proyek 10: Kalkulator Resistor</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung nilai resistor dalam rangkaian listrik.</small>
-                </div>
-            </a>
-            <a href="./11.android_kw/android_kw.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-truck"></i>
-                <div>
-                    <strong>Proyek 11: Android KW</strong><br>
-                    <small class="text-muted">Membuat aplikasi Android untuk kebutuhan sehari-hari.</small>
-                </div>
-            </a>
-            <a href="./12.CR_trial/cr_trial.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-calendar-check"></i>
-                <div>
-                    <strong>Proyek 12: Kalkulator Hambatan Trial</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung hambatan dalam rangkaian listrik.</small>
-                </div>
-            </a>
-            <a href="./13.yusup/chots_fix_banget.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-wallet"></i>
-                <div>
-                    <strong>Proyek 13: YuSup Chots</strong><br>
-                    <small class="text-muted">Aplikasi Uji coba YuSup Chots</small>
-                </div>
-            </a>
-            <a href="./13.yusup/chots.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-cloud-arrow-up"></i>
-                <div>
-                    <strong>Proyek 14: YuSup Chots v2</strong><br>
-                    <small class="text-muted">Aplikasi Uji coba YuSup Chots versi 2</small>
-                </div>
-            </a>
-            <a href="./14. web streaming video/web_streaming.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-megaphone"></i>
-                <div>
-                    <strong>Proyek 15: Streaming Video</strong><br>
-                    <small class="text-muted">Aplikasi web untuk streaming video secara langsung.</small>
-                </div>
-            </a>
-            <a href="./17.alokasi_gaji/kalkulator_alokasigaji.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-basket"></i>
-                <div>
-                    <strong>Proyek 16: Aplikasi Kalkulator Alokasi Gaji</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung alokasi gaji karyawan.</small>
-                </div>
-            </a>
-            <a href="/19.hitung_waktu_rewind_kabel/hitung_waktu_rewind.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-house"></i>
-                <div>
-                    <strong>Proyek 17: Aplikasi Penghitung Waktu Rewind</strong><br>
-                    <small class="text-muted">Aplikasi web untuk menghitung waktu rewind kabel.</small>
-                </div>
-            </a>
-            <a href="./22.faktor_koreksi_suhu/faktor_koreksi_suhu.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-music-note"></i>
-                <div>
-                    <strong>Proyek 18: Faktor Koreksi Suhu</strong><br>
-                    <small class="text-muted">Menghitung faktor koreksi suhu untuk berbagai aplikasi.</small>
-                </div>
-            </a>
-            <a href="./" class="list-group-item list-group-item-action">
-                <i class="bi bi-geo-alt"></i>
-                <div>
-                    <strong>Proyek 19: Manajemen Aset</strong><br>
-                    <small class="text-muted">Aplikasi untuk me</small>
-                </div>
-            </a>
-            <a href="/20.uji_tegangan/uji_tegangan.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-file-earmark-text"></i>
-                <div>
-                    <strong>Proyek 20: Kalkulator Uji Tegangan</strong><br>
-                    <small class="text-muted">Alat untuk menulis dan mengedit dokumen di web.</small>
-                </div>
-            </a>
-            <a href="/21.kalkulator_daya_listrik/kalkulator_dayalistrik.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-people"></i>
-                <div>
-                    <strong>Proyek 21: Kalkulator Daya Listrik</strong><br>
-                    <small class="text-muted">Tempat berbagi informasi dan berdiskusi online.</small>
-                </div>
-            </a>
-            <a href="./23.Pengatur_Uang/pengatur_uang.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-shield-check"></i>
-                <div>
-                    <strong>Proyek 22: Pengatur Keuangan</strong><br>
-                    <small class="text-muted">Aplikasi Pengatur Keuangan</small>
-                </div>
-            </a>
-            <a href="./23.Pengatur_Uang/alokasi_gaji.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-cart3"></i>
-                <div>
-                    <strong>Proyek 23: Alokasi Gaji</strong><br>
-                    <small class="text-muted">Halaman web promosi untuk produk baru.</small>
-                </div>
-            </a>
-            <a href="./24.manajemen_aset/manajemen_aset.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-graph-up"></i>
-                <div>
-                    <strong>Proyek 24: Manajemen Aset</strong><br>
-                    <small class="text-muted">Website untuk memudahkan mengelola Manajemen Aset</small>
-                </div>
-            </a>
-            <a href="./25.cari_metadata_musik/cari_metadata_musik.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-headset"></i>
-                <div>
-                    <strong>Proyek 25: Cari Metadata Musik</strong><br>
-                    <small class="text-muted">Membantu pelanggan melalui obrolan langsung.</small>
-                </div>
-            </a>
-            <a href="./26.analisis kripto/analisis_kripto_v1.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-display"></i>
-                <div>
-                    <strong>Proyek 26: Analisis Kripto</strong><br>
-                    <small class="text-muted">Contoh desain antarmuka pengguna untuk berbagai aplikasi.</small>
-                </div>
-            </a>
-            <a href="./27.volume_drum/volume_drum.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-robot"></i>
-                <div>
-                    <strong>Proyek 27: Hitung Volume Drum</strong><br>
-                    <small class="text-muted">Model AI untuk memprediksi harga saham atau properti.</small>
-                </div>
-            </a>
-            <a href="./28.kalkulator_waktu/kalkulator_waktu.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-gamepad"></i>
-                <div>
-                    <strong>Proyek 28: Kalkulator Waktu</strong><br>
-                    <small class="text-muted">Game interaktif yang dapat dimainkan di browser.</small>
-                </div>
-            </a>
-            <a href="./29.flame_retardant/flame.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-film"></i>
-                <div>
-                    <strong>Proyek 29: Uji Bakar</strong><br>
-                    <small class="text-muted">Menampilkan daftar video yang dapat ditonton.</small>
-                </div>
-            </a>
-            <a href="./30.hitung_jamlembur/hitung_lembur_08062026.html" class="list-group-item list-group-item-action">
-                <i class="bi bi-wallet2"></i>
-                <div>
-                    <strong>Proyek 30: Kalkulator Lembur</strong><br>
-                    <small class="text-muted">Menghitung upah lembur berdasarkan data input.</small>
+                <div class="project-details">
+                    <strong>Proyek 1: Kalkulator Hambatan</strong>
+                    <small>Menghitung resistansi listrik berdasarkan bahan konduktor, panjang, dan luas penampang.</small>
                 </div>
             </a>
 
+            <!-- Proyek 2 -->
+            <a href="./2.konverter_hambatan/index_konverter_hambatan_ir.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-arrow-left-right"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 2: Konverter Hambatan IR</strong>
+                    <small>Mengonversi nilai hambatan isolasi (Insulation Resistance) berdasarkan temperatur referensi.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 3 -->
+            <a href="./3.konverter_panjang/konverter_panjang.html" class="list-group-item list-group-item-action" data-category="math">
+                <span class="category-badge">Matematika</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-rulers"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 3: Konverter Panjang</strong>
+                    <small>Mengonversi berbagai satuan ukuran panjang seperti mm, cm, m, km, inch, feet, yard, dan mile.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 4 -->
+            <a href="./4.kalkulator_dimensi/kalkulator_dimensi.html" class="list-group-item list-group-item-action" data-category="math">
+                <span class="category-badge">Matematika</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 4: Kalkulator Dimensi</strong>
+                    <small>Menghitung luas, keliling, dan parameter geometris dimensi objek fisik.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 5 -->
+            <a href="./5.hitungpanjangkabel_didrum/hitungpanjangkabel_didrum.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-disc"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 5: Hitung Panjang Kabel di Drum</strong>
+                    <small>Mengestimasi sisa panjang kabel yang tergulung pada drum berdasarkan ukuran drum dan diameter kabel.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 6 -->
+            <a href="./6.uji_tekuk_bending_fix/8.uji_tekuk_bending_fix.html" class="list-group-item list-group-item-action" data-category="testing">
+                <span class="category-badge">Uji Material</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-diagram-2"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 6: Kalkulator Uji Bending</strong>
+                    <small>Menganalisis hasil pengujian kekuatan bending (tekuk) material logam atau non-logam.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 7 -->
+            <a href="./7.coldbending_test/coldbending_test.html" class="list-group-item list-group-item-action" data-category="testing">
+                <span class="category-badge">Uji Material</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-snow2"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 7: Uji Cold Bending</strong>
+                    <small>Mengevaluasi hasil pengujian tekuk pada suhu dingin untuk mengukur elastisitas material.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 8 -->
+            <a href="./8.heatshock_test/heatshock_test.html" class="list-group-item list-group-item-action" data-category="testing">
+                <span class="category-badge">Uji Material</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-thermometer-sun"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 8: Uji Heat Shock</strong>
+                    <small>Menghitung kelayakan material isolasi kabel setelah diuji pemanasan suhu tinggi secara tiba-tiba.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 9 -->
+            <a href="./9.generator_angka/generator_angka.html" class="list-group-item list-group-item-action" data-category="math">
+                <span class="category-badge">Matematika</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-hash"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 9: Aplikasi Generator Angka</strong>
+                    <small>Menghasilkan deret angka acak secara acak dan otomatis untuk berbagai keperluan simulasi.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 10 -->
+            <a href="./10.kalkulator_resistor/kalkulator_resistor.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-palette"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 10: Kalkulator Resistor</strong>
+                    <small>Membaca nilai resistansi resistor berdasarkan kode warna cincin (4 band, 5 band, atau 6 band).</small>
+                </div>
+            </a>
+
+            <!-- Proyek 11 -->
+            <a href="./11.android_kw/android_kw.html" class="list-group-item list-group-item-action" data-category="edu">
+                <span class="category-badge">Media</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-android2"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 11: Android KW</strong>
+                    <small>Simulasi interaktif antarmuka sistem operasi Android langsung di dalam peramban web.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 12 -->
+            <a href="./12.CR_trial/cr_trial.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-wrench"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 12: Kalkulator Hambatan Trial</strong>
+                    <small>Modul uji coba perhitungan hambatan konduktor dengan parameter eksperimental.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 13 -->
+            <a href="./13.yusup/chots_fix_banget.html" class="list-group-item list-group-item-action" data-category="edu">
+                <span class="category-badge">Media</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-chat-left-quote"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 13: YuSup Chots</strong>
+                    <small>Aplikasi pesan instan atau chat room interaktif untuk kebutuhan komunikasi uji coba.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 14 -->
+            <a href="./13.yusup/chots.html" class="list-group-item list-group-item-action" data-category="edu">
+                <span class="category-badge">Media</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-chat-left-quote-fill"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 14: YuSup Chots v2</strong>
+                    <small>Versi pengembangan dari aplikasi chat room dengan fitur interaksi yang disempurnakan.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 15 -->
+            <a href="./14.web_streaming_video/web_streaming.html" class="list-group-item list-group-item-action" data-category="edu">
+                <span class="category-badge">Media</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-play-circle"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 15: Streaming Video</strong>
+                    <small>Pemutar video streaming berbasis HTML5 dengan kontrol media yang bersih dan responsif.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 16 -->
+            <a href="./17.alokasi_gaji/kalkulator_alokasigaji.html" class="list-group-item list-group-item-action" data-category="finance">
+                <span class="category-badge">Finansial</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 16: Kalkulator Alokasi Gaji</strong>
+                    <small>Membantu merencanakan keuangan bulanan dengan membagi gaji ke dalam pos kebutuhan dan tabungan.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 17 -->
+            <a href="./19.hitung_waktu_rewind_kabel/hitung_waktu_rewind.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-arrow-repeat"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 17: Aplikasi Penghitung Waktu Rewind</strong>
+                    <small>Menghitung perkiraan waktu yang dibutuhkan untuk proses penggulungan ulang (rewind) kabel.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 18 -->
+            <a href="./22.faktor_koreksi_suhu/faktor_koreksi_suhu.html" class="list-group-item list-group-item-action" data-category="testing">
+                <span class="category-badge">Uji Material</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-thermometer-half"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 18: Faktor Koreksi Suhu</strong>
+                    <small>Menghitung nilai faktor koreksi temperatur untuk menyesuaikan resistansi kabel pada suhu standar 20°C.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 19 -->
+            <a href="./16.tailwind/hambatan_konduktor_iec.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-lightning"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 19: Kalkulator Hambatan (Tailwind)</strong>
+                    <small>Kalkulator hambatan konduktor dengan antarmuka modern menggunakan Tailwind CSS.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 20 -->
+            <a href="./20.uji_tegangan/uji_tegangan.html" class="list-group-item list-group-item-action" data-category="testing">
+                <span class="category-badge">Uji Material</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 20: Kalkulator Uji Tegangan</strong>
+                    <small>Mengevaluasi hasil pengujian tegangan listrik (voltage test) pada material isolasi konduktor.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 21 -->
+            <a href="./21.kalkulator_daya_listrik/kalkulator_dayalistrik.html" class="list-group-item list-group-item-action" data-category="electrical">
+                <span class="category-badge">Elektrikal</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-plug"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 21: Kalkulator Daya Listrik</strong>
+                    <small>Menghitung hubungan antara daya, tegangan, arus, dan hambatan listrik (Hukum Ohm).</small>
+                </div>
+            </a>
+
+            <!-- Proyek 22 -->
+            <a href="./23.Pengatur_Uang/pengatur_uang.html" class="list-group-item list-group-item-action" data-category="finance">
+                <span class="category-badge">Finansial</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 22: Pengatur Keuangan</strong>
+                    <small>Aplikasi sederhana untuk mencatat pendapatan, pengeluaran, dan rekapitulasi finansial bulanan.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 23 -->
+            <a href="./23.Pengatur_Uang/alokasi_gaji.html" class="list-group-item list-group-item-action" data-category="finance">
+                <span class="category-badge">Finansial</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-pie-chart"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 23: Alokasi Gaji</strong>
+                    <small>Alat perencanaan alokasi anggaran gaji berdasarkan persentase pos pengeluaran.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 24 -->
+            <a href="./24.manajemen_aset/manajemen_aset.html" class="list-group-item list-group-item-action" data-category="finance">
+                <span class="category-badge">Finansial</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 24: Manajemen Aset</strong>
+                    <small>Website pencatatan inventaris dan nilai aset organisasi atau bisnis secara mandiri.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 25 -->
+            <a href="./25.cari_metadata_musik/cari_metadata_musik.html" class="list-group-item list-group-item-action" data-category="edu">
+                <span class="category-badge">Media</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-music-note-beamed"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 25: Cari Metadata Musik</strong>
+                    <small>Mengekstrak, mencari, dan menampilkan informasi metadata id3 dari file audio/musik.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 26 -->
+            <a href="./26.analisis_kripto/analisis_kripto_v1.html" class="list-group-item list-group-item-action" data-category="edu">
+                <span class="category-badge">Media</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-currency-bitcoin"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 26: Analisis Kripto</strong>
+                    <small>Alat analisis dan pemantauan pergerakan pasar harga aset mata uang kripto.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 27 -->
+            <a href="./27.volume_drum/volume_drum.html" class="list-group-item list-group-item-action" data-category="math">
+                <span class="category-badge">Matematika</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-moisture"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 27: Hitung Volume Drum</strong>
+                    <small>Menghitung kapasitas dan volume cairan dalam wadah drum silinder berdasarkan tinggi permukaan cairan.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 28 -->
+            <a href="./28.kalkulator_waktu/kalkulator_waktu.html" class="list-group-item list-group-item-action" data-category="math">
+                <span class="category-badge">Matematika</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-clock"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 28: Kalkulator Waktu</strong>
+                    <small>Menghitung jumlah jam, menit, detik serta selisih interval waktu antar dua tanggal berbeda.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 29 -->
+            <a href="./29.flame_retardant/flame.html" class="list-group-item list-group-item-action" data-category="testing">
+                <span class="category-badge">Uji Material</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-fire"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 29: Uji Bakar</strong>
+                    <small>Menghitung parameter laju pembakaran dan ketahanan rambatan api pada pengujian material.</small>
+                </div>
+            </a>
+
+            <!-- Proyek 30 -->
+            <a href="./30.hitung_jamlembur/hitung_lembur_08062026.html" class="list-group-item list-group-item-action" data-category="finance">
+                <span class="category-badge">Finansial</span>
+                <div class="icon-wrapper">
+                    <i class="bi bi-calendar3"></i>
+                </div>
+                <div class="project-details">
+                    <strong>Proyek 30: Kalkulator Lembur</strong>
+                    <small>Menghitung akumulasi upah lembur bulanan berdasarkan data jam kerja karyawan.</small>
+                </div>
+            </a>
+
+            <!-- Additional Projects Container -->
             <div id="additional-projects">
-                <a href="./31.angka/mainan_edukasi_anak.html" class="list-group-item list-group-item-action">
-                    <i class="bi bi-translate"></i>
-                    <div>
-                        <strong>Proyek 31: Mainan Edukasi Anak Pintar</strong><br>
-                        <small class="text-muted">Menerjemahkan teks antar berbagai bahasa secara real-time.</small>
+                <!-- Proyek 31 -->
+                <a href="./31.mainan_edukasi/mainan_edukasi_anak_v20260214.html" class="list-group-item list-group-item-action" data-category="edu">
+                    <span class="category-badge">Media</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-controller"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 31: Mainan Edukasi Anak Pintar</strong>
+                        <small>Permainan interaktif edukatif anak untuk belajar mengenal angka dan huruf secara menyenangkan.</small>
                     </div>
                 </a>
-                <a href="./31.angka/mainan_edukasi_anak_update.html" class="list-group-item list-group-item-action">
-                    <i class="bi bi-kanban"></i>
-                    <div>
-                        <strong>Proyek 32: Mainan Edukasi Anaka (versi update)</strong><br>
-                        <small class="text-muted">Aplikasi untuk mengatur alur kerja dan tugas tim.</small>
+
+                <!-- Proyek 32 -->
+                <a href="./31.mainan_edukasi/mainan_update.html" class="list-group-item list-group-item-action" data-category="edu">
+                    <span class="category-badge">Media</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-controller"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 32: Mainan Edukasi Anak (Versi Update)</strong>
+                        <small>Pengembangan game edukatif dengan tantangan matematika dasar dan visual animasi yang menarik.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-file-earmark-zip"></i>
-                    <div>
-                        <strong>Proyek 33: Alat Kompresi File Online</strong><br>
-                        <small class="text-muted">Mengurangi ukuran file gambar, PDF, atau dokumen lainnya.</small>
+
+                <!-- Proyek 33 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="math">
+                    <span class="category-badge">Matematika</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-file-earmark-zip"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 33: Alat Kompresi File Online (Coming Soon)</strong>
+                        <small>Mengurangi ukuran file gambar, PDF, atau dokumen lainnya secara langsung di peramban.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-graph-down"></i>
-                    <div>
-                        <strong>Proyek 34: Pelacak Harga Saham</strong><br>
-                        <small class="text-muted">Memantau pergerakan harga saham dengan grafik interaktif.</small>
+
+                <!-- Proyek 34 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="finance">
+                    <span class="category-badge">Finansial</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-graph-down"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 34: Pelacak Harga Saham (Coming Soon)</strong>
+                        <small>Memantau pergerakan harga saham dengan grafik interaktif secara real-time.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-qr-code-scan"></i>
-                    <div>
-                        <strong>Proyek 35: Generator Kode QR</strong><br>
-                        <small class="text-muted">Membuat kode QR kustom untuk URL, teks, atau informasi kontak.</small>
+
+                <!-- Proyek 35 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="math">
+                    <span class="category-badge">Matematika</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-qr-code-scan"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 35: Generator Kode QR (Coming Soon)</strong>
+                        <small>Membuat kode QR kustom untuk URL, teks, atau informasi kontak secara instan.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-clipboard-check"></i>
-                    <div>
-                        <strong>Proyek 36: Aplikasi Kuis Interaktif</strong><br>
-                        <small class="text-muted">Platform untuk membuat dan mengikuti kuis dengan skor.</small>
+
+                <!-- Proyek 36 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="edu">
+                    <span class="category-badge">Media</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 36: Aplikasi Kuis Interaktif (Coming Soon)</strong>
+                        <small>Platform interaktif untuk menyusun kuis cerdas cermat dengan akumulasi skor.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-cloud-haze2"></i>
-                    <div>
-                        <strong>Proyek 37: Widget Cuaca</strong><br>
-                        <small class="text-muted">Menampilkan informasi cuaca berdasarkan lokasi pengguna.</small>
+
+                <!-- Proyek 37 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="edu">
+                    <span class="category-badge">Media</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-cloud-haze2"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 37: Widget Cuaca (Coming Soon)</strong>
+                        <small>Menampilkan informasi perkiraan cuaca lokal secara berkala berdasarkan lokasi.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-person-rolodex"></i>
-                    <div>
-                        <strong>Proyek 38: Sistem Manajemen Kontak</strong><br>
-                        <small class="text-muted">Menyimpan dan mengelola daftar kontak pribadi atau bisnis.</small>
+
+                <!-- Proyek 38 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="finance">
+                    <span class="category-badge">Finansial</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-person-rolodex"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 38: Sistem Manajemen Kontak (Coming Soon)</strong>
+                        <small>Menyimpan, memperbarui, dan mengelola kontak data relasi kerja secara aman.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-diagram-3"></i>
-                    <div>
-                        <strong>Proyek 39: Alat Pembuat Diagram Alur</strong><br>
-                        <small class="text-muted">Aplikasi web untuk membuat diagram alur (flowchart) sederhana.</small>
+
+                <!-- Proyek 39 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="math">
+                    <span class="category-badge">Matematika</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 39: Alat Pembuat Diagram Alur (Coming Soon)</strong>
+                        <small>Membuat rancangan alur kerja sederhana (flowchart) dengan drag & drop di peramban.</small>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <i class="bi bi-stopwatch"></i>
-                    <div>
-                        <strong>Proyek 40: Aplikasi Pomodoro Timer</strong><br>
-                        <small class="text-muted">Membantu fokus belajar atau bekerja dengan teknik Pomodoro.</small>
+
+                <!-- Proyek 40 -->
+                <a href="#" class="list-group-item list-group-item-action" data-category="finance">
+                    <span class="category-badge">Finansial</span>
+                    <div class="icon-wrapper">
+                        <i class="bi bi-stopwatch"></i>
+                    </div>
+                    <div class="project-details">
+                        <strong>Proyek 40: Aplikasi Pomodoro Timer (Coming Soon)</strong>
+                        <small>Membantu manajemen fokus waktu belajar dan bekerja menggunakan teknik Pomodoro.</small>
                     </div>
                 </a>
             </div>
         </div>
         
-        <div class="text-center mt-4">
-            <button id="toggle-projects-btn" class="btn btn-primary">Tampilkan Lebih Banyak</button>
+        <!-- Toggle Expand Button -->
+        <div class="text-center mt-5">
+            <button id="toggle-projects-btn" class="btn btn-primary btn-lg">Tampilkan Lebih Banyak</button>
         </div>
 
+        <!-- Footer -->
         <footer class="text-center text-muted">
-            <p> Williyanto Adi 2025</p>
+            <p>© 2026 Williyanto Adi. Semua Hak Dilindungi. Portal Utilitas Portofolio.</p>
         </footer>
 
     </div>
     
+    <!-- Floating FAB Buttons -->
     <div class="bottom-right-controls">
-        <button class="btn btn-secondary rounded-circle shadow-lg" id="theme-toggle" title="Ubah Tema">🌓</button>
-        <a href="#" id="back-to-top" class="btn btn-primary rounded-circle shadow-lg" title="Kembali ke Atas"><i class="bi bi-arrow-up"></i></a>
+        <button class="fab-btn shadow-lg" id="theme-toggle" title="Ubah Tema">🌓</button>
+        <button id="back-to-top" class="fab-btn shadow-lg" title="Kembali ke Atas"><i class="bi bi-arrow-up"></i></button>
     </div>
 
+    <!-- Scripts -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            const clockElement = document.getElementById('live-clock');
+            const themeToggle = document.getElementById('theme-toggle');
+            const searchInput = document.getElementById('search-input');
+            const layoutToggle = document.getElementById('layout-toggle');
+            const projectList = document.getElementById('project-list');
+            const backToTopButton = document.getElementById('back-to-top');
+            const toggleBtn = document.getElementById('toggle-projects-btn');
+            const additionalProjects = document.getElementById('additional-projects');
 
-        const clockElement = document.getElementById('live-clock');
-        const themeToggle = document.getElementById('theme-toggle');
-        const searchInput = document.getElementById('search-input');
-        const layoutToggle = document.getElementById('layout-toggle');
-        const projectList = document.getElementById('project-list');
-        const backToTopButton = document.getElementById('back-to-top');
-        const toggleBtn = document.getElementById('toggle-projects-btn');
-        const additionalProjects = document.getElementById('additional-projects');
-
-        // --- FUNGSI JAM DIGITAL ---
-        function updateClock() {
-            const now = new Date();
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            const day = days[now.getDay()];
-            const date = now.getDate();
-            const month = months[now.getMonth()];
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            if(clockElement) {
-                clockElement.textContent = `${day}, ${date} ${month} ${year} - ${hours}:${minutes}:${seconds}`;
+            // --- LIVE CLOCK FUNCTION ---
+            function updateClock() {
+                const now = new Date();
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const day = days[now.getDay()];
+                const date = now.getDate();
+                const month = months[now.getMonth()];
+                const year = now.getFullYear();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                if (clockElement) {
+                    clockElement.textContent = `${day}, ${date} ${month} ${year} — ${hours}:${minutes}:${seconds}`;
+                }
             }
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+            setInterval(updateClock, 1000);
+            updateClock();
 
-        // --- FITUR MODE GELAP (DARK MODE) ---
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-        themeToggle.addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            let theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-        });
-
-        // --- FITUR PENCARIAN ---
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            document.querySelectorAll('.list-group-item').forEach(item => {
-                const itemText = item.textContent.toLowerCase();
-                const isVisible = itemText.includes(searchTerm);
-                item.style.display = isVisible ? '' : 'none';
+            // --- DARK MODE TOGGLE ---
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+            themeToggle.addEventListener('click', function () {
+                document.body.classList.toggle('dark-mode');
+                let theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
             });
-        });
 
-        // --- FITUR TOGGLE LAYOUT (LIST/GRID) ---
-        const icon = layoutToggle.querySelector('i');
-        layoutToggle.addEventListener('click', function() {
-            projectList.classList.toggle('grid-view');
-            const isGridView = projectList.classList.contains('grid-view');
-            icon.className = isGridView ? 'bi bi-list-ul' : 'bi bi-grid-3x2-gap-fill';
-            searchInput.dispatchEvent(new Event('input'));
-        });
+            // --- UNIFIED SEARCH & CATEGORY FILTERING ---
+            const filterButtons = document.querySelectorAll('#category-filters .category-chip');
+            let activeCategory = 'all';
 
-        // --- FITUR ANIMASI SAAT SCROLL ---
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+            function filterProjects() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const items = document.querySelectorAll('.list-group-item');
+                
+                items.forEach((item, index) => {
+                    const itemText = item.textContent.toLowerCase();
+                    const itemCategory = item.getAttribute('data-category');
+                    
+                    const matchesSearch = itemText.includes(searchTerm);
+                    const matchesCategory = (activeCategory === 'all' || itemCategory === activeCategory);
+                    
+                    if (matchesSearch && matchesCategory) {
+                        item.style.display = '';
+                        // Reset entry animation delay to look smooth
+                        item.style.animationDelay = `${index * 0.03}s`;
+                        item.classList.add('visible');
+                    } else {
+                        item.style.display = 'none';
+                        item.classList.remove('visible');
+                    }
+                });
+            }
+
+            searchInput.addEventListener('input', filterProjects);
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    activeCategory = this.getAttribute('data-category');
+                    filterProjects();
+                });
+            });
+
+            // --- LAYOUT SWITCHER (LIST/GRID) ---
+            const layoutIcon = layoutToggle.querySelector('i');
+            
+            // Restore saved layout if any
+            const savedLayout = localStorage.getItem('layout') || 'list';
+            if (savedLayout === 'grid') {
+                projectList.classList.add('grid-view');
+                layoutIcon.className = 'bi bi-list-ul';
+            }
+
+            layoutToggle.addEventListener('click', function () {
+                projectList.classList.toggle('grid-view');
+                const isGridView = projectList.classList.contains('grid-view');
+                layoutIcon.className = isGridView ? 'bi bi-list-ul' : 'bi bi-grid-3x2-gap-fill';
+                localStorage.setItem('layout', isGridView ? 'grid' : 'list');
+                
+                // Adjust additional-projects subgrid layout if shown
+                if (additionalProjects.style.display === 'block') {
+                    if (isGridView) {
+                        additionalProjects.className = 'show-grid';
+                    } else {
+                        additionalProjects.className = '';
+                    }
                 }
             });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.list-group-item').forEach(item => observer.observe(item));
-        
-        // --- FITUR TOMBOL KEMBALI KE ATAS ---
-        window.onscroll = function() {
-            const show = document.body.scrollTop > 300 || document.documentElement.scrollTop > 300;
-            backToTopButton.classList.toggle('show', show);
-        };
-        backToTopButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
 
-        // --- FITUR TOMBOL TAMPILKAN LAINNYA ---
-        toggleBtn.addEventListener('click', function() {
-            const isHidden = additionalProjects.style.display === 'none' || additionalProjects.style.display === '';
-            if (isHidden) {
-                additionalProjects.style.display = 'block';
-                toggleBtn.textContent = 'Sembunyikan';
-            } else {
-                additionalProjects.style.display = 'none';
-                toggleBtn.textContent = 'Tampilkan Lebih Banyak';
-            }
+            // --- SCROLL ANIMATION ENTRANCE ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.05 });
+            
+            document.querySelectorAll('.list-group-item').forEach(item => observer.observe(item));
+            
+            // --- BACK TO TOP BUTTON ---
+            window.addEventListener('scroll', function() {
+                const show = document.body.scrollTop > 300 || document.documentElement.scrollTop > 300;
+                backToTopButton.classList.toggle('show', show);
+            });
+            
+            backToTopButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // --- TOGGLE EXPAND PROJECTS ---
+            toggleBtn.addEventListener('click', function () {
+                const isHidden = additionalProjects.style.display === 'none' || additionalProjects.style.display === '';
+                const isGridView = projectList.classList.contains('grid-view');
+                
+                if (isHidden) {
+                    additionalProjects.style.display = 'block';
+                    if (isGridView) {
+                        additionalProjects.className = 'show-grid';
+                    } else {
+                        additionalProjects.className = '';
+                    }
+                    toggleBtn.textContent = 'Sembunyikan Proyek';
+                    // Re-trigger filtering to ensure correct items inside are shown/hidden
+                    filterProjects();
+                } else {
+                    additionalProjects.style.display = 'none';
+                    additionalProjects.className = '';
+                    toggleBtn.textContent = 'Tampilkan Lebih Banyak';
+                }
+            });
         });
-    });
     </script>
-
 </body>
 </html>

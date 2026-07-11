@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dunia Belajar Pintar v2.0</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      :root {
+        --soft-orange: #ff9f43;
+        --soft-blue: #4834d4;
+        --soft-purple: #686de0;
+        --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+      body {
+        font-family: "Nunito", sans-serif;
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 30px;
+        padding: 40px;
+        border: none;
+        box-shadow: var(--card-shadow);
+        max-width: 1000px;
+        margin: auto;
+      }
+      .title-brand {
+        font-family: "Fredoka", sans-serif;
+        color: var(--soft-orange);
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+      .mode-card {
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-radius: 20px;
+        padding: 25px;
+        background: #fff;
+        border: 1px solid #eee;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+      .mode-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: var(--soft-orange);
+      }
+      .btn-item {
+        width: 65px;
+        height: 65px;
+        border-radius: 15px;
+        border: none;
+        background: var(--soft-blue);
+        color: white;
+        font-family: "Fredoka", sans-serif;
+        font-size: 1.5rem;
+        transition: all 0.1s;
+        box-shadow: 0 5px 0px #2f248a;
+        margin: 5px;
+      }
+      .btn-item:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0px #2f248a;
+      }
+      .hijaiyah-font {
+        font-size: 2.2rem !important;
+        font-family: "Arial", sans-serif;
+      }
+      .hidden {
+        display: none !important;
+      }
+      #output-text {
+        font-family: "Fredoka", sans-serif;
+        font-size: 1.8rem;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2d3436;
+        text-align: center;
+        padding: 20px;
+      }
+      .highlight-blue {
+        color: var(--soft-blue);
+        font-weight: bold;
+      }
+      .badge-custom {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+        border-radius: 50px;
+      }
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+        gap: 10px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="glass-card animate__animated animate__zoomIn">
+        <div id="main-menu">
+          <div class="text-center mb-5">
+            <h1 class="title-brand display-4">Dunia Belajar Pintar</h1>
+            <p class="text-muted">Ayo pilih petualangan belajarmu hari ini!</p>
+          </div>
+          <div class="row g-4">
+            <div class="col-6 col-md-4" onclick="switchMode('belajar_angka')">
+              <div class="mode-card text-center">
+                <div class="fs-1 mb-2">🔢</div>
+                <h6 class="fw-bold">Belajar Angka</h6>
+              </div>
+            </div>
+            <div class="col-6 col-md-4" onclick="switchMode('belajar_huruf')">
+              <div class="mode-card text-center">
+                <div class="fs-1 mb-2">🔤</div>
+                <h6 class="fw-bold">Belajar Huruf</h6>
+              </div>
+            </div>
+            <div
+              class="col-6 col-md-4"
+              onclick="switchMode('belajar_hijaiyah')"
+            >
+              <div class="mode-card text-center">
+                <div class="fs-1 mb-2">🌙</div>
+                <h6 class="fw-bold">Belajar Hijaiyah</h6>
+              </div>
+            </div>
+            <div class="col-6 col-md-4" onclick="switchMode('tebak_angka')">
+              <div class="mode-card text-center">
+                <div class="fs-1 mb-2">🎯</div>
+                <h6 class="fw-bold text-primary">Tebak Angka</h6>
+              </div>
+            </div>
+            <div class="col-6 col-md-4" onclick="switchMode('tebak_huruf')">
+              <div class="mode-card text-center">
+                <div class="fs-1 mb-2">🧩</div>
+                <h6 class="fw-bold text-primary">Tebak Huruf</h6>
+              </div>
+            </div>
+            <div class="col-6 col-md-4" onclick="switchMode('tebak_hijaiyah')">
+              <div class="mode-card text-center">
+                <div class="fs-1 mb-2">🕌</div>
+                <h6 class="fw-bold text-primary">Tebak Hijaiyah</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="game-area" class="hidden">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <button
+              class="btn btn-light rounded-pill shadow-sm border px-4"
+              onclick="goHome()"
+            >
+              ◀ Kembali
+            </button>
+            <div id="score-container" class="text-end">
+              <span class="badge bg-white text-dark border p-2 px-3 shadow-sm"
+                >Skor: <b id="skor" class="text-primary">0</b></span
+              >
+              <div class="text-muted small mt-1">
+                Win Streak: <span id="streak-count" class="fw-bold">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="display-screen"
+            class="mb-4 bg-white rounded-4 shadow-sm border border-light"
+          >
+            <div id="output-text" class="animate__animated">
+              Ayo kita mulai!
+            </div>
+          </div>
+
+          <div id="button-container" class="grid-container"></div>
+        </div>
+
+        <div class="mt-5 pt-3 border-top text-center text-muted small">
+          &copy; 2026 Mainan Edukasi • Made with ❤️ by Williyanto Adi
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentMode = "";
+      let targetObj = "";
+      let skor = 0;
+      let streak = 0;
+      let audioAktif = null;
+      let isProcessing = false;
+
+      // DATA LENGKAP
+      const hurufArr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      const angkaArr = Array.from({ length: 50 }, (_, i) => i + 1);
+      const hijaiyahData = [
+        { h: "ا", n: "Alif" },
+        { h: "ب", n: "Ba" },
+        { h: "ت", n: "Ta" },
+        { h: "ث", n: "Tsa" },
+        { h: "ج", n: "Jim" },
+        { h: "ح", n: "Ha" },
+        { h: "خ", n: "Kho" },
+        { h: "د", n: "Dal" },
+        { h: "ذ", n: "Dzal" },
+        { h: "ر", n: "Ro" },
+        { h: "ز", n: "Zai" },
+        { h: "س", n: "Sin" },
+        { h: "ش", n: "Syin" },
+        { h: "ص", n: "Shod" },
+        { h: "ض", n: "Dhod" },
+        { h: "ط", n: "Tho" },
+        { h: "ظ", n: "Zho" },
+        { h: "ع", n: "Ain" },
+        { h: "غ", n: "Ghoin" },
+        { h: "ف", n: "Fa" },
+        { h: "ق", n: "Qof" },
+        { h: "ك", n: "Kaf" },
+        { h: "ل", n: "Lam" },
+        { h: "م", n: "Mim" },
+        { h: "ن", n: "Nun" },
+        { h: "و", n: "Wawu" },
+        { h: "هـ", n: "Ha_Besar" },
+        { h: "لا", n: "Lam_Alif" },
+        { h: "ء", n: "Hamzah" },
+        { h: "ي", n: "Ya" },
+      ];
+
+      // Helper untuk cari nama Hijaiyah
+      function getHijaiyahName(char) {
+        let found = hijaiyahData.find((item) => item.h === char);
+        return found ? found.n : char;
+      }
+
+      async function putarAudio(namaFile, isFeedback = false) {
+        if (audioAktif) {
+          audioAktif.pause();
+          audioAktif.src = "";
+        }
+        return new Promise((resolve) => {
+          let folder = "umum";
+          let file = namaFile.toString().toLowerCase();
+
+          if (isFeedback) {
+            folder = currentMode.includes("hijaiyah")
+              ? "umum/hijaiyah"
+              : "umum";
+            if (file === "benar" || file === "salah") {
+              let jumlah = folder === "umum" && file === "salah" ? 3 : 5;
+              file = file + (Math.floor(Math.random() * jumlah) + 1);
+            }
+          } else {
+            if (currentMode.includes("angka")) folder = "angka";
+            else if (currentMode.includes("hijaiyah")) folder = "hijaiyah";
+            else if (currentMode.includes("huruf")) folder = "huruf";
+          }
+
+          audioAktif = new Audio(`audio/${folder}/${file}.mp3`);
+          const timeout = setTimeout(() => resolve(), 3000);
+          audioAktif.onended = () => {
+            clearTimeout(timeout);
+            resolve();
+          };
+          audioAktif.onerror = () => {
+            clearTimeout(timeout);
+            resolve();
+          };
+          audioAktif.play().catch((e) => {
+            clearTimeout(timeout);
+            resolve();
+          });
+        });
+      }
+
+      function switchMode(mode) {
+        currentMode = mode;
+        isProcessing = false;
+        skor = 0;
+        streak = 0;
+        document.getElementById("main-menu").classList.add("hidden");
+        document.getElementById("game-area").classList.remove("hidden");
+
+        const container = document.getElementById("button-container");
+        container.innerHTML = "";
+
+        if (mode.includes("angka")) {
+          angkaArr.forEach((n) => buatTombol(n));
+        } else if (mode.includes("hijaiyah")) {
+          hijaiyahData.forEach((item) => buatTombol(item.h, true));
+        } else {
+          hurufArr.forEach((h) => buatTombol(h));
+        }
+
+        if (mode.startsWith("tebak")) {
+          document.getElementById("score-container").classList.remove("hidden");
+          updateDisplayScore();
+          buatPertanyaanBaru();
+        } else {
+          document.getElementById("score-container").classList.add("hidden");
+          document.getElementById("output-text").innerHTML =
+            "Pilih salah satu tombol di bawah!";
+        }
+      }
+
+      function buatTombol(label, isHijaiyah = false) {
+        const btn = document.createElement("button");
+        btn.className = "btn-item" + (isHijaiyah ? " hijaiyah-font" : "");
+        btn.innerText = label;
+        btn.onclick = () => handleItemClick(label);
+        document.getElementById("button-container").appendChild(btn);
+      }
+
+      async function handleItemClick(val) {
+        if (isProcessing) return;
+        isProcessing = true;
+        const el = document.getElementById("output-text");
+
+        if (currentMode.startsWith("belajar")) {
+          let label = "Huruf",
+            displayVal = val,
+            audioName = val;
+
+          if (currentMode === "belajar_angka") {
+            label = "Angka";
+          } else if (currentMode === "belajar_hijaiyah") {
+            label = "Hijaiyah";
+            displayVal = getHijaiyahName(val);
+            audioName = displayVal;
+          }
+
+          el.innerHTML = `Ini adalah ${label} <span class="highlight-blue ms-2">${displayVal}</span>`;
+          el.className = "animate__animated animate__pulse";
+          await putarAudio(audioName);
+          isProcessing = false;
+        } else {
+          // Mode Tebak
+          if (val.toString() === targetObj.toString()) {
+            skor += 10;
+            streak++;
+            updateDisplayScore();
+            el.innerHTML =
+              "<span class='text-success'>Hebat! Kamu Benar! 🌟</span>";
+            el.className = "animate__animated animate__tada";
+            if (streak >= 3)
+              confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            await putarAudio("benar", true);
+            setTimeout(buatPertanyaanBaru, 1000);
+          } else {
+            streak = 0;
+            updateDisplayScore();
+            el.innerHTML =
+              "<span class='text-danger'>Ayo coba lagi, kamu pasti bisa! 💪</span>";
+            el.className = "animate__animated animate__shakeX";
+            await putarAudio("salah", true);
+            setTimeout(ulangiPertanyaan, 1000);
+          }
+        }
+      }
+
+      function buatPertanyaanBaru() {
+        if (currentMode === "tebak_angka")
+          targetObj = angkaArr[Math.floor(Math.random() * angkaArr.length)];
+        else if (currentMode === "tebak_hijaiyah")
+          targetObj =
+            hijaiyahData[Math.floor(Math.random() * hijaiyahData.length)].h;
+        else targetObj = hurufArr[Math.floor(Math.random() * hurufArr.length)];
+        ulangiPertanyaan();
+      }
+
+      async function ulangiPertanyaan() {
+        const el = document.getElementById("output-text");
+        let label = "huruf",
+          audioName = targetObj,
+          displayTarget = targetObj;
+
+        if (currentMode === "tebak_angka") label = "angka";
+        else if (currentMode === "tebak_hijaiyah") {
+          label = "hijaiyah";
+          displayTarget = getHijaiyahName(targetObj);
+          audioName = displayTarget;
+        }
+
+        el.innerHTML = `Mana ${label} <span class="highlight-blue ms-2">${displayTarget}?</span>`;
+        el.className = "animate__animated animate__fadeIn";
+
+        let instan =
+          currentMode === "tebak_angka"
+            ? "cari_angka"
+            : currentMode === "tebak_hijaiyah"
+              ? "cari_hijaiyah"
+              : "cari_huruf";
+        await putarAudio(instan);
+        await putarAudio(audioName);
+        isProcessing = false;
+      }
+
+      function updateDisplayScore() {
+        document.getElementById("skor").innerText = skor;
+        document.getElementById("streak-count").innerText = streak;
+      }
+
+      function goHome() {
+        if (audioAktif) {
+          audioAktif.pause();
+          audioAktif.src = "";
+        }
+        document.getElementById("main-menu").classList.remove("hidden");
+        document.getElementById("game-area").classList.add("hidden");
+      }
+    </script>
+  </body>
+</html>
