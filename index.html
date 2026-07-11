@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyPro - Portal Proyek Williyanto Adi</title>
-    
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="MyPro - Koleksi lengkap alat utilitas interaktif, kalkulator teknik elektrikal, pengujian material, dan produk keuangan dari Williyanto Adi.">
-    <meta name="keywords" content="kalkulator hambatan, uji bending, volume drum silinder, alokasi gaji, mainan anak edukatif, portofolio web">
+    <meta name="description"
+        content="MyPro - Koleksi lengkap alat utilitas interaktif, kalkulator teknik elektrikal, pengujian material, dan produk keuangan dari Williyanto Adi.">
+    <meta name="keywords"
+        content="kalkulator hambatan, uji bending, volume drum silinder, alokasi gaji, mainan anak edukatif, portofolio web">
     <meta name="author" content="Williyanto Adi">
 
     <!-- Favicon & Fonts -->
     <link rel="icon" type="image/png" href="./icons/williyanto_logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -24,7 +28,7 @@
         /* --- Variabel Tema & Sistem Desain Premium --- */
         :root {
             --font-primary: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            
+
             /* Light Mode HSL Colors */
             --bg-body: radial-gradient(at top left, #f8fafc, #f1f5f9);
             --bg-card: #ffffff;
@@ -35,7 +39,7 @@
             --header-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
             --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
             --shadow-hover: 0 20px 40px -15px rgba(79, 70, 229, 0.12), 0 0 0 1px rgba(79, 70, 229, 0.05);
-            
+
             /* Category Colors (Light) */
             --cat-electrical-bg: rgba(245, 158, 11, 0.1);
             --cat-electrical-text: #b45309;
@@ -78,7 +82,7 @@
             font-family: var(--font-primary);
             background: var(--bg-body);
             color: var(--text-main);
-            padding-top: 150px; 
+            padding-top: 150px;
             transition: background 0.4s ease, color 0.4s ease;
             min-height: 100vh;
         }
@@ -97,7 +101,7 @@
             border-bottom: 1px solid var(--border-color);
             transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
         }
-        
+
         .header-section h1 {
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             -webkit-background-clip: text;
@@ -107,7 +111,7 @@
             margin-bottom: 0.25rem;
             letter-spacing: -0.5px;
         }
-        
+
         #live-clock-container {
             font-size: 0.85rem;
             font-weight: 600;
@@ -119,6 +123,7 @@
             border-radius: 50px;
             border: 1px solid var(--border-color);
         }
+
         body.dark-mode #live-clock-container {
             background: rgba(255, 255, 255, 0.03);
         }
@@ -158,7 +163,7 @@
             font-size: 0.95rem;
             transition: all 0.3s;
         }
-        
+
         .search-input:focus {
             background: var(--bg-card);
             color: var(--text-main);
@@ -174,10 +179,12 @@
             color: var(--text-main);
             transition: all 0.3s;
         }
+
         .layout-toggle-btn:hover {
             background: rgba(0, 0, 0, 0.03);
             border-color: var(--text-muted);
         }
+
         body.dark-mode .layout-toggle-btn:hover {
             background: rgba(255, 255, 255, 0.03);
         }
@@ -236,9 +243,9 @@
             position: relative;
             overflow: hidden;
             box-shadow: var(--shadow-card);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        box-shadow 0.3s ease, 
-                        border-color 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
             text-decoration: none;
             color: var(--text-main);
             animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -249,6 +256,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -310,6 +318,7 @@
             background: var(--cat-electrical-bg);
             color: var(--cat-electrical-text);
         }
+
         .list-group-item[data-category="electrical"] .category-badge {
             background: var(--cat-electrical-bg);
             color: var(--cat-electrical-text);
@@ -319,6 +328,7 @@
             background: var(--cat-testing-bg);
             color: var(--cat-testing-text);
         }
+
         .list-group-item[data-category="testing"] .category-badge {
             background: var(--cat-testing-bg);
             color: var(--cat-testing-text);
@@ -328,6 +338,7 @@
             background: var(--cat-math-bg);
             color: var(--cat-math-text);
         }
+
         .list-group-item[data-category="math"] .category-badge {
             background: var(--cat-math-bg);
             color: var(--cat-math-text);
@@ -337,6 +348,7 @@
             background: var(--cat-finance-bg);
             color: var(--cat-finance-text);
         }
+
         .list-group-item[data-category="finance"] .category-badge {
             background: var(--cat-finance-bg);
             color: var(--cat-finance-text);
@@ -346,6 +358,7 @@
             background: var(--cat-edu-bg);
             color: var(--cat-edu-text);
         }
+
         .list-group-item[data-category="edu"] .category-badge {
             background: var(--cat-edu-bg);
             color: var(--cat-edu-text);
@@ -404,6 +417,7 @@
             background: var(--bg-card);
             color: var(--text-main);
         }
+
         #theme-toggle:hover {
             transform: rotate(30deg);
         }
@@ -416,6 +430,7 @@
             transform: scale(0.8);
             pointer-events: none;
         }
+
         #back-to-top.show {
             opacity: 1;
             transform: scale(1);
@@ -432,6 +447,7 @@
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
             transition: all 0.3s;
         }
+
         #toggle-projects-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
@@ -441,7 +457,7 @@
             display: none;
             margin-top: 1.25rem;
         }
-        
+
         /* Adjust layout spacing inside collapsed list */
         #additional-projects.show-grid {
             display: grid;
@@ -449,6 +465,7 @@
             gap: 1.25rem;
             margin-top: 1.25rem;
         }
+
         @media (min-width: 768px) {
             #additional-projects.show-grid {
                 grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -456,12 +473,15 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Header (Glassmorphism) -->
     <div class="header-section text-center">
         <div class="container position-relative">
-            <h1><i class="bi bi-grid-fill me-2" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>Portal MyPro</h1>
+            <h1><i class="bi bi-grid-fill me-2"
+                    style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>Portal
+                MyPro</h1>
             <div id="live-clock-container">
                 <span id="live-clock">Memuat waktu...</span>
             </div>
@@ -470,17 +490,19 @@
 
     <!-- Main Container -->
     <div class="container mb-5">
-        
+
         <!-- Controls Container -->
         <div class="controls-container flex-column align-items-stretch">
             <div class="d-flex w-100 gap-3">
                 <div class="search-input-wrapper">
                     <i class="bi bi-search"></i>
-                    <input type="search" id="search-input" class="form-control search-input" placeholder="Cari proyek berdasarkan judul atau kategori...">
+                    <input type="search" id="search-input" class="form-control search-input"
+                        placeholder="Cari proyek berdasarkan judul atau kategori...">
                 </div>
-                <button class="layout-toggle-btn" id="layout-toggle" title="Ubah Tampilan"><i class="bi bi-grid-3x2-gap-fill"></i></button>
+                <button class="layout-toggle-btn" id="layout-toggle" title="Ubah Tampilan"><i
+                        class="bi bi-grid-3x2-gap-fill"></i></button>
             </div>
-            
+
             <!-- Category Filter Pills -->
             <div class="d-flex flex-wrap gap-2 mt-4 justify-content-center" id="category-filters">
                 <button class="category-chip active" data-category="all">Semua Proyek</button>
@@ -491,47 +513,54 @@
                 <button class="category-chip" data-category="edu">🎮 Edukasi & Media</button>
             </div>
         </div>
-        
+
         <!-- Projects Card Grid/List -->
         <div class="list-group" id="project-list">
             <!-- Proyek 1 -->
-            <a href="./1.kalkulator_hambatan_konduktor/index_kalkulator_hambatan.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./1.kalkulator_hambatan_konduktor/index_kalkulator_hambatan.html"
+                class="list-group-item list-group-item-action" data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-lightning-charge"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 1: Kalkulator Hambatan</strong>
-                    <small>Menghitung resistansi listrik berdasarkan bahan konduktor, panjang, dan luas penampang.</small>
+                    <small>Menghitung resistansi listrik berdasarkan bahan konduktor, panjang, dan luas
+                        penampang.</small>
                 </div>
             </a>
 
             <!-- Proyek 2 -->
-            <a href="./2.konverter_hambatan/index_konverter_hambatan_ir.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./2.konverter_hambatan/index_konverter_hambatan_ir.html"
+                class="list-group-item list-group-item-action" data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-arrow-left-right"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 2: Konverter Hambatan IR</strong>
-                    <small>Mengonversi nilai hambatan isolasi (Insulation Resistance) berdasarkan temperatur referensi.</small>
+                    <small>Mengonversi nilai hambatan isolasi (Insulation Resistance) berdasarkan temperatur
+                        referensi.</small>
                 </div>
             </a>
 
             <!-- Proyek 3 -->
-            <a href="./3.konverter_panjang/konverter_panjang.html" class="list-group-item list-group-item-action" data-category="math">
+            <a href="./3.konverter_panjang/konverter_panjang.html" class="list-group-item list-group-item-action"
+                data-category="math">
                 <span class="category-badge">Matematika</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-rulers"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 3: Konverter Panjang</strong>
-                    <small>Mengonversi berbagai satuan ukuran panjang seperti mm, cm, m, km, inch, feet, yard, dan mile.</small>
+                    <small>Mengonversi berbagai satuan ukuran panjang seperti mm, cm, m, km, inch, feet, yard, dan
+                        mile.</small>
                 </div>
             </a>
 
             <!-- Proyek 4 -->
-            <a href="./4.kalkulator_dimensi/kalkulator_dimensi.html" class="list-group-item list-group-item-action" data-category="math">
+            <a href="./4.kalkulator_dimensi/kalkulator_dimensi.html" class="list-group-item list-group-item-action"
+                data-category="math">
                 <span class="category-badge">Matematika</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-box-seam"></i>
@@ -543,19 +572,22 @@
             </a>
 
             <!-- Proyek 5 -->
-            <a href="./5.hitungpanjangkabel_didrum/hitungpanjangkabel_didrum.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./5.hitungpanjangkabel_didrum/hitungpanjangkabel_didrum.html"
+                class="list-group-item list-group-item-action" data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-disc"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 5: Hitung Panjang Kabel di Drum</strong>
-                    <small>Mengestimasi sisa panjang kabel yang tergulung pada drum berdasarkan ukuran drum dan diameter kabel.</small>
+                    <small>Mengestimasi sisa panjang kabel yang tergulung pada drum berdasarkan ukuran drum dan diameter
+                        kabel.</small>
                 </div>
             </a>
 
             <!-- Proyek 6 -->
-            <a href="./6.uji_tekuk_bending_fix/8.uji_tekuk_bending_fix.html" class="list-group-item list-group-item-action" data-category="testing">
+            <a href="./6.uji_tekuk_bending_fix/8.uji_tekuk_bending_fix.html"
+                class="list-group-item list-group-item-action" data-category="testing">
                 <span class="category-badge">Uji Material</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-diagram-2"></i>
@@ -567,55 +599,64 @@
             </a>
 
             <!-- Proyek 7 -->
-            <a href="./7.coldbending_test/coldbending_test.html" class="list-group-item list-group-item-action" data-category="testing">
+            <a href="./7.coldbending_test/coldbending_test.html" class="list-group-item list-group-item-action"
+                data-category="testing">
                 <span class="category-badge">Uji Material</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-snow2"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 7: Uji Cold Bending</strong>
-                    <small>Mengevaluasi hasil pengujian tekuk pada suhu dingin untuk mengukur elastisitas material.</small>
+                    <small>Mengevaluasi hasil pengujian tekuk pada suhu dingin untuk mengukur elastisitas
+                        material.</small>
                 </div>
             </a>
 
             <!-- Proyek 8 -->
-            <a href="./8.heatshock_test/heatshock_test.html" class="list-group-item list-group-item-action" data-category="testing">
+            <a href="./8.heatshock_test/heatshock_test.html" class="list-group-item list-group-item-action"
+                data-category="testing">
                 <span class="category-badge">Uji Material</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-thermometer-sun"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 8: Uji Heat Shock</strong>
-                    <small>Menghitung kelayakan material isolasi kabel setelah diuji pemanasan suhu tinggi secara tiba-tiba.</small>
+                    <small>Menghitung kelayakan material isolasi kabel setelah diuji pemanasan suhu tinggi secara
+                        tiba-tiba.</small>
                 </div>
             </a>
 
             <!-- Proyek 9 -->
-            <a href="./9.generator_angka/generator_angka.html" class="list-group-item list-group-item-action" data-category="math">
+            <a href="./9.generator_angka/generator_angka.html" class="list-group-item list-group-item-action"
+                data-category="math">
                 <span class="category-badge">Matematika</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-hash"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 9: Aplikasi Generator Angka</strong>
-                    <small>Menghasilkan deret angka acak secara acak dan otomatis untuk berbagai keperluan simulasi.</small>
+                    <small>Menghasilkan deret angka acak secara acak dan otomatis untuk berbagai keperluan
+                        simulasi.</small>
                 </div>
             </a>
 
             <!-- Proyek 10 -->
-            <a href="./10.kalkulator_resistor/kalkulator_resistor.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./10.kalkulator_resistor/kalkulator_resistor.html" class="list-group-item list-group-item-action"
+                data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-palette"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 10: Kalkulator Resistor</strong>
-                    <small>Membaca nilai resistansi resistor berdasarkan kode warna cincin (4 band, 5 band, atau 6 band).</small>
+                    <small>Membaca nilai resistansi resistor berdasarkan kode warna cincin (4 band, 5 band, atau 6
+                        band).</small>
                 </div>
             </a>
 
             <!-- Proyek 11 -->
-            <a href="./11.android_kw/android_kw.html" class="list-group-item list-group-item-action" data-category="edu">
+            <a href="./11.android_kw/android_kw.html" class="list-group-item list-group-item-action"
+                data-category="edu">
                 <span class="category-badge">Media</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-android2"></i>
@@ -627,7 +668,8 @@
             </a>
 
             <!-- Proyek 12 -->
-            <a href="./12.CR_trial/cr_trial.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./12.CR_trial/cr_trial.html" class="list-group-item list-group-item-action"
+                data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-wrench"></i>
@@ -639,7 +681,8 @@
             </a>
 
             <!-- Proyek 13 -->
-            <a href="./13.yusup/chots_fix_banget.html" class="list-group-item list-group-item-action" data-category="edu">
+            <a href="./13.yusup/chots_fix_banget.html" class="list-group-item list-group-item-action"
+                data-category="edu">
                 <span class="category-badge">Media</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-chat-left-quote"></i>
@@ -663,55 +706,64 @@
             </a>
 
             <!-- Proyek 15 -->
-            <a href="./14.web_streaming_video/web_streaming.html" class="list-group-item list-group-item-action" data-category="edu">
+            <a href="./14.web_streaming_video/web_streaming.html" class="list-group-item list-group-item-action"
+                data-category="edu">
                 <span class="category-badge">Media</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-play-circle"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 15: Streaming Video</strong>
-                    <small>Pemutar video streaming berbasis HTML5 dengan kontrol media yang bersih dan responsif.</small>
+                    <small>Pemutar video streaming berbasis HTML5 dengan kontrol media yang bersih dan
+                        responsif.</small>
                 </div>
             </a>
 
             <!-- Proyek 16 -->
-            <a href="./17.alokasi_gaji/kalkulator_alokasigaji.html" class="list-group-item list-group-item-action" data-category="finance">
+            <a href="./17.alokasi_gaji/kalkulator_alokasigaji.html" class="list-group-item list-group-item-action"
+                data-category="finance">
                 <span class="category-badge">Finansial</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-cash-coin"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 16: Kalkulator Alokasi Gaji</strong>
-                    <small>Membantu merencanakan keuangan bulanan dengan membagi gaji ke dalam pos kebutuhan dan tabungan.</small>
+                    <small>Membantu merencanakan keuangan bulanan dengan membagi gaji ke dalam pos kebutuhan dan
+                        tabungan.</small>
                 </div>
             </a>
 
             <!-- Proyek 17 -->
-            <a href="./19.hitung_waktu_rewind_kabel/hitung_waktu_rewind.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./19.hitung_waktu_rewind_kabel/hitung_waktu_rewind.html"
+                class="list-group-item list-group-item-action" data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-arrow-repeat"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 17: Aplikasi Penghitung Waktu Rewind</strong>
-                    <small>Menghitung perkiraan waktu yang dibutuhkan untuk proses penggulungan ulang (rewind) kabel.</small>
+                    <small>Menghitung perkiraan waktu yang dibutuhkan untuk proses penggulungan ulang (rewind)
+                        kabel.</small>
                 </div>
             </a>
 
             <!-- Proyek 18 -->
-            <a href="./22.faktor_koreksi_suhu/faktor_koreksi_suhu.html" class="list-group-item list-group-item-action" data-category="testing">
+            <a href="./22.faktor_koreksi_suhu/faktor_koreksi_suhu.html" class="list-group-item list-group-item-action"
+                data-category="testing">
                 <span class="category-badge">Uji Material</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-thermometer-half"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 18: Faktor Koreksi Suhu</strong>
-                    <small>Menghitung nilai faktor koreksi temperatur untuk menyesuaikan resistansi kabel pada suhu standar 20°C.</small>
+                    <small>Menghitung nilai faktor koreksi temperatur untuk menyesuaikan resistansi kabel pada suhu
+                        standar 20°C.</small>
                 </div>
             </a>
 
             <!-- Proyek 19 -->
-            <a href="./16.tailwind/hambatan_konduktor_iec.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./16.tailwind/hambatan_konduktor_iec.html" class="list-group-item list-group-item-action"
+                data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-lightning"></i>
@@ -723,19 +775,22 @@
             </a>
 
             <!-- Proyek 20 -->
-            <a href="./20.uji_tegangan/uji_tegangan.html" class="list-group-item list-group-item-action" data-category="testing">
+            <a href="./20.uji_tegangan/uji_tegangan.html" class="list-group-item list-group-item-action"
+                data-category="testing">
                 <span class="category-badge">Uji Material</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-lightning-charge-fill"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 20: Kalkulator Uji Tegangan</strong>
-                    <small>Mengevaluasi hasil pengujian tegangan listrik (voltage test) pada material isolasi konduktor.</small>
+                    <small>Mengevaluasi hasil pengujian tegangan listrik (voltage test) pada material isolasi
+                        konduktor.</small>
                 </div>
             </a>
 
             <!-- Proyek 21 -->
-            <a href="./21.kalkulator_daya_listrik/kalkulator_dayalistrik.html" class="list-group-item list-group-item-action" data-category="electrical">
+            <a href="./21.kalkulator_daya_listrik/kalkulator_dayalistrik.html"
+                class="list-group-item list-group-item-action" data-category="electrical">
                 <span class="category-badge">Elektrikal</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-plug"></i>
@@ -747,19 +802,22 @@
             </a>
 
             <!-- Proyek 22 -->
-            <a href="./23.Pengatur_Uang/pengatur_uang.html" class="list-group-item list-group-item-action" data-category="finance">
+            <a href="./23.Pengatur_Uang/pengatur_uang.html" class="list-group-item list-group-item-action"
+                data-category="finance">
                 <span class="category-badge">Finansial</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-wallet2"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 22: Pengatur Keuangan</strong>
-                    <small>Aplikasi sederhana untuk mencatat pendapatan, pengeluaran, dan rekapitulasi finansial bulanan.</small>
+                    <small>Aplikasi sederhana untuk mencatat pendapatan, pengeluaran, dan rekapitulasi finansial
+                        bulanan.</small>
                 </div>
             </a>
 
             <!-- Proyek 23 -->
-            <a href="./23.Pengatur_Uang/alokasi_gaji.html" class="list-group-item list-group-item-action" data-category="finance">
+            <a href="./23.Pengatur_Uang/alokasi_gaji.html" class="list-group-item list-group-item-action"
+                data-category="finance">
                 <span class="category-badge">Finansial</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-pie-chart"></i>
@@ -771,7 +829,8 @@
             </a>
 
             <!-- Proyek 24 -->
-            <a href="./24.manajemen_aset/manajemen_aset.html" class="list-group-item list-group-item-action" data-category="finance">
+            <a href="./24.manajemen_aset/manajemen_aset.html" class="list-group-item list-group-item-action"
+                data-category="finance">
                 <span class="category-badge">Finansial</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-journal-text"></i>
@@ -783,7 +842,8 @@
             </a>
 
             <!-- Proyek 25 -->
-            <a href="./25.cari_metadata_musik/cari_metadata_musik.html" class="list-group-item list-group-item-action" data-category="edu">
+            <a href="./25.cari_metadata_musik/cari_metadata_musik.html" class="list-group-item list-group-item-action"
+                data-category="edu">
                 <span class="category-badge">Media</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-music-note-beamed"></i>
@@ -795,7 +855,8 @@
             </a>
 
             <!-- Proyek 26 -->
-            <a href="./26.analisis_kripto/analisis_kripto_v1.html" class="list-group-item list-group-item-action" data-category="edu">
+            <a href="./26.analisis_kripto/analisis_kripto_v1.html" class="list-group-item list-group-item-action"
+                data-category="edu">
                 <span class="category-badge">Media</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-currency-bitcoin"></i>
@@ -807,43 +868,50 @@
             </a>
 
             <!-- Proyek 27 -->
-            <a href="./27.volume_drum/volume_drum.html" class="list-group-item list-group-item-action" data-category="math">
+            <a href="./27.volume_drum/volume_drum.html" class="list-group-item list-group-item-action"
+                data-category="math">
                 <span class="category-badge">Matematika</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-moisture"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 27: Hitung Volume Drum</strong>
-                    <small>Menghitung kapasitas dan volume cairan dalam wadah drum silinder berdasarkan tinggi permukaan cairan.</small>
+                    <small>Menghitung kapasitas dan volume cairan dalam wadah drum silinder berdasarkan tinggi permukaan
+                        cairan.</small>
                 </div>
             </a>
 
             <!-- Proyek 28 -->
-            <a href="./28.kalkulator_waktu/kalkulator_waktu.html" class="list-group-item list-group-item-action" data-category="math">
+            <a href="./28.kalkulator_waktu/kalkulator_waktu.html" class="list-group-item list-group-item-action"
+                data-category="math">
                 <span class="category-badge">Matematika</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-clock"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 28: Kalkulator Waktu</strong>
-                    <small>Menghitung jumlah jam, menit, detik serta selisih interval waktu antar dua tanggal berbeda.</small>
+                    <small>Menghitung jumlah jam, menit, detik serta selisih interval waktu antar dua tanggal
+                        berbeda.</small>
                 </div>
             </a>
 
             <!-- Proyek 29 -->
-            <a href="./29.flame_retardant/flame.html" class="list-group-item list-group-item-action" data-category="testing">
+            <a href="./29.flame_retardant/flame.html" class="list-group-item list-group-item-action"
+                data-category="testing">
                 <span class="category-badge">Uji Material</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-fire"></i>
                 </div>
                 <div class="project-details">
                     <strong>Proyek 29: Uji Bakar</strong>
-                    <small>Menghitung parameter laju pembakaran dan ketahanan rambatan api pada pengujian material.</small>
+                    <small>Menghitung parameter laju pembakaran dan ketahanan rambatan api pada pengujian
+                        material.</small>
                 </div>
             </a>
 
             <!-- Proyek 30 -->
-            <a href="./30.hitung_jamlembur/hitung_lembur_08062026.html" class="list-group-item list-group-item-action" data-category="finance">
+            <a href="./30.hitung_jamlembur/hitung_lembur_08062026.html" class="list-group-item list-group-item-action"
+                data-category="finance">
                 <span class="category-badge">Finansial</span>
                 <div class="icon-wrapper">
                     <i class="bi bi-calendar3"></i>
@@ -857,26 +925,30 @@
             <!-- Additional Projects Container -->
             <div id="additional-projects">
                 <!-- Proyek 31 -->
-                <a href="./31.mainan_edukasi/mainan_edukasi_anak_v20260214.html" class="list-group-item list-group-item-action" data-category="edu">
+                <a href="./31.mainan_edukasi/mainan_edukasi_anak_v20260214.html"
+                    class="list-group-item list-group-item-action" data-category="edu">
                     <span class="category-badge">Media</span>
                     <div class="icon-wrapper">
                         <i class="bi bi-controller"></i>
                     </div>
                     <div class="project-details">
                         <strong>Proyek 31: Mainan Edukasi Anak Pintar</strong>
-                        <small>Permainan interaktif edukatif anak untuk belajar mengenal angka dan huruf secara menyenangkan.</small>
+                        <small>Permainan interaktif edukatif anak untuk belajar mengenal angka dan huruf secara
+                            menyenangkan.</small>
                     </div>
                 </a>
 
                 <!-- Proyek 32 -->
-                <a href="./31.mainan_edukasi/mainan_update.html" class="list-group-item list-group-item-action" data-category="edu">
+                <a href="./31.mainan_edukasi/mainan_update.html" class="list-group-item list-group-item-action"
+                    data-category="edu">
                     <span class="category-badge">Media</span>
                     <div class="icon-wrapper">
                         <i class="bi bi-controller"></i>
                     </div>
                     <div class="project-details">
                         <strong>Proyek 32: Mainan Edukasi Anak (Versi Update)</strong>
-                        <small>Pengembangan game edukatif dengan tantangan matematika dasar dan visual animasi yang menarik.</small>
+                        <small>Pengembangan game edukatif dengan tantangan matematika dasar dan visual animasi yang
+                            menarik.</small>
                     </div>
                 </a>
 
@@ -888,7 +960,8 @@
                     </div>
                     <div class="project-details">
                         <strong>Proyek 33: Alat Kompresi File Online (Coming Soon)</strong>
-                        <small>Mengurangi ukuran file gambar, PDF, atau dokumen lainnya secara langsung di peramban.</small>
+                        <small>Mengurangi ukuran file gambar, PDF, atau dokumen lainnya secara langsung di
+                            peramban.</small>
                     </div>
                 </a>
 
@@ -960,7 +1033,8 @@
                     </div>
                     <div class="project-details">
                         <strong>Proyek 39: Alat Pembuat Diagram Alur (Coming Soon)</strong>
-                        <small>Membuat rancangan alur kerja sederhana (flowchart) dengan drag & drop di peramban.</small>
+                        <small>Membuat rancangan alur kerja sederhana (flowchart) dengan drag & drop di
+                            peramban.</small>
                     </div>
                 </a>
 
@@ -977,7 +1051,7 @@
                 </a>
             </div>
         </div>
-        
+
         <!-- Toggle Expand Button -->
         <div class="text-center mt-5">
             <button id="toggle-projects-btn" class="btn btn-primary btn-lg">Tampilkan Lebih Banyak</button>
@@ -989,11 +1063,12 @@
         </footer>
 
     </div>
-    
+
     <!-- Floating FAB Buttons -->
     <div class="bottom-right-controls">
         <button class="fab-btn shadow-lg" id="theme-toggle" title="Ubah Tema">🌓</button>
-        <button id="back-to-top" class="fab-btn shadow-lg" title="Kembali ke Atas"><i class="bi bi-arrow-up"></i></button>
+        <button id="back-to-top" class="fab-btn shadow-lg" title="Kembali ke Atas"><i
+                class="bi bi-arrow-up"></i></button>
     </div>
 
     <!-- Scripts -->
@@ -1045,14 +1120,14 @@
             function filterProjects() {
                 const searchTerm = searchInput.value.toLowerCase().trim();
                 const items = document.querySelectorAll('.list-group-item');
-                
+
                 items.forEach((item, index) => {
                     const itemText = item.textContent.toLowerCase();
                     const itemCategory = item.getAttribute('data-category');
-                    
+
                     const matchesSearch = itemText.includes(searchTerm);
                     const matchesCategory = (activeCategory === 'all' || itemCategory === activeCategory);
-                    
+
                     if (matchesSearch && matchesCategory) {
                         item.style.display = '';
                         // Reset entry animation delay to look smooth
@@ -1078,7 +1153,7 @@
 
             // --- LAYOUT SWITCHER (LIST/GRID) ---
             const layoutIcon = layoutToggle.querySelector('i');
-            
+
             // Restore saved layout if any
             const savedLayout = localStorage.getItem('layout') || 'list';
             if (savedLayout === 'grid') {
@@ -1091,7 +1166,7 @@
                 const isGridView = projectList.classList.contains('grid-view');
                 layoutIcon.className = isGridView ? 'bi bi-list-ul' : 'bi bi-grid-3x2-gap-fill';
                 localStorage.setItem('layout', isGridView ? 'grid' : 'list');
-                
+
                 // Adjust additional-projects subgrid layout if shown
                 if (additionalProjects.style.display === 'block') {
                     if (isGridView) {
@@ -1110,16 +1185,16 @@
                     }
                 });
             }, { threshold: 0.05 });
-            
+
             document.querySelectorAll('.list-group-item').forEach(item => observer.observe(item));
-            
+
             // --- BACK TO TOP BUTTON ---
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 const show = document.body.scrollTop > 300 || document.documentElement.scrollTop > 300;
                 backToTopButton.classList.toggle('show', show);
             });
-            
-            backToTopButton.addEventListener('click', function(e) {
+
+            backToTopButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
@@ -1128,7 +1203,7 @@
             toggleBtn.addEventListener('click', function () {
                 const isHidden = additionalProjects.style.display === 'none' || additionalProjects.style.display === '';
                 const isGridView = projectList.classList.contains('grid-view');
-                
+
                 if (isHidden) {
                     additionalProjects.style.display = 'block';
                     if (isGridView) {
@@ -1148,4 +1223,5 @@
         });
     </script>
 </body>
+
 </html>
