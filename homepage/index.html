@@ -1,0 +1,2837 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Williyanto Adi · Portfolio & Project Dashboard</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Dashboard portofolio interaktif Williyanto Adi. Menampilkan 50+ proyek kalkulator elektrikal, uji material, finansial, dan aplikasi edukasi anak.">
+    <meta name="keywords"
+        content="portofolio, Williyanto Adi, web developer, electrical engineer, kalkulator elektrikal, uji bending, mainan anak edukasi">
+    <meta name="author" content="Williyanto Adi">
+
+    <!-- Fonts & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- MODERN PREMIUM DESIGN SYSTEM --- */
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-title: 'Outfit', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+
+            /* Light Theme Tokens (Porcelain Clean) */
+            --bg-body: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-navbar: rgba(248, 250, 252, 0.8);
+            --border-color: rgba(226, 232, 240, 0.8);
+            --border-color-glow: rgba(99, 102, 241, 0.15);
+
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-accent: #4f46e5;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 40px -15px rgba(79, 70, 229, 0.08);
+
+            /* Category Colors (Vibrant Light) */
+            --col-electrical: #d97706;
+            --col-testing: #0d9488;
+            --col-math: #2563eb;
+            --col-finance: #059669;
+            --col-edu: #db2777;
+
+            --bg-electrical: rgba(217, 119, 6, 0.08);
+            --bg-testing: rgba(13, 148, 136, 0.08);
+            --bg-math: rgba(37, 99, 235, 0.08);
+            --bg-finance: rgba(5, 150, 105, 0.08);
+            --bg-edu: rgba(219, 39, 119, 0.08);
+
+            /* Activity Cells Light */
+            --cell-l0: #e2e8f0;
+            --cell-l1: #a7f3d0;
+            --cell-l2: #34d399;
+            --cell-l3: #059669;
+            --cell-l4: #064e3b;
+        }
+
+        body.dark-mode {
+            /* Dark Theme Tokens (Deep Space Dark) */
+            --bg-body: #030712;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-navbar: rgba(3, 7, 18, 0.85);
+            --border-color: rgba(31, 41, 55, 0.6);
+            --border-color-glow: rgba(99, 102, 241, 0.25);
+
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary-accent: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 40px -15px rgba(99, 102, 241, 0.2);
+
+            /* Category Colors (Neon Dark) */
+            --col-electrical: #fbbf24;
+            --col-testing: #2dd4bf;
+            --col-math: #60a5fa;
+            --col-finance: #34d399;
+            --col-edu: #f472b6;
+
+            --bg-electrical: rgba(251, 191, 36, 0.12);
+            --bg-testing: rgba(45, 212, 191, 0.12);
+            --bg-math: rgba(96, 165, 250, 0.12);
+            --bg-finance: rgba(52, 211, 153, 0.12);
+            --bg-edu: rgba(244, 114, 182, 0.12);
+
+            /* Activity Cells Dark */
+            --cell-l0: #1f2937;
+            --cell-l1: #064e3b;
+            --cell-l2: #059669;
+            --cell-l3: #10b981;
+            --cell-l4: #34d399;
+        }
+
+        /* --- BASIC RESET & DEFAULTS --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 15px;
+            line-height: 1.6;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--primary-accent);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* --- GLASS DESIGN PATTERNS --- */
+        .glass-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            border-radius: 20px;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+
+        /* --- DYNAMIC FLOATING HEADER (NAVBAR) --- */
+        .navbar-floating-container {
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+            margin: 20px auto 30px;
+            width: 100%;
+        }
+
+        .navbar-floating {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 28px;
+            border-radius: 50px;
+        }
+
+        .brand-logo {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-link-item {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 14px;
+            position: relative;
+            padding: 4px 0;
+            transition: color 0.25s;
+        }
+
+        .nav-link-item:hover,
+        .nav-link-item.active {
+            color: var(--text-main);
+        }
+
+        .nav-link-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.25s, left 0.25s;
+        }
+
+        .nav-link-item.active::after,
+        .nav-link-item:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Quick Search Bar */
+        .nav-search {
+            position: relative;
+            max-width: 200px;
+        }
+
+        .nav-search input {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            color: var(--text-main);
+            padding: 6px 14px 6px 32px;
+            font-size: 13px;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .nav-search input {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-search input:focus {
+            width: 230px;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px var(--primary-accent-glow);
+        }
+
+        .nav-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Theme Toggle Button */
+        .toggle-theme-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 18px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .toggle-theme-btn {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .toggle-theme-btn:hover {
+            transform: rotate(30deg) scale(1.05);
+            background: var(--border-color);
+        }
+
+        /* Mobile Hamburger Icon Menu */
+        .mobile-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 22px;
+        }
+
+        @media (max-width: 992px) {
+
+            .nav-menu-links,
+            .nav-search {
+                display: none;
+            }
+
+            .mobile-hamburger {
+                display: block;
+            }
+        }
+
+        /* --- HERO INTRO SECTION --- */
+        .hero-section {
+            padding: 30px 0 40px;
+        }
+
+        .hero-card {
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glowing background decorative circle */
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        @media (max-width: 992px) {
+            .hero-flex {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .hero-profile-area {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-profile-area {
+                flex-direction: column;
+            }
+        }
+
+        .hero-avatar-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .hero-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--bg-body);
+            box-shadow: var(--shadow-md);
+            object-fit: cover;
+        }
+
+        .hero-badge-status {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background-color: var(--primary-accent);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border: 2px solid var(--bg-card);
+        }
+
+        .hero-info h1 {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary-accent);
+            margin-bottom: 12px;
+        }
+
+        .hero-bio {
+            color: var(--text-muted);
+            font-size: 14px;
+            max-width: 580px;
+        }
+
+        .hero-cta-btn {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .hero-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            color: #ffffff;
+        }
+
+        /* --- STATS COUNTERS PANEL --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-box {
+            padding: 16px 20px;
+            text-align: center;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-color-glow);
+        }
+
+        .stat-num {
+            font-family: var(--font-title);
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .stat-box[data-cat="electrical"] .stat-num {
+            color: var(--col-electrical);
+        }
+
+        .stat-box[data-cat="electrical"] {
+            background: var(--bg-electrical);
+        }
+
+        .stat-box[data-cat="testing"] .stat-num {
+            color: var(--col-testing);
+        }
+
+        .stat-box[data-cat="testing"] {
+            background: var(--bg-testing);
+        }
+
+        .stat-box[data-cat="math"] .stat-num {
+            color: var(--col-math);
+        }
+
+        .stat-box[data-cat="math"] {
+            background: var(--bg-math);
+        }
+
+        .stat-box[data-cat="finance"] .stat-num {
+            color: var(--col-finance);
+        }
+
+        .stat-box[data-cat="finance"] {
+            background: var(--bg-finance);
+        }
+
+        .stat-box[data-cat="edu"] .stat-num {
+            color: var(--col-edu);
+        }
+
+        .stat-box[data-cat="edu"] {
+            background: var(--bg-edu);
+        }
+
+        .stat-box[data-cat="all"] .stat-num {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- DASHBOARD PORTLET CONTENT PANELS --- */
+        .dashboard-body {
+            padding-bottom: 60px;
+        }
+
+        .tab-content-panel {
+            min-height: 400px;
+        }
+
+        .panel-pane {
+            display: none;
+        }
+
+        .panel-pane.active {
+            display: block;
+        }
+
+        /* --- TAB PANE SWITCH --- */
+        .dashboard-tabs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        body.dark-mode .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-gradient);
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+        /* --- PROJECTS HUB (TAB 1) --- */
+
+        /* Advanced Filter and Control Area */
+        .hub-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 20px 24px;
+            border-radius: 16px;
+        }
+
+        .hub-search-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .hub-search-row {
+                flex-direction: column;
+            }
+        }
+
+        .hub-search-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .hub-search-wrapper input {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            padding: 10px 16px 10px 42px;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .hub-search-wrapper input {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .hub-search-wrapper input:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px var(--primary-accent-glow);
+        }
+
+        .hub-search-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .select-filter-custom {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            min-width: 160px;
+        }
+
+        .select-filter-custom:hover {
+            border-color: var(--text-muted);
+        }
+
+        /* Pill Filters */
+        .pill-filters-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-pill {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+
+        .filter-pill:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
+        .filter-pill.active {
+            color: white !important;
+            border-color: transparent !important;
+        }
+
+        /* Custom active colors for pills */
+        .filter-pill[data-cat="all"].active {
+            background: var(--primary-gradient);
+        }
+
+        .filter-pill[data-cat="electrical"].active {
+            background: var(--col-electrical);
+        }
+
+        .filter-pill[data-cat="testing"].active {
+            background: var(--col-testing);
+        }
+
+        .filter-pill[data-cat="math"].active {
+            background: var(--col-math);
+        }
+
+        .filter-pill[data-cat="finance"].active {
+            background: var(--col-finance);
+        }
+
+        .filter-pill[data-cat="edu"].active {
+            background: var(--col-edu);
+        }
+
+        /* Projects Grid Cards */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 576px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Premium Modern Card Design */
+        .project-card {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-color-glow);
+        }
+
+        /* Category left highlight border */
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .project-card[data-category="electrical"]::before {
+            background: var(--col-electrical);
+        }
+
+        .project-card[data-category="testing"]::before {
+            background: var(--col-testing);
+        }
+
+        .project-card[data-category="math"]::before {
+            background: var(--col-math);
+        }
+
+        .project-card[data-category="finance"]::before {
+            background: var(--col-finance);
+        }
+
+        .project-card[data-category="edu"]::before {
+            background: var(--col-edu);
+        }
+
+        /* Card Category Specific Glow Effects on Hover */
+        .project-card[data-category="electrical"]:hover {
+            box-shadow: 0 12px 30px -10px rgba(251, 191, 36, 0.15);
+        }
+
+        .project-card[data-category="testing"]:hover {
+            box-shadow: 0 12px 30px -10px rgba(45, 212, 191, 0.15);
+        }
+
+        .project-card[data-category="math"]:hover {
+            box-shadow: 0 12px 30px -10px rgba(96, 165, 250, 0.15);
+        }
+
+        .project-card[data-category="finance"]:hover {
+            box-shadow: 0 12px 30px -10px rgba(52, 211, 153, 0.15);
+        }
+
+        .project-card[data-category="edu"]:hover {
+            box-shadow: 0 12px 30px -10px rgba(244, 114, 182, 0.15);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .project-card[data-category="electrical"] .card-badge {
+            background: var(--bg-electrical);
+            color: var(--col-electrical);
+        }
+
+        .project-card[data-category="testing"] .card-badge {
+            background: var(--bg-testing);
+            color: var(--col-testing);
+        }
+
+        .project-card[data-category="math"] .card-badge {
+            background: var(--bg-math);
+            color: var(--col-math);
+        }
+
+        .project-card[data-category="finance"] .card-badge {
+            background: var(--bg-finance);
+            color: var(--col-finance);
+        }
+
+        .project-card[data-category="edu"] .card-badge {
+            background: var(--bg-edu);
+            color: var(--col-edu);
+        }
+
+        .card-star-action {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .card-star-action:hover {
+            transform: scale(1.15);
+        }
+
+        .card-star-action.starred {
+            color: #fbbf24;
+        }
+
+        .card-title {
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .card-title a {
+            color: var(--text-main);
+        }
+
+        .card-title a:hover {
+            color: var(--primary-accent);
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            flex-grow: 1;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+
+        .card-tag-pill {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .card-tag-pill {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .card-tag-pill:hover {
+            border-color: var(--text-muted);
+            color: var(--text-main);
+        }
+
+        .card-footer-details {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+
+        .card-lang-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lang-circle {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .card-action-link {
+            font-weight: 700;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Empty state style */
+        .hub-empty-state {
+            grid-column: 1 / -1;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hub-empty-state i {
+            font-size: 40px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Filters Status Bar */
+        .filters-status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: -8px;
+            margin-bottom: 16px;
+        }
+
+        .clear-filters-link {
+            font-weight: 600;
+            color: var(--primary-accent);
+            cursor: pointer;
+        }
+
+        .clear-filters-link:hover {
+            text-decoration: underline;
+        }
+
+        /* --- ACTIVITY & ANALYTICS WIDGETS (TAB 2) --- */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        /* Glowing Activity Matrix */
+        .activity-card {
+            padding: 24px;
+        }
+
+        .activity-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .activity-title {
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Scrollable container for activity grid on mobile */
+        .activity-matrix-scroll {
+            overflow-x: auto;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .activity-matrix-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 12px);
+            grid-auto-flow: column;
+            grid-auto-columns: 12px;
+            gap: 4px;
+            width: max-content;
+        }
+
+        .activity-row-labels {
+            grid-row: 1 / span 7;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding-right: 8px;
+            font-size: 9px;
+            color: var(--text-muted);
+            text-align: right;
+            line-height: 12px;
+            font-weight: 600;
+        }
+
+        .matrix-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .matrix-cell:hover {
+            transform: scale(1.25);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+            z-index: 2;
+        }
+
+        .matrix-cell.l0 {
+            background-color: var(--cell-l0);
+        }
+
+        .matrix-cell.l1 {
+            background-color: var(--cell-l1);
+        }
+
+        .matrix-cell.l2 {
+            background-color: var(--cell-l2);
+        }
+
+        .matrix-cell.l3 {
+            background-color: var(--cell-l3);
+        }
+
+        .matrix-cell.l4 {
+            background-color: var(--cell-l4);
+        }
+
+        .matrix-legend {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 14px;
+            font-weight: 500;
+        }
+
+        .matrix-legend-cells {
+            display: flex;
+            gap: 3px;
+        }
+
+        .matrix-legend-cells .matrix-cell {
+            cursor: default;
+        }
+
+        /* Tooltip style */
+        .matrix-tooltip {
+            position: absolute;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 1010;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            transform: translate(-50%, -100%);
+            margin-top: -8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Log / Accomplishments list */
+        .accomplishments-section {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+
+        .accomplishments-title {
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .modern-timeline {
+            position: relative;
+            padding-left: 28px;
+            list-style: none;
+        }
+
+        .modern-timeline::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 4px;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-node {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .node-bullet {
+            position: absolute;
+            left: -28px;
+            top: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--primary-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--primary-accent);
+        }
+
+        .node-content {
+            background: rgba(0, 0, 0, 0.015);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        body.dark-mode .node-content {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .node-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .node-time {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .node-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* --- ABOUT DEVELOPER (TAB 3) --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .about-card {
+            padding: 30px;
+        }
+
+        .about-card-title {
+            font-family: var(--font-title);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .about-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Skills badges grid */
+        .skills-badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* --- DYNAMIC STARRING TAB (TAB 4) --- */
+        /* Will load starred repos list */
+
+        /* --- MODERN MINIMAL FOOTER --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            margin-top: 40px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-logo {
+            font-family: var(--font-title);
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-nav a {
+            color: var(--text-muted);
+        }
+
+        .footer-nav a:hover {
+            color: var(--primary-accent);
+        }
+
+        @media (max-width: 576px) {
+            .footer-flex {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-nav {
+                justify-content: center;
+            }
+        }
+
+        /* --- LIST VIEW OVERRIDES --- */
+        #projects-grid-container.list-view,
+        #starred-grid-container.list-view {
+            grid-template-columns: 1fr !important;
+        }
+
+        @media (min-width: 768px) {
+            #projects-grid-container.list-view .project-card,
+            #starred-grid-container.list-view .project-card {
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 24px !important;
+                padding: 20px 24px !important;
+            }
+
+            #projects-grid-container.list-view .project-card>div:first-child,
+            #starred-grid-container.list-view .project-card>div:first-child {
+                flex-grow: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+
+            #projects-grid-container.list-view .project-card .card-top,
+            #starred-grid-container.list-view .project-card .card-top {
+                margin-bottom: 0 !important;
+                order: 2 !important;
+            }
+
+            #projects-grid-container.list-view .project-card .card-title,
+            #starred-grid-container.list-view .project-card .card-title {
+                margin-bottom: 4px !important;
+                order: 1 !important;
+            }
+
+            #projects-grid-container.list-view .project-card .card-desc,
+            #starred-grid-container.list-view .project-card .card-desc {
+                margin-bottom: 8px !important;
+                order: 3 !important;
+            }
+
+            #projects-grid-container.list-view .project-card .card-tags,
+            #starred-grid-container.list-view .project-card .card-tags {
+                margin-bottom: 0 !important;
+                order: 4 !important;
+            }
+
+            #projects-grid-container.list-view .project-card .card-footer-details,
+            #starred-grid-container.list-view .project-card .card-footer-details {
+                border-top: none !important;
+                padding-top: 0 !important;
+                flex-direction: column !important;
+                align-items: flex-end !important;
+                gap: 12px !important;
+                border-left: 1px solid var(--border-color) !important;
+                padding-left: 24px !important;
+                min-width: 180px !important;
+                flex-shrink: 0 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MATRIX TOOLTIP CONTAINER -->
+    <div id="matrix-tooltip" class="matrix-tooltip"></div>
+
+    <!-- MAIN WRAPPER CONTAINER -->
+    <div class="container">
+
+        <!-- FLOATING NAVIGATION HEADER -->
+        <div class="navbar-floating-container">
+            <header class="glass-panel navbar-floating">
+                <a href="#" class="brand-logo">
+                    <i class="bi bi-cpu-fill"></i> WILL.DEV
+                </a>
+
+                <nav class="nav-menu-links">
+                    <a href="#projects" class="nav-link-item active" data-nav="projects">Projects</a>
+                    <a href="#analytics" class="nav-link-item" data-nav="analytics">Activity</a>
+                    <a href="#about" class="nav-link-item" data-nav="about">About</a>
+                    <a href="#starred" class="nav-link-item" data-nav="starred">
+                        Starred <span id="stars-nav-badge"
+                            style="font-size:11px; padding:1px 6px; border-radius:10px; background:var(--border-color); margin-left:4px;">0</span>
+                    </a>
+                </nav>
+
+                <div class="nav-actions">
+                    <!-- Quick search -->
+                    <div class="nav-search">
+                        <input type="text" id="nav-search-bar" placeholder="Cari proyek...">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <!-- Theme toggle -->
+                    <button class="toggle-theme-btn" id="theme-toggler" aria-label="Toggle Theme">
+                        <i class="bi bi-moon-stars"></i>
+                    </button>
+
+                    <!-- Mobile trigger -->
+                    <button class="mobile-hamburger" id="hamburger-menu" aria-label="Menu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+            </header>
+        </div>
+
+        <!-- HERO INTRO PANEL -->
+        <section class="hero-section">
+            <div class="glass-panel hero-card">
+                <div class="hero-flex">
+                    <div class="hero-profile-area">
+                        <div class="hero-avatar-wrapper">
+                            <img src="./developer_avatar.png" alt="Williyanto Adi" class="hero-avatar">
+                            <span class="hero-badge-status" title="Active on Projects"><i
+                                    class="bi bi-check-lg"></i></span>
+                        </div>
+                        <div class="hero-info">
+                            <h1>Williyanto Adi</h1>
+                            <div class="hero-subtitle">Quality Control Department & Frontend Developer</div>
+                            <div class="hero-bio">
+                                Merancang modul kalkulator teknik elektrikal, pengujian kabel fisik, rekapitulasi
+                                keuangan mandiri, dan mainan interaktif anak yang dirancang khusus untuk mempermudah
+                                pekerjaan QC dan media edukatif.
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="#analytics" onclick="switchPane('analytics'); return false;" class="hero-cta-btn">
+                            Lihat Aktivitas Coding <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- STATS COUNTER BLOCKS -->
+                <div class="stats-grid">
+                    <div class="stat-box" data-cat="all">
+                        <div class="stat-num" id="stat-total">50</div>
+                        <div class="stat-label">Total Proyek</div>
+                    </div>
+                    <div class="stat-box" data-cat="electrical">
+                        <div class="stat-num">12</div>
+                        <div class="stat-label">Elektrikal</div>
+                    </div>
+                    <div class="stat-box" data-cat="testing">
+                        <div class="stat-num">8</div>
+                        <div class="stat-label">Uji Material</div>
+                    </div>
+                    <div class="stat-box" data-cat="math">
+                        <div class="stat-num">10</div>
+                        <div class="stat-label">Matematika</div>
+                    </div>
+                    <div class="stat-box" data-cat="finance">
+                        <div class="stat-num">11</div>
+                        <div class="stat-label">Keuangan</div>
+                    </div>
+                    <div class="stat-box" data-cat="edu">
+                        <div class="stat-num">9</div>
+                        <div class="stat-label">Edukasi</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD BODY & PANES -->
+        <section class="dashboard-body">
+
+            <!-- MOBILE NAV TABS (SYNCED WITH HEADER) -->
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" data-pane="projects">Projects Hub</button>
+                <button class="tab-btn" data-pane="analytics">Activity Tracker</button>
+                <button class="tab-btn" data-pane="about">About Me</button>
+                <button class="tab-btn" data-pane="starred">Bookmarks</button>
+            </div>
+
+            <!-- CORE PANE PANELS CONTAINER -->
+            <div class="tab-content-panel">
+
+                <!-- PANE 1: PROJECTS HUB -->
+                <div class="panel-pane active" id="pane-projects">
+
+                    <!-- Advanced Filters Box -->
+                    <div class="glass-panel hub-controls">
+                        <div class="hub-search-row">
+                            <div class="hub-search-wrapper">
+                                <i class="bi bi-search"></i>
+                                <input type="text" id="projects-search-input"
+                                    placeholder="Cari proyek berdasarkan judul, deskripsi, atau tags...">
+                            </div>
+
+                            <select class="select-filter-custom" id="projects-select-language">
+                                <option value="all">Language: All</option>
+                                <option value="JavaScript">JavaScript</option>
+                                <option value="HTML">HTML</option>
+                                <option value="CSS">CSS</option>
+                            </select>
+
+                            <select class="select-filter-custom" id="projects-select-sort">
+                                <option value="stars">Urutkan: Popularitas</option>
+                                <option value="name">Urutkan: Nama A-Z</option>
+                                <option value="updated">Urutkan: Baru Diupdate</option>
+                            </select>
+
+                            <!-- Layout Switcher Button -->
+                            <button class="select-filter-custom" id="btn-layout-toggle"
+                                style="min-width: 48px; padding: 10px; display: flex; align-items: center; justify-content: center;"
+                                title="Ubah Tampilan (Grid/List)">
+                                <i class="bi bi-list-task" id="layout-toggle-icon" style="font-size: 18px;"></i>
+                            </button>
+                        </div>
+
+                        <!-- Pill filters for categories -->
+                        <div class="pill-filters-wrapper">
+                            <button class="filter-pill active" data-cat="all">Semua Kategori</button>
+                            <button class="filter-pill" data-cat="electrical">⚡ Elektrikal & Kabel</button>
+                            <button class="filter-pill" data-cat="testing">🧪 Uji Material</button>
+                            <button class="filter-pill" data-cat="math">🔢 Matematika</button>
+                            <button class="filter-pill" data-cat="finance">💼 Finansial</button>
+                            <button class="filter-pill" data-cat="edu">🎮 Edukasi & Media</button>
+                        </div>
+                    </div>
+
+                    <!-- Active filter status strip -->
+                    <div class="filters-status-bar" id="filters-status-bar" style="display:none;">
+                        <div>
+                            Ditemukan <span id="filtered-projects-count" style="font-weight:700;">0</span> proyek yang
+                            cocok.
+                        </div>
+                        <div class="clear-filters-link" id="btn-clear-filters">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset Filter
+                        </div>
+                    </div>
+
+                    <!-- Projects Grid Layout -->
+                    <div class="projects-grid" id="projects-grid-container">
+                        <!-- Dynamic items will load here -->
+                    </div>
+
+                    <!-- Button Load More -->
+                    <div style="text-align: center; margin-top: 35px;" id="load-more-container">
+                        <button id="btn-load-more" class="hero-cta-btn" style="margin: 0 auto; display: inline-flex;">
+                            Lihat Proyek Lainnya <i class="bi bi-chevron-down" style="margin-left: 6px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PANE 2: ACTIVITY TRACKER -->
+                <div class="panel-pane" id="pane-analytics">
+                    <div class="analytics-grid">
+
+                        <!-- Glowing Activity Matrix Widget -->
+                        <div class="glass-panel activity-card">
+                            <div class="activity-card-header">
+                                <div class="activity-title">
+                                    <i class="bi bi-calendar-week" style="color:var(--primary-accent)"></i> Coding
+                                    Activity Grid
+                                </div>
+                                <div style="font-size: 13px; color: var(--text-muted);" id="matrix-range">
+                                    Jul 2025 - Jul 2026
+                                </div>
+                            </div>
+
+                            <div class="activity-matrix-scroll">
+                                <div class="activity-matrix-grid" id="matrix-grid-element">
+                                    <div class="activity-row-labels">
+                                        <span>Mon</span>
+                                        <span>Wed</span>
+                                        <span>Fri</span>
+                                    </div>
+                                    <!-- Dynamic Matrix Cells -->
+                                </div>
+                            </div>
+
+                            <div class="matrix-legend">
+                                <span>Less Activity</span>
+                                <div class="matrix-legend-cells">
+                                    <div class="matrix-cell l0"></div>
+                                    <div class="matrix-cell l1"></div>
+                                    <div class="matrix-cell l2"></div>
+                                    <div class="matrix-cell l3"></div>
+                                    <div class="matrix-cell l4"></div>
+                                </div>
+                                <span>More Activity</span>
+                            </div>
+
+                            <!-- Development Accomplishments Log Timeline -->
+                            <div class="accomplishments-section">
+                                <div class="accomplishments-title">Development Accomplishments Log</div>
+                                <ul class="modern-timeline">
+                                    <li class="timeline-node">
+                                        <div class="node-bullet"><i class="bi bi-lightning-fill"></i></div>
+                                        <div class="node-content">
+                                            <div class="node-header">
+                                                <span>Portofolio Dashboard Refactor</span>
+                                                <span class="node-time">Hari Ini</span>
+                                            </div>
+                                            <div class="node-desc">Mendesain ulang tema layout GitHub menjadi antarmuka
+                                                dashboard modern premium dengan struktur grid glassmorphic.</div>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-node">
+                                        <div class="node-bullet"><i class="bi bi-box-fill"></i></div>
+                                        <div class="node-content">
+                                            <div class="node-header">
+                                                <span>Modular Utilities Release</span>
+                                                <span class="node-time">Juni 2026</span>
+                                            </div>
+                                            <div class="node-desc">Merilis 50+ modul web kalkulator interaktif mulai
+                                                dari kalkulator resistor, uji bending material, hingga game edukatif
+                                                anak.</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANE 3: ABOUT ME -->
+                <div class="panel-pane" id="pane-about">
+                    <div class="about-grid">
+
+                        <!-- Bio Details Card -->
+                        <div class="glass-panel about-card">
+                            <div class="about-card-title">
+                                <i class="bi bi-person-badge-fill" style="color:var(--primary-accent)"></i> Profil
+                                Profesional
+                            </div>
+                            <p class="about-text">
+                                Halo! Saya <strong>Williyanto Adi</strong>. Saya bekerja di bagian <strong>Quality
+                                    Control (QC) Department</strong> di industri manufaktur kabel listrik. Selama
+                                menjalankan tugas, saya menyadari pentingnya utilitas digital yang cepat dan akurat
+                                untuk memverifikasi spesifikasi produk, menghitung parameter uji material, dan
+                                mengestimasi dimensi.
+                            </p>
+                            <p class="about-text">
+                                Kebutuhan tersebut mendorong saya untuk membangun portofolio ini: sebuah pustaka alat
+                                bantu teknik berbasis web interaktif. Saya mengintegrasikan keahlian industri saya
+                                dengan teknologi web modern untuk menyederhanakan perhitungan harian QC di pabrik.
+                            </p>
+                        </div>
+
+                        <!-- Technical Stack Card -->
+                        <div class="glass-panel about-card">
+                            <div class="about-card-title">
+                                <i class="bi bi-code-slash" style="color:var(--primary-accent)"></i> Keahlian &
+                                Teknologi
+                            </div>
+                            <p class="about-text" style="margin-bottom:12px;">
+                                Bahasa pemrograman, kerangka kerja, dan metodologi kerja yang saya terapkan dalam
+                                membangun seluruh utilitas digital ini:
+                            </p>
+
+                            <div class="skills-badges-container">
+                                <div class="skill-badge"><i class="bi bi-filetype-html" style="color:#e34c26"></i> HTML5
+                                    Semantic</div>
+                                <div class="skill-badge"><i class="bi bi-filetype-css" style="color:#264de4"></i>
+                                    Vanilla CSS3</div>
+                                <div class="skill-badge"><i class="bi bi-filetype-js" style="color:#f7df1e"></i>
+                                    JavaScript ES6+</div>
+                                <div class="skill-badge"><i class="bi bi-braces" style="color:#38bdf8"></i> Tailwind CSS
+                                </div>
+                                <div class="skill-badge"><i class="bi bi-shield-check" style="color:#0ea5e9"></i>
+                                    Quality Control</div>
+                                <div class="skill-badge"><i class="bi bi-lightning-charge-fill"
+                                        style="color:#eab308"></i> Cable Testing</div>
+                                <div class="skill-badge"><i class="bi bi-calculator" style="color:#10b981"></i>
+                                    Engineering Formulas</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANE 4: BOOKMARKS (STARRED REPOS) -->
+                <div class="panel-pane" id="pane-starred">
+                    <div class="projects-grid" id="starred-grid-container">
+                        <!-- Starred items will load here dynamically -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FOOTER SECTION -->
+        <footer>
+            <div class="footer-flex">
+                <div class="footer-logo">
+                    <i class="bi bi-cpu-fill" style="color:var(--primary-accent)"></i> WILL.DEV
+                </div>
+                <div>
+                    © 2026 Williyanto Adi. Semua Hak Dilindungi.
+                </div>
+                <nav class="footer-nav">
+                    <a href="#projects" onclick="switchPane('projects'); return false;">Projects</a>
+                    <a href="#analytics" onclick="switchPane('analytics'); return false;">Activity</a>
+                    <a href="#about" onclick="switchPane('about'); return false;">About</a>
+                    <a href="mailto:williyanto.adi@gmail.com">Contact</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- MAIN JAVASCRIPT APP LOGIC -->
+    <script>
+        // --- 1. PROJECTS LIST DATA SOURCE (50 ACTIVE UTILITIES) ---
+        const projects = [
+            {
+                id: 1,
+                name: "kalkulator_hambatan_konduktor",
+                displayName: "Kalkulator Hambatan Konduktor",
+                url: "../1.kalkulator_hambatan_konduktor/index_kalkulator_hambatan.html",
+                description: "Menghitung resistansi listrik berdasarkan bahan konduktor, panjang, dan luas penampang kabel.",
+                category: "electrical",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["electrical", "calculator", "resistance", "physics"],
+                stars: 28,
+                updated: "2 days ago"
+            },
+            {
+                id: 2,
+                name: "konverter_hambatan_ir",
+                displayName: "Konverter Hambatan IR",
+                url: "../2.konverter_hambatan/index_konverter_hambatan_ir.html",
+                description: "Mengonversi nilai hambatan isolasi (Insulation Resistance) berdasarkan temperatur standar acuan.",
+                category: "electrical",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["insulation", "converter", "cable-testing"],
+                stars: 19,
+                updated: "3 days ago"
+            },
+            {
+                id: 3,
+                name: "konverter_panjang",
+                displayName: "Konverter Panjang",
+                url: "../3.konverter_panjang/konverter_panjang.html",
+                description: "Mengonversi satuan ukuran panjang interaktif (mm, cm, m, km, inch, feet, yard, mile) dengan cepat.",
+                category: "math",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["converter", "math-utility", "length"],
+                stars: 12,
+                updated: "5 days ago"
+            },
+            {
+                id: 4,
+                name: "kalkulator_dimensi",
+                displayName: "Kalkulator Dimensi Objek",
+                url: "../4.kalkulator_dimensi/kalkulator_dimensi.html",
+                description: "Menghitung luas permukaan, keliling, dan parameter geometris dimensi fisik objek beraturan.",
+                category: "math",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["calculator", "geometry", "math-utility"],
+                stars: 15,
+                updated: "1 week ago"
+            },
+            {
+                id: 5,
+                name: "hitungpanjangkabel_didrum",
+                displayName: "Hitung Panjang Kabel di Drum",
+                url: "../5.hitungpanjangkabel_didrum/hitungpanjangkabel_didrum.html",
+                description: "Mengestimasi sisa gulungan panjang kabel pada drum berdasarkan dimensi flens drum dan diameter kabel.",
+                category: "electrical",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["cable-calculator", "drum-estimation", "utility"],
+                stars: 34,
+                updated: "2 days ago"
+            },
+            {
+                id: 6,
+                name: "kalkulator_uji_bending",
+                displayName: "Kalkulator Uji Bending",
+                url: "../6.uji_tekuk_bending_fix/8.uji_tekuk_bending_fix.html",
+                description: "Mengevaluasi dan menganalisis hasil kekuatan bending (tekuk) material logam dan non-logam hasil pengujian QC.",
+                category: "testing",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["material-testing", "bending-test", "quality-control"],
+                stars: 41,
+                updated: "Yesterday"
+            },
+            {
+                id: 7,
+                name: "coldbending_test",
+                displayName: "Uji Cold Bending",
+                url: "../7.coldbending_test/coldbending_test.html",
+                description: "Mengevaluasi hasil uji bending dingin kabel pada temperatur rendah ekstrem untuk memeriksa keretakan material.",
+                category: "testing",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["material-testing", "cold-bending", "quality-control"],
+                stars: 22,
+                updated: "4 days ago"
+            },
+            {
+                id: 8,
+                name: "heatshock_test",
+                displayName: "Uji Heat Shock",
+                url: "../8.heatshock_test/heatshock_test.html",
+                description: "Menghitung kelayakan dan ketahanan material isolasi pembungkus kabel setelah dipanaskan tiba-tiba di oven.",
+                category: "testing",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["material-testing", "heat-shock", "cable-test"],
+                stars: 25,
+                updated: "4 days ago"
+            },
+            {
+                id: 9,
+                name: "generator_angka",
+                displayName: "Generator Angka Acak",
+                url: "../9.generator_angka/generator_angka.html",
+                description: "Menghasilkan deret angka acak secara otomatis dan dinamis dengan pilihan batas min/max kustom.",
+                category: "math",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["generator", "random", "simulation"],
+                stars: 9,
+                updated: "2 weeks ago"
+            },
+            {
+                id: 10,
+                name: "kalkulator_resistor",
+                displayName: "Kalkulator Resistor Cincin",
+                url: "../10.kalkulator_resistor/kalkulator_resistor.html",
+                description: "Membaca nilai hambatan resistor berdasarkan kode warna gelang resistor secara interaktif.",
+                category: "electrical",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["electronics", "resistor", "color-code"],
+                stars: 38,
+                updated: "3 days ago"
+            },
+            {
+                id: 11,
+                name: "android_kw",
+                displayName: "Android Virtual Simulator",
+                url: "../11.android_kw/android_kw.html",
+                description: "Simulasi interaktif dashboard antarmuka sistem operasi Android dengan aplikasi web tersemat.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["simulator", "interactive-app", "ui-ux", "game"],
+                stars: 55,
+                updated: "Yesterday"
+            },
+            {
+                id: 12,
+                name: "cr_trial",
+                displayName: "Kalkulator Hambatan Trial",
+                url: "../12.CR_trial/cr_trial.html",
+                description: "Versi uji coba modul kalkulator resistansi konduktor kabel dengan penyesuaian parameter khusus.",
+                category: "electrical",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["electrical", "experimental", "trial"],
+                stars: 11,
+                updated: "3 weeks ago"
+            },
+            {
+                id: 13,
+                name: "yusup_chots_fix",
+                displayName: "YuSup Chots Chat Room",
+                url: "../13.yusup/chots_fix_banget.html",
+                description: "Aplikasi chat room instan lokal virtual untuk simulasi obrolan interaktif pengembang.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["chat", "interactive-app", "messaging"],
+                stars: 30,
+                updated: "1 week ago"
+            },
+            {
+                id: 14,
+                name: "yusup_chots_v2",
+                displayName: "YuSup Chots v2",
+                url: "../13.yusup/chots.html",
+                description: "Pengembangan chat room YuSup dengan pembaruan sistem antarmuka dan kestabilan komunikasi.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["chat", "interactive-app", "version-2"],
+                stars: 32,
+                updated: "1 week ago"
+            },
+            {
+                id: 15,
+                name: "web_streaming_video",
+                displayName: "Web Streaming Video Player",
+                url: "../14.web_streaming_video/web_streaming.html",
+                description: "Media player pemutar video online berbasis HTML5 responsif dengan kontrol menu kustom.",
+                category: "edu",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["video-player", "streaming", "media"],
+                stars: 27,
+                updated: "5 days ago"
+            },
+            {
+                id: 16,
+                name: "kalkulator_alokasigaji",
+                displayName: "Kalkulator Alokasi Gaji",
+                url: "../17.alokasi_gaji/kalkulator_alokasigaji.html",
+                description: "Mengatur dan membagi alokasi gaji bulanan secara otomatis berdasarkan persentase kebutuhan dan tabungan.",
+                category: "finance",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["finance", "salary-allocation", "budgeting"],
+                stars: 29,
+                updated: "4 days ago"
+            },
+            {
+                id: 17,
+                name: "hitung_waktu_rewind",
+                displayName: "Penghitung Waktu Rewind Kabel",
+                url: "../19.hitung_waktu_rewind_kabel/hitung_waktu_rewind.html",
+                description: "Menghitung estimasi waktu yang diperlukan untuk proses rewind (gulung ulang) kabel berdasarkan panjang dan speed mesin.",
+                category: "electrical",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["cable-manufacturing", "rewinding", "time-calculator"],
+                stars: 17,
+                updated: "1 week ago"
+            },
+            {
+                id: 18,
+                name: "faktor_koreksi_suhu",
+                displayName: "Faktor Koreksi Suhu",
+                url: "../22.faktor_koreksi_suhu/faktor_koreksi_suhu.html",
+                description: "Menghitung faktor koreksi resistansi kabel akibat suhu ruangan agar terkalibrasi ke suhu acuan 20°C.",
+                category: "testing",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["material-testing", "temperature-correction", "resistance"],
+                stars: 20,
+                updated: "6 days ago"
+            },
+            {
+                id: 19,
+                name: "hambatan_konduktor_iec",
+                displayName: "Kalkulator Hambatan (Tailwind)",
+                url: "../16.tailwind/hambatan_konduktor_iec.html",
+                description: "Kalkulator hambatan konduktor kabel berdasarkan standar internasional IEC, dirancang dengan Tailwind CSS.",
+                category: "electrical",
+                language: "CSS",
+                langColor: "#563d7c",
+                tags: ["tailwind-css", "electrical", "iec-standard"],
+                stars: 33,
+                updated: "2 days ago"
+            },
+            {
+                id: 20,
+                name: "uji_tegangan",
+                displayName: "Kalkulator Uji Tegangan",
+                url: "../20.uji_tegangan/uji_tegangan.html",
+                description: "Menghitung kelayakan kabel listrik dari hasil pengujian kebocoran arus tegangan tinggi (High Voltage Test).",
+                category: "testing",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["voltage-test", "cable-testing", "quality-control"],
+                stars: 26,
+                updated: "Yesterday"
+            },
+            {
+                id: 21,
+                name: "kalkulator_dayalistrik",
+                displayName: "Kalkulator Daya Listrik",
+                url: "../21.kalkulator_daya_listrik/kalkulator_dayalistrik.html",
+                description: "Menghitung hubungan daya, arus, hambatan, dan tegangan listrik sesuai Hukum Ohm (1 Fasa & 3 Fasa).",
+                category: "electrical",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["ohms-law", "power-calculator", "formulas"],
+                stars: 21,
+                updated: "2 days ago"
+            },
+            {
+                id: 22,
+                name: "pengatur_uang",
+                displayName: "Aplikasi Pengatur Keuangan",
+                url: "../23.Pengatur_Uang/pengatur_uang.html",
+                description: "Mencatat pemasukan dan pengeluaran harian serta rekap arus anggaran kas mandiri.",
+                category: "finance",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["finance", "income-tracker", "expense-tracker"],
+                stars: 24,
+                updated: "1 week ago"
+            },
+            {
+                id: 23,
+                name: "alokasi_gaji_v2",
+                displayName: "Alokasi Gaji (Pengatur Keuangan)",
+                url: "../23.Pengatur_Uang/alokasi_gaji.html",
+                description: "Simulasi alokasi gaji bulanan terintegrasi dengan pemecahan tabungan dan dana darurat.",
+                category: "finance",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["finance", "salary-allocation", "budget-planner"],
+                stars: 18,
+                updated: "1 week ago"
+            },
+            {
+                id: 24,
+                name: "manajemen_aset",
+                displayName: "Aplikasi Manajemen Aset",
+                url: "../24.manajemen_aset/manajemen_aset.html",
+                description: "Sistem pencatatan inventaris aset, penaksiran nilai penyusutan, dan kondisi fisik peralatan kantor/pabrik.",
+                category: "finance",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["asset-management", "inventory", "tracker"],
+                stars: 31,
+                updated: "3 days ago"
+            },
+            {
+                id: 25,
+                name: "cari_metadata_musik",
+                displayName: "Cari Metadata Musik",
+                url: "../25.cari_metadata_musik/cari_metadata_musik.html",
+                description: "Membaca dan menampilkan tag metadata ID3 dari file audio (judul lagu, artis, album, cover).",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["music-metadata", "audio-reader", "media-utility"],
+                stars: 28,
+                updated: "5 days ago"
+            },
+            {
+                id: 26,
+                name: "analisis_kripto",
+                displayName: "Dashboard Analisis Kripto",
+                url: "../26.analisis_kripto/analisis_kripto_v1.html",
+                description: "Pelacakan pergerakan pasar harga aset kripto dengan visualisasi diagram chart grafik interaktif.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["crypto", "financial-charts", "dashboard"],
+                stars: 45,
+                updated: "Yesterday"
+            },
+            {
+                id: 27,
+                name: "volume_drum",
+                displayName: "Hitung Volume Cairan Drum",
+                url: "../27.volume_drum/volume_drum.html",
+                description: "Kalkulator menghitung volume minyak/cairan dalam tangki drum silinder horizontal secara praktis.",
+                category: "math",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["calculator", "geometry", "drum-volume"],
+                stars: 23,
+                updated: "Yesterday"
+            },
+            {
+                id: 28,
+                name: "kalkulator_waktu",
+                displayName: "Kalkulator Selisih Waktu",
+                url: "../28.kalkulator_waktu/kalkulator_waktu.html",
+                description: "Menghitung selisih jumlah jam, menit, detik dan total interval hari antara dua tanggal spesifik.",
+                category: "math",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["time-calculator", "productivity-tool", "date-diff"],
+                stars: 19,
+                updated: "Yesterday"
+            },
+            {
+                id: 29,
+                name: "flame_retardant",
+                displayName: "Kalkulator Uji Bakar Material",
+                url: "../29.flame_retardant/flame.html",
+                description: "Menghitung laju perambatan api pada material kabel tahan api (Flame Retardant) berdasarkan uji laboratorium.",
+                category: "testing",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["material-testing", "flame-retardant", "fire-test"],
+                stars: 21,
+                updated: "Yesterday"
+            },
+            {
+                id: 30,
+                name: "hitung_jamlembur",
+                displayName: "Kalkulator Jam Lembur",
+                url: "../30.hitung_jamlembur/hitung_lembur_08062026.html",
+                description: "Kalkulator rekapitulasi upah uang lembur bulanan sesuai aturan jam kerja ketenagakerjaan.",
+                category: "finance",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["overtime", "payroll", "workplace-tool"],
+                stars: 16,
+                updated: "3 days ago"
+            },
+            {
+                id: 31,
+                name: "mainan_edukasi_anak_v1",
+                displayName: "Mainan Edukasi Anak Pintar",
+                url: "../31.mainan_edukasi/mainan_edukasi_anak_v20260214.html",
+                description: "Permainan interaktif untuk anak belajar mengenal huruf, ejaan, dan angka dengan animasi menyenangkan.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["kids-learning", "educational-game", "interactive"],
+                stars: 50,
+                updated: "2 days ago"
+            },
+            {
+                id: 32,
+                name: "mainan_edukasi_update",
+                displayName: "Mainan Edukasi (Versi Update)",
+                url: "../31.mainan_edukasi/mainan_update.html",
+                description: "Pembaruan game belajar anak dengan penambahan level tantangan aritmetika matematika dasar dan grafik dinamis.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["kids-learning", "educational-game", "math-game"],
+                stars: 48,
+                updated: "2 days ago"
+            },
+            {
+                id: 33,
+                name: "kompresi_file",
+                displayName: "Alat Kompresi File Online",
+                url: "./dummy_project.html?id=33",
+                description: "Kompresi ukuran file gambar, PDF, dan dokumen lainnya secara instan langsung di sisi klien.",
+                category: "math",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["file-compressor", "image-compression", "pdf-compress", "utility"],
+                stars: 14,
+                updated: "Coming Soon"
+            },
+            {
+                id: 34,
+                name: "pelacak_harga_saham",
+                displayName: "Pelacak Harga Saham",
+                url: "./dummy_project.html?id=34",
+                description: "Memantau pergerakan harga saham terpopuler secara real-time dengan visualisasi grafik interaktif.",
+                category: "finance",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["stock-tracker", "financial-charts", "finance", "live-market"],
+                stars: 22,
+                updated: "Coming Soon"
+            },
+            {
+                id: 35,
+                name: "generator_kode_qr",
+                displayName: "Generator Kode QR",
+                url: "./dummy_project.html?id=35",
+                description: "Membuat kode QR kustom untuk URL, teks, nomor telepon, atau data vCard secara instan.",
+                category: "math",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["qr-code", "generator", "utility", "barcode"],
+                stars: 18,
+                updated: "Coming Soon"
+            },
+            {
+                id: 36,
+                name: "kuis_interaktif",
+                displayName: "Aplikasi Kuis Interaktif",
+                url: "./dummy_project.html?id=36",
+                description: "Platform kuis cerdas cermat interaktif untuk anak-anak dengan penghitungan skor dan timer otomatis.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["quiz-game", "trivia", "educational", "kids-learning"],
+                stars: 26,
+                updated: "Coming Soon"
+            },
+            {
+                id: 37,
+                name: "widget_cuaca",
+                displayName: "Widget Cuaca Lokal",
+                url: "./dummy_project.html?id=37",
+                description: "Menampilkan prakiraan cuaca real-time berdasarkan lokasi GPS pengguna dan data meteorologi.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["weather-widget", "geolocation", "weather-forecast", "utility"],
+                stars: 15,
+                updated: "Coming Soon"
+            },
+            {
+                id: 38,
+                name: "manajemen_kontak",
+                displayName: "Sistem Manajemen Kontak",
+                url: "./dummy_project.html?id=38",
+                description: "Menyimpan, memperbarui, dan mengelola daftar relasi kontak kerja dengan penyimpanan lokal di peramban.",
+                category: "finance",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["contact-manager", "address-book", "localstorage"],
+                stars: 11,
+                updated: "Coming Soon"
+            },
+            {
+                id: 39,
+                name: "flowchart_builder",
+                displayName: "Alat Pembuat Diagram Alir",
+                url: "./dummy_project.html?id=39",
+                description: "Menggambar skema alur flowchart dengan editor canvas drag & drop interaktif.",
+                category: "math",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["flowchart-builder", "canvas-draw", "diagramming-tool"],
+                stars: 30,
+                updated: "Coming Soon"
+            },
+            {
+                id: 40,
+                name: "pomodoro_timer",
+                displayName: "Pomodoro Focus Timer",
+                url: "./dummy_project.html?id=40",
+                description: "Membantu manajemen waktu kerja dan belajar dengan siklus fokus dan istirahat teratur.",
+                category: "finance",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["pomodoro-timer", "focus-helper", "productivity-tool"],
+                stars: 25,
+                updated: "Coming Soon"
+            },
+            {
+                id: 41,
+                name: "kabel_luas_penampang",
+                displayName: "Kalkulator Luas Penampang Kabel",
+                url: "./dummy_project.html?id=41",
+                description: "Menghitung luas penampang kabel berdasarkan KHA (Kemampuan Hantar Arus) dan batas jatuh tegangan.",
+                category: "electrical",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["cable-engineering", "cross-section", "conductor-sizing", "electrical"],
+                stars: 27,
+                updated: "Coming Soon"
+            },
+            {
+                id: 42,
+                name: "penyerapan_air_isolasi",
+                displayName: "Uji Penyerapan Air Isolasi",
+                url: "./dummy_project.html?id=42",
+                description: "Menghitung persentase penyerapan air pada material isolasi kabel listrik sesuai uji penimbangan laborat.",
+                category: "testing",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["material-testing", "water-absorption", "cable-insulation", "quality-control"],
+                stars: 16,
+                updated: "Coming Soon"
+            },
+            {
+                id: 43,
+                name: "konversi_awg_mm2",
+                displayName: "Kalkulator Konversi AWG ke mm²",
+                url: "./dummy_project.html?id=43",
+                description: "Mengonversi ukuran kawat standar AWG (American Wire Gauge) ke milimeter persegi secara instan.",
+                category: "electrical",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["awg-converter", "wire-gauge", "conductor-sizing", "calculator"],
+                stars: 23,
+                updated: "Coming Soon"
+            },
+            {
+                id: 44,
+                name: "hukum_kirchhoff",
+                displayName: "Simulasi Hukum Kirchhoff",
+                url: "./dummy_project.html?id=44",
+                description: "Simulasi interaktif rangkaian listrik tertutup untuk menganalisis arus dan tegangan menggunakan Hukum Kirchhoff.",
+                category: "electrical",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["kirchhoffs-law", "circuit-simulator", "physics", "electrical-circuit"],
+                stars: 31,
+                updated: "Coming Soon"
+            },
+            {
+                id: 45,
+                name: "bunga_majemuk",
+                displayName: "Kalkulator Bunga Majemuk",
+                url: "./dummy_project.html?id=45",
+                description: "Menghitung proyeksi pertumbuhan investasi masa depan dengan rumus bunga majemuk periodik.",
+                category: "finance",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["compound-interest", "saving-growth", "investment-calculator", "finance"],
+                stars: 20,
+                updated: "Coming Soon"
+            },
+            {
+                id: 46,
+                name: "uji_tarik_logam",
+                displayName: "Uji Tarik Material Logam",
+                url: "./dummy_project.html?id=46",
+                description: "Menghitung kekuatan tarik (tensile strength) dan elongation (regangan) material tembaga/aluminium.",
+                category: "testing",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["tensile-strength", "material-testing", "quality-control", "tensile-test"],
+                stars: 35,
+                updated: "Coming Soon"
+            },
+            {
+                id: 47,
+                name: "game_aritmetika_anak",
+                displayName: "Game Belajar Aritmetika",
+                url: "./dummy_project.html?id=47",
+                description: "Permainan mencocokkan penjumlahan dan perkalian dasar matematika dengan level bertingkat untuk anak.",
+                category: "edu",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["math-game", "kids-learning", "interactive-game", "arithmetic"],
+                stars: 29,
+                updated: "Coming Soon"
+            },
+            {
+                id: 48,
+                name: "konversi_suhu_lengkap",
+                displayName: "Kalkulator Konversi Suhu",
+                url: "./dummy_project.html?id=48",
+                description: "Mengonversi empat satuan temperatur (Celsius, Fahrenheit, Reamur, Kelvin) secara simultan.",
+                category: "math",
+                language: "HTML",
+                langColor: "#e34c26",
+                tags: ["temperature-converter", "physics-utility", "calculator"],
+                stars: 12,
+                updated: "Coming Soon"
+            },
+            {
+                id: 49,
+                name: "pajak_penghasilan",
+                displayName: "Kalkulator Pajak PPh 21",
+                url: "./dummy_project.html?id=49",
+                description: "Menghitung pemotongan pajak penghasilan karyawan PPh Pasal 21 sesuai ketentuan perpajakan terbaru.",
+                category: "finance",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["income-tax", "tax-calculator", "indonesian-tax", "payroll"],
+                stars: 24,
+                updated: "Coming Soon"
+            },
+            {
+                id: 50,
+                name: "uji_impak_charpy",
+                displayName: "Uji Impak Charpy V-Notch",
+                url: "./dummy_project.html?id=50",
+                description: "Menganalisis energi penyerapan benturan patah logam pada pengujian impak suhu rendah.",
+                category: "testing",
+                language: "JavaScript",
+                langColor: "#f1e05a",
+                tags: ["impact-test", "charpy-v-notch", "material-toughness", "quality-control"],
+                stars: 27,
+                updated: "Coming Soon"
+            }
+        ];
+
+        // --- 2. LOCAL PERSISTED BOOKMARKS ---
+        let starredIds = JSON.parse(localStorage.getItem('mypro_starred')) || [];
+
+        // --- 3. DOM NODES ---
+        const projectsGrid = document.getElementById('projects-grid-container');
+        const starredGrid = document.getElementById('starred-grid-container');
+        const searchInput = document.getElementById('projects-search-input');
+        const navSearchInput = document.getElementById('nav-search-bar');
+        const selectLanguage = document.getElementById('projects-select-language');
+        const selectSort = document.getElementById('projects-select-sort');
+        const filtersStatusBar = document.getElementById('filters-status-bar');
+        const filteredProjectsCount = document.getElementById('filtered-projects-count');
+        const btnClearFilters = document.getElementById('btn-clear-filters');
+        const themeToggler = document.getElementById('theme-toggler');
+        const headerNavLinks = document.querySelectorAll('.nav-link-item');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const panels = document.querySelectorAll('.panel-pane');
+        const starsNavBadge = document.getElementById('stars-nav-badge');
+
+        let activeCategory = 'all';
+        let showAllProjects = false;
+        let isListView = localStorage.getItem('mypro_layout') === 'list';
+
+        function initLayout() {
+            const grid = document.getElementById('projects-grid-container');
+            const starred = document.getElementById('starred-grid-container');
+            const btn = document.getElementById('btn-layout-toggle');
+            if (!btn || !grid) return;
+            const icon = btn.querySelector('i');
+
+            if (isListView) {
+                // Apply list view — single column grid
+                grid.classList.add('list-view');
+                if (starred) starred.classList.add('list-view');
+
+                // Force via inline style as ultimate fallback
+                grid.style.gridTemplateColumns = '1fr';
+                if (starred) starred.style.gridTemplateColumns = '1fr';
+
+                // Apply landscape card style on desktop
+                if (window.innerWidth >= 768) {
+                    grid.querySelectorAll('.project-card').forEach(card => {
+                        card.style.flexDirection = 'row';
+                        card.style.alignItems = 'center';
+                        card.style.justifyContent = 'space-between';
+                        card.style.gap = '24px';
+                        card.style.padding = '20px 24px';
+                    });
+                }
+
+                if (icon) icon.className = 'bi bi-grid-3x3-gap-fill';
+                btn.title = 'Ubah ke Grid View';
+            } else {
+                // Restore grid view
+                grid.classList.remove('list-view');
+                if (starred) starred.classList.remove('list-view');
+
+                // Clear inline overrides
+                grid.style.gridTemplateColumns = '';
+                if (starred) starred.style.gridTemplateColumns = '';
+
+                // Restore card style
+                grid.querySelectorAll('.project-card').forEach(card => {
+                    card.style.flexDirection = '';
+                    card.style.alignItems = '';
+                    card.style.justifyContent = '';
+                    card.style.gap = '';
+                    card.style.padding = '';
+                });
+
+                if (icon) icon.className = 'bi bi-list-task';
+                btn.title = 'Ubah ke List View';
+            }
+        }
+
+        // Re-apply layout after every render (cards get re-inserted by innerHTML)
+        function applyLayoutAfterRender() {
+            if (!isListView) return;
+            const grid = document.getElementById('projects-grid-container');
+            if (!grid) return;
+            if (window.innerWidth >= 768) {
+                grid.querySelectorAll('.project-card').forEach(card => {
+                    card.style.flexDirection = 'row';
+                    card.style.alignItems = 'center';
+                    card.style.justifyContent = 'space-between';
+                    card.style.gap = '24px';
+                    card.style.padding = '20px 24px';
+                });
+            }
+        }
+
+        // --- 4. THEME SWITCH ENGINE ---
+        function initThemeSystem() {
+            const currentTheme = localStorage.getItem('theme_mypro') || 'dark'; // Dark theme standard
+            const icon = themeToggler.querySelector('i');
+
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                icon.className = 'bi bi-sun';
+            } else {
+                document.body.classList.remove('dark-mode');
+                icon.className = 'bi bi-moon-stars';
+            }
+        }
+
+        themeToggler.addEventListener('click', () => {
+            const isDark = document.body.classList.toggle('dark-mode');
+            const icon = themeToggler.querySelector('i');
+
+            if (isDark) {
+                localStorage.setItem('theme_mypro', 'dark');
+                icon.className = 'bi bi-sun';
+            } else {
+                localStorage.setItem('theme_mypro', 'light');
+                icon.className = 'bi bi-moon-stars';
+            }
+        });
+
+        // --- 5. BOOKMARKS STORAGE TRIGGERS ---
+        function toggleBookmark(id) {
+            const idx = starredIds.indexOf(id);
+            if (idx > -1) {
+                starredIds.splice(idx, 1);
+            } else {
+                starredIds.push(id);
+            }
+
+            localStorage.setItem('mypro_starred', JSON.stringify(starredIds));
+            renderEverything();
+        }
+
+        // --- 6. DATA RENDERING ---
+
+        // Render card markup
+        function createCardHTML(project) {
+            const isStarred = starredIds.includes(project.id);
+            const starsDisplay = project.stars + (isStarred ? 1 : 0);
+
+            return `
+                <div class="glass-panel project-card" data-category="${project.category}">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-badge">${project.category}</span>
+                            <button class="card-star-action ${isStarred ? 'starred' : ''}" onclick="toggleBookmark(${project.id})" title="Star project">
+                                <i class="bi ${isStarred ? 'bi-star-fill' : 'bi-star'}"></i>
+                            </button>
+                        </div>
+                        <h3 class="card-title">
+                            <a href="${project.url}">${project.displayName}</a>
+                        </h3>
+                        <p class="card-desc">${project.description}</p>
+                        <div class="card-tags">
+                            ${project.tags.map(tag => `<span class="card-tag-pill" onclick="searchTagDirect('${tag}')" style="pointer-events: auto; cursor:pointer;">#${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="card-footer-details">
+                        <span class="card-lang-indicator">
+                            <span class="lang-circle" style="background-color: ${project.langColor}"></span>
+                            ${project.language}
+                        </span>
+                        <a href="${project.url}" class="card-action-link">
+                            Buka Alat <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Search Tag
+        window.searchTagDirect = function (tagName) {
+            switchPane('projects');
+            searchInput.value = tagName;
+            renderProjects();
+        };
+
+        // Render Projects Grid
+        function renderProjects() {
+            const query = searchInput.value.toLowerCase().trim();
+            const lang = selectLanguage.value;
+            const sort = selectSort.value;
+
+            // Filter data
+            let filtered = projects.filter(item => {
+                const matchesSearch = item.displayName.toLowerCase().includes(query) ||
+                    item.description.toLowerCase().includes(query) ||
+                    item.tags.some(t => t.toLowerCase().includes(query));
+
+                const matchesCat = activeCategory === 'all' || item.category === activeCategory;
+                const matchesLang = lang === 'all' || item.language === lang;
+
+                return matchesSearch && matchesCat && matchesLang;
+            });
+
+            // Sort data
+            if (sort === 'name') {
+                filtered.sort((a, b) => a.displayName.localeCompare(b.displayName));
+            } else if (sort === 'updated') {
+                filtered.sort((a, b) => b.id - a.id); // Newer project ID has newer update
+            } else {
+                // Popularity (stars)
+                filtered.sort((a, b) => {
+                    const starsA = a.stars + (starredIds.includes(a.id) ? 1 : 0);
+                    const starsB = b.stars + (starredIds.includes(b.id) ? 1 : 0);
+                    return starsB - starsA;
+                });
+            }
+
+            // Sync filters status bar
+            const hasFilters = query !== '' || activeCategory !== 'all' || lang !== 'all';
+            if (hasFilters) {
+                filtersStatusBar.style.display = 'flex';
+                filteredProjectsCount.textContent = filtered.length;
+            } else {
+                filtersStatusBar.style.display = 'none';
+            }
+
+            projectsGrid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                projectsGrid.innerHTML = `
+                    <div class="hub-empty-state">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Tidak menemukan proyek yang cocok dengan filter yang Anda gunakan.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            const itemsToRender = (showAllProjects || filtered.length <= 10) ? filtered : filtered.slice(0, 10);
+
+            itemsToRender.forEach(p => {
+                projectsGrid.innerHTML += createCardHTML(p);
+            });
+
+            // Control Load More Button visibility
+            const loadMoreContainer = document.getElementById('load-more-container');
+            const btnLoadMore = document.getElementById('btn-load-more');
+
+            if (filtered.length > 10) {
+                loadMoreContainer.style.display = 'block';
+                if (showAllProjects) {
+                    btnLoadMore.innerHTML = `Sembunyikan Proyek <i class="bi bi-chevron-up" style="margin-left: 6px;"></i>`;
+                } else {
+                    btnLoadMore.innerHTML = `Lihat Proyek Lainnya <i class="bi bi-chevron-down" style="margin-left: 6px;"></i>`;
+                }
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+
+            // Re-apply list view styles to newly rendered cards
+            applyLayoutAfterRender();
+        }
+
+        // Render Bookmarked tab
+        function renderBookmarks() {
+            const bookmarkedList = projects.filter(p => starredIds.includes(p.id));
+            starredGrid.innerHTML = '';
+
+            if (bookmarkedList.length === 0) {
+                starredGrid.innerHTML = `
+                    <div class="hub-empty-state" style="grid-column: 1 / -1;">
+                        <i class="bi bi-bookmark-star"></i>
+                        <span>Belum ada proyek yang Anda tandai. Klik ikon bintang pada kartu proyek untuk menyematkannya di sini.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            bookmarkedList.forEach(p => {
+                starredGrid.innerHTML += createCardHTML(p);
+            });
+        }
+
+        // Unified rendering
+        function renderEverything() {
+            renderProjects();
+            renderBookmarks();
+
+            // Sync counts
+            starsNavBadge.textContent = starredIds.length;
+        }
+
+        // --- 7. TAB & NAVIGATION CONTROLLER ---
+        function switchPane(paneId) {
+            // Sync buttons
+            tabButtons.forEach(btn => {
+                if (btn.getAttribute('data-pane') === paneId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Sync Header links
+            headerNavLinks.forEach(link => {
+                if (link.getAttribute('data-nav') === paneId) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // Sync Panels
+            panels.forEach(pane => {
+                if (pane.id === `pane-${paneId}`) {
+                    pane.classList.add('active');
+                } else {
+                    pane.classList.remove('active');
+                }
+            });
+
+            window.location.hash = paneId;
+        }
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchPane(btn.getAttribute('data-pane'));
+            });
+        });
+
+        headerNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchPane(link.getAttribute('data-nav'));
+            });
+        });
+
+        // Initialize view via URL Hash
+        function initHashNavigation() {
+            const hash = window.location.hash.substring(1);
+            const valid = ['projects', 'analytics', 'about', 'starred'];
+            if (hash && valid.includes(hash)) {
+                switchPane(hash);
+            }
+        }
+
+        // --- 8. FILTERS EVENT LOGIC ---
+        searchInput.addEventListener('input', () => {
+            showAllProjects = false;
+            renderProjects();
+        });
+
+        // Mirror navbar search bar into main projects search
+        navSearchInput.addEventListener('input', () => {
+            showAllProjects = false;
+            searchInput.value = navSearchInput.value;
+            switchPane('projects');
+            renderProjects();
+        });
+
+        selectLanguage.addEventListener('change', () => {
+            showAllProjects = false;
+            renderProjects();
+        });
+
+        selectSort.addEventListener('change', () => {
+            showAllProjects = false;
+            renderProjects();
+        });
+
+        // Reset filter click
+        btnClearFilters.addEventListener('click', () => {
+            showAllProjects = false;
+            searchInput.value = '';
+            navSearchInput.value = '';
+            selectLanguage.value = 'all';
+            selectSort.value = 'stars';
+            activeCategory = 'all';
+
+            document.querySelectorAll('.filter-pill').forEach(btn => {
+                if (btn.getAttribute('data-cat') === 'all') btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            renderProjects();
+        });
+
+        // Pill categories click
+        document.querySelectorAll('.filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                showAllProjects = false;
+                document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                activeCategory = pill.getAttribute('data-cat');
+                renderProjects();
+            });
+        });
+
+        // Load More button click
+        document.getElementById('btn-load-more').addEventListener('click', () => {
+            showAllProjects = !showAllProjects;
+            renderProjects();
+            if (!showAllProjects) {
+                document.getElementById('pane-projects').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Layout Switcher click
+        document.getElementById('btn-layout-toggle').addEventListener('click', () => {
+            isListView = !isListView;
+            localStorage.setItem('mypro_layout', isListView ? 'list' : 'grid');
+            initLayout();
+        });
+
+        // --- 9. ACTIVITY MATRIX WIDGET GENERATION ---
+        const matrixGrid = document.getElementById('matrix-grid-element');
+        const matrixTooltip = document.getElementById('matrix-tooltip');
+
+        function generateMatrixGrid() {
+            const now = new Date();
+            const cellsCount = 371; // 53 weeks x 7 days
+
+            const startDate = new Date();
+            startDate.setDate(now.getDate() - cellsCount + 1);
+
+            for (let i = 0; i < cellsCount; i++) {
+                const curDate = new Date(startDate);
+                curDate.setDate(startDate.getDate() + i);
+
+                let contributions = 0;
+                let level = 0;
+
+                const randomVal = Math.random();
+                if (randomVal > 0.35) {
+                    contributions = Math.floor(Math.random() * 5);
+                    if (contributions === 1) level = 1;
+                    else if (contributions === 2) level = 2;
+                    else if (contributions === 3) level = 3;
+                    else if (contributions >= 4) level = 4;
+                }
+
+                const cell = document.createElement('div');
+                cell.className = `matrix-cell l${level}`;
+
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const formattedDate = `${curDate.getDate()} ${months[curDate.getMonth()]} ${curDate.getFullYear()}`;
+                cell.setAttribute('data-info', `${contributions === 0 ? 'Tidak ada' : contributions} aktivitas pada ${formattedDate}`);
+
+                cell.addEventListener('mouseover', (e) => {
+                    matrixTooltip.textContent = cell.getAttribute('data-info');
+                    matrixTooltip.style.display = 'block';
+
+                    const rect = cell.getBoundingClientRect();
+                    matrixTooltip.style.left = `${window.scrollX + rect.left + rect.width / 2}px`;
+                    matrixTooltip.style.top = `${window.scrollY + rect.top - 8}px`;
+                });
+
+                cell.addEventListener('mouseout', () => {
+                    matrixTooltip.style.display = 'none';
+                });
+
+                matrixGrid.appendChild(cell);
+            }
+
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            document.getElementById('matrix-range').textContent = `${monthNames[startDate.getMonth()]} ${startDate.getFullYear()} - ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        // --- 10. DECORATIVE MOCK STIMULI ---
+        document.getElementById('hamburger-menu').addEventListener('click', () => {
+            alert("Menu:\n- Projects\n- Activity Tracker\n- About Me\n- Bookmarks");
+        });
+
+        // --- 11. BOOTSTRAP INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initThemeSystem();
+            initLayout();
+            generateMatrixGrid();
+            renderEverything();
+            initHashNavigation();
+        });
+    </script>
+</body>
+
+</html>

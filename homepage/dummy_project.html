@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WILL.DEV · Project Mockup Simulator</title>
+
+    <!-- Bootstrap Icons & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- MODERN PREMIUM DESIGN SYSTEM --- */
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-title: 'Outfit', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+
+            /* Light Theme Tokens */
+            --bg-body: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-navbar: rgba(248, 250, 252, 0.8);
+            --border-color: rgba(226, 232, 240, 0.8);
+            --border-color-glow: rgba(99, 102, 241, 0.15);
+            
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-accent: #4f46e5;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
+
+            /* Category Colors (Vibrant Light) */
+            --col-electrical: #d97706;
+            --col-testing: #0d9488;
+            --col-math: #2563eb;
+            --col-finance: #059669;
+            --col-edu: #db2777;
+
+            --bg-electrical: rgba(217, 119, 6, 0.08);
+            --bg-testing: rgba(13, 148, 136, 0.08);
+            --bg-math: rgba(37, 99, 235, 0.08);
+            --bg-finance: rgba(5, 150, 105, 0.08);
+            --bg-edu: rgba(219, 39, 119, 0.08);
+        }
+
+        body.dark-mode {
+            /* Dark Theme Tokens */
+            --bg-body: #030712;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-navbar: rgba(3, 7, 18, 0.85);
+            --border-color: rgba(31, 41, 55, 0.6);
+            --border-color-glow: rgba(99, 102, 241, 0.25);
+
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary-accent: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+
+            /* Category Colors (Neon Dark) */
+            --col-electrical: #fbbf24;
+            --col-testing: #2dd4bf;
+            --col-math: #60a5fa;
+            --col-finance: #34d399;
+            --col-edu: #f472b6;
+
+            --bg-electrical: rgba(251, 191, 36, 0.12);
+            --bg-testing: rgba(45, 212, 191, 0.12);
+            --bg-math: rgba(96, 165, 250, 0.12);
+            --bg-finance: rgba(52, 211, 153, 0.12);
+            --bg-edu: rgba(244, 114, 182, 0.12);
+        }
+
+        /* --- BASIC RESET & DEFAULTS --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 15px;
+            line-height: 1.6;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            border-radius: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- FLOATING HEADER --- */
+        .navbar-floating-container {
+            margin: 20px auto 30px;
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 24px;
+        }
+
+        .navbar-floating {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 28px;
+            border-radius: 50px;
+        }
+
+        .brand-logo {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-theme-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 18px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .toggle-theme-btn {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .toggle-theme-btn:hover {
+            transform: rotate(30deg);
+        }
+
+        /* --- PROJECT CARD AREA --- */
+        .project-content {
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .category-electrical { background: var(--bg-electrical); color: var(--col-electrical); }
+        .category-testing { background: var(--bg-testing); color: var(--col-testing); }
+        .category-math { background: var(--bg-math); color: var(--col-math); }
+        .category-finance { background: var(--bg-finance); color: var(--col-finance); }
+        .category-edu { background: var(--bg-edu); color: var(--col-edu); }
+
+        h1.project-title {
+            font-family: var(--font-title);
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .project-description {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            max-width: 800px;
+        }
+
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .tag-pill {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 3px 10px;
+            border-radius: 6px;
+        }
+
+        body.dark-mode .tag-pill {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Interactive Simulator Panel */
+        .simulator-box {
+            background: rgba(0, 0, 0, 0.015);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+        }
+
+        body.dark-mode .simulator-box {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .simulator-title {
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Mock Form Elements */
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .form-row label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-row input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--primary-accent);
+        }
+
+        .form-row input[type="text"], .form-row input[type="number"] {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-body);
+            color: var(--text-main);
+            outline: none;
+            font-size: 14px;
+        }
+
+        .sim-result {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--border-color);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sim-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-accent);
+        }
+
+        /* Back Action Button */
+        .back-btn {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+            transition: all 0.3s;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+            color: #ffffff;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 30px 0;
+            margin-top: 40px;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FLOATING HEADER -->
+    <div class="navbar-floating-container">
+        <header class="glass-panel navbar-floating">
+            <a href="./index.html#projects" class="brand-logo">
+                <i class="bi bi-cpu-fill"></i> WILL.DEV
+            </a>
+            
+            <button class="toggle-theme-btn" id="theme-toggler" aria-label="Toggle Theme">
+                <i class="bi bi-moon-stars"></i>
+            </button>
+        </header>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+
+        <!-- DYNAMIC PROJECT CARD PORTLET -->
+        <main class="glass-panel project-content" id="project-portlet">
+            <div id="project-loading" style="text-align:center; padding: 40px 0;">
+                <i class="bi bi-arrow-repeat spin" style="font-size:40px; color:var(--text-muted); display:inline-block; animation: spin 1s linear infinite;"></i>
+                <p style="margin-top:12px; color:var(--text-muted);">Memuat detail simulator proyek...</p>
+            </div>
+
+            <div id="project-details-wrapper" style="display:none;">
+                <span class="badge" id="proj-badge">Category</span>
+                <h1 class="project-title" id="proj-title">Project Name</h1>
+                <p class="project-description" id="proj-desc">Project Description goes here.</p>
+                
+                <div class="tags-row" id="proj-tags">
+                    <!-- Dynamic tags -->
+                </div>
+
+                <!-- SIMULATOR WIDGET -->
+                <div class="simulator-box" id="proj-simulator">
+                    <div class="simulator-title" id="sim-header">
+                        <i class="bi bi-gear-fill"></i> Simulator Modul Interaktif
+                    </div>
+                    
+                    <div id="sim-controls-container">
+                        <!-- Dynamic Simulator Inputs depending on Category -->
+                    </div>
+
+                    <div class="sim-result">
+                        <span id="sim-result-label">Hasil Verifikasi/Kalkulasi:</span>
+                        <span class="sim-val" id="sim-result-val">N/A</span>
+                    </div>
+                </div>
+
+                <a href="./index.html#projects" class="back-btn">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Portal Utama
+                </a>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
+            <div>
+                © 2026 Williyanto Adi. Simulasi Dummy Project Portal.
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SPIN KEYFRAME -->
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- APP SCRIPT -->
+    <script>
+        // --- 1. LOCAL DATA (DUPLICATED FOR STANDALONE DEMO) ---
+        const projectsData = [
+            {
+                id: 33,
+                name: "kompresi_file",
+                displayName: "Alat Kompresi File Online",
+                category: "math",
+                description: "Kompresi ukuran file gambar, PDF, dan dokumen lainnya secara instan langsung di sisi klien.",
+                tags: ["file-compressor", "image-compression", "pdf-compress", "utility"],
+                label: "File Size (KB)",
+                min: 100, max: 10000, def: 2048,
+                unit: "KB",
+                calc: (val) => Math.round(val * 0.45) + " KB (Menghemat 55%)"
+            },
+            {
+                id: 34,
+                name: "pelacak_harga_saham",
+                displayName: "Pelacak Harga Saham",
+                category: "finance",
+                description: "Memantau pergerakan harga saham terpopuler secara real-time dengan visualisasi grafik interaktif.",
+                tags: ["stock-tracker", "financial-charts", "finance", "live-market"],
+                label: "Volume Saham Diperdagangkan (Lembar)",
+                min: 1000, max: 100000, def: 12500,
+                unit: "Lembar",
+                calc: (val) => "$" + Math.round(val * 142.50).toLocaleString() + " USD (Estimasi Nilai Transaksi)"
+            },
+            {
+                id: 35,
+                name: "generator_kode_qr",
+                displayName: "Generator Kode QR",
+                category: "math",
+                description: "Membuat kode QR kustom untuk URL, teks, nomor telepon, atau data vCard secara instan.",
+                tags: ["qr-code", "generator", "utility", "barcode"],
+                label: "Panjang Karakter Input",
+                min: 10, max: 500, def: 85,
+                unit: "Karakter",
+                calc: (val) => "QR Code Version " + Math.ceil(val/25) + " Generated (Optimal ECC)"
+            },
+            {
+                id: 36,
+                name: "kuis_interaktif",
+                displayName: "Aplikasi Kuis Interaktif",
+                category: "edu",
+                description: "Platform kuis cerdas cermat interaktif untuk anak-anak dengan penghitungan skor dan timer otomatis.",
+                tags: ["quiz-game", "trivia", "educational", "kids-learning"],
+                label: "Jumlah Pertanyaan",
+                min: 5, max: 50, def: 15,
+                unit: "Soal",
+                calc: (val) => Math.round(val * 4.5) + " Menit (Durasi Kuis Direkomendasikan)"
+            },
+            {
+                id: 37,
+                name: "widget_cuaca",
+                displayName: "Widget Cuaca Lokal",
+                category: "edu",
+                description: "Menampilkan prakiraan cuaca real-time berdasarkan lokasi GPS pengguna dan data meteorologi.",
+                tags: ["weather-widget", "geolocation", "weather-forecast", "utility"],
+                label: "Ketinggian Posisi (Meter)",
+                min: 0, max: 3000, def: 120,
+                unit: "MDPL",
+                calc: (val) => (30 - (val / 150)).toFixed(1) + " °C (Estimasi Suhu Rata-Rata)"
+            },
+            {
+                id: 38,
+                name: "manajemen_kontak",
+                displayName: "Sistem Manajemen Kontak",
+                category: "finance",
+                description: "Menyimpan, memperbarui, dan mengelola daftar relasi kontak kerja dengan penyimpanan lokal di peramban.",
+                tags: ["contact-manager", "address-book", "localstorage"],
+                label: "Jumlah Kontak Tersimpan",
+                min: 1, max: 2000, def: 250,
+                unit: "Relasi",
+                calc: (val) => (val * 0.12).toFixed(1) + " KB (Penggunaan LocalStorage)"
+            },
+            {
+                id: 39,
+                name: "flowchart_builder",
+                displayName: "Alat Pembuat Diagram Alir",
+                category: "math",
+                description: "Menggambar skema alur flowchart dengan editor canvas drag & drop interaktif.",
+                tags: ["flowchart-builder", "canvas-draw", "diagramming-tool"],
+                label: "Jumlah Simbol Node",
+                min: 2, max: 100, def: 18,
+                unit: "Node",
+                calc: (val) => Math.round(val * 1.5) + " Hubungan Penghubung (Kerapatan Koneksi)"
+            },
+            {
+                id: 40,
+                name: "pomodoro_timer",
+                displayName: "Pomodoro Focus Timer",
+                category: "finance",
+                description: "Membantu manajemen waktu kerja dan belajar dengan siklus fokus dan istirahat teratur.",
+                tags: ["pomodoro-timer", "focus-helper", "productivity-tool"],
+                label: "Jumlah Interval Kerja (25m)",
+                min: 1, max: 12, def: 4,
+                unit: "Siklus",
+                calc: (val) => (val * 5) + " Menit Istirahat Terkumpul"
+            },
+            {
+                id: 41,
+                name: "kabel_luas_penampang",
+                displayName: "Kalkulator Luas Penampang Kabel",
+                category: "electrical",
+                description: "Menghitung luas penampang kabel berdasarkan KHA (Kemampuan Hantar Arus) dan batas jatuh tegangan.",
+                tags: ["cable-engineering", "cross-section", "conductor-sizing", "electrical"],
+                label: "Target Beban Listrik (Ampere)",
+                min: 5, max: 500, def: 45,
+                unit: "A",
+                calc: (val) => {
+                    if (val < 15) return "1.5 mm² (Rekomendasi Penampang Tembaga)";
+                    if (val < 22) return "2.5 mm² (Rekomendasi Penampang Tembaga)";
+                    if (val < 30) return "4.0 mm² (Rekomendasi Penampang Tembaga)";
+                    if (val < 40) return "6.0 mm² (Rekomendasi Penampang Tembaga)";
+                    if (val < 55) return "10 mm² (Rekomendasi Penampang Tembaga)";
+                    if (val < 75) return "16 mm² (Rekomendasi Penampang Tembaga)";
+                    return Math.round(val * 0.3) + " mm² (Kalkulasi Kustom Penampang)";
+                }
+            },
+            {
+                id: 42,
+                name: "penyerapan_air_isolasi",
+                displayName: "Uji Penyerapan Air Isolasi",
+                category: "testing",
+                description: "Menghitung persentase penyerapan air pada material isolasi kabel listrik sesuai uji penimbangan laborat.",
+                tags: ["material-testing", "water-absorption", "cable-insulation", "quality-control"],
+                label: "Massa Kabel setelah Direndam (Gram)",
+                min: 50, max: 500, def: 102.5,
+                unit: "Gram",
+                calc: (val) => {
+                    const dryM = 100.0; // mock dry mass baseline
+                    const diff = val - dryM;
+                    const percent = (diff / dryM) * 100;
+                    return percent.toFixed(2) + "% " + (percent > 1.5 ? "🔴 REJECT (Kelebihan Ambang batas 1.5%)" : "🟢 PASS (Memenuhi Standar)");
+                }
+            },
+            {
+                id: 43,
+                name: "konversi_awg_mm2",
+                displayName: "Kalkulator Konversi AWG ke mm²",
+                category: "electrical",
+                description: "Mengonversi ukuran kawat standar AWG (American Wire Gauge) ke milimeter persegi secara instan.",
+                tags: ["awg-converter", "wire-gauge", "conductor-sizing", "calculator"],
+                label: "Ukuran Kawat AWG",
+                min: 1, max: 40, def: 14,
+                unit: "AWG",
+                calc: (val) => {
+                    const mm2 = 0.012668 * Math.pow(92, (36 - val) / 39);
+                    return mm2.toFixed(4) + " mm² (Hasil Konversi Penampang)";
+                }
+            },
+            {
+                id: 44,
+                name: "hukum_kirchhoff",
+                displayName: "Simulasi Hukum Kirchhoff",
+                category: "electrical",
+                description: "Simulasi interaktif rangkaian listrik tertutup untuk menganalisis arus dan tegangan menggunakan Hukum Kirchhoff.",
+                tags: ["kirchhoffs-law", "circuit-simulator", "physics", "electrical-circuit"],
+                label: "Tegangan Sumber (Volt)",
+                min: 1, max: 240, def: 12,
+                unit: "V",
+                calc: (val) => (val / 10).toFixed(2) + " A (Arus Total pada Hambatan Seri 10 Ohm)"
+            },
+            {
+                id: 45,
+                name: "bunga_majemuk",
+                displayName: "Kalkulator Bunga Majemuk",
+                category: "finance",
+                description: "Menghitung proyeksi pertumbuhan investasi masa depan dengan rumus bunga majemuk periodik.",
+                tags: ["compound-interest", "saving-growth", "investment-calculator", "finance"],
+                label: "Pokok Tabungan (Rupiah)",
+                min: 100000, max: 50000000, def: 10000000,
+                unit: "IDR",
+                calc: (val) => "Rp " + Math.round(val * Math.pow(1 + 0.06, 5)).toLocaleString() + " (Estimasi Saldo Tahun ke-5 bunga 6%)"
+            },
+            {
+                id: 46,
+                name: "uji_tarik_logam",
+                displayName: "Uji Tarik Material Logam",
+                category: "testing",
+                description: "Menghitung kekuatan tarik (tensile strength) dan elongation (regangan) material tembaga/aluminium.",
+                tags: ["tensile-strength", "material-testing", "quality-control", "tensile-test"],
+                label: "Gaya Tarik Putus Maksimum (Newton)",
+                min: 100, max: 5000, def: 2450,
+                unit: "N",
+                calc: (val) => {
+                    const area = 10; // mock area baseline
+                    const strength = val / area;
+                    return strength.toFixed(1) + " N/mm² " + (strength < 200 ? "🔴 REJECT (Kekuatan minimum tembaga 200 N/mm²)" : "🟢 PASS (Sesuai Standar)");
+                }
+            },
+            {
+                id: 47,
+                name: "game_aritmetika_anak",
+                displayName: "Game Belajar Aritmetika",
+                category: "edu",
+                description: "Permainan mencocokkan penjumlahan dan perkalian dasar matematika dengan level bertingkat untuk anak.",
+                tags: ["math-game", "kids-learning", "interactive-game", "arithmetic"],
+                label: "Level Kecepatan Game",
+                min: 1, max: 10, def: 3,
+                unit: "Level",
+                calc: (val) => Math.round(30 / val) + " Detik (Waktu Menjawab per Soal)"
+            },
+            {
+                id: 48,
+                name: "konversi_suhu_lengkap",
+                displayName: "Kalkulator Konversi Suhu",
+                category: "math",
+                description: "Mengonversi empat satuan temperatur (Celsius, Fahrenheit, Reamur, Kelvin) secara simultan.",
+                tags: ["temperature-converter", "physics-utility", "calculator"],
+                label: "Suhu input (Celsius)",
+                min: -100, max: 100, def: 25,
+                unit: "°C",
+                calc: (val) => {
+                    const f = (val * 9/5) + 32;
+                    const k = val + 273.15;
+                    return `${f.toFixed(1)} °F | ${k.toFixed(2)} K (Konversi Lengkap)`;
+                }
+            },
+            {
+                id: 49,
+                name: "pajak_penghasilan",
+                displayName: "Kalkulator Pajak PPh 21",
+                category: "finance",
+                description: "Menghitung pemotongan pajak penghasilan karyawan PPh Pasal 21 sesuai ketentuan perpajakan terbaru.",
+                tags: ["income-tax", "tax-calculator", "indonesian-tax", "payroll"],
+                label: "Gaji Pokok Bulanan (Rupiah)",
+                min: 1000000, max: 30000000, def: 7500000,
+                unit: "IDR",
+                calc: (val) => {
+                    const taxable = Math.max(0, val - 4500000); // mock non-taxable single basic
+                    return "Rp " + Math.round(taxable * 0.05).toLocaleString() + " (Estimasi Potongan PPh 21 Bulanan)";
+                }
+            },
+            {
+                id: 50,
+                name: "uji_impak_charpy",
+                displayName: "Uji Impak Charpy V-Notch",
+                category: "testing",
+                description: "Menganalisis energi penyerapan benturan patah logam pada pengujian impak suhu rendah.",
+                tags: ["impact-test", "charpy-v-notch", "material-toughness", "quality-control"],
+                label: "Sudut Ayunan Pendulum Akhir",
+                min: 0, max: 150, def: 85,
+                unit: "Derajat (°)",
+                calc: (val) => {
+                    const energy = 300 * (1 - Math.cos(val * Math.PI / 180)); // mock charpy formula
+                    return energy.toFixed(1) + " Joule (Energi Impak Terserap)";
+                }
+            }
+        ];
+
+        // --- 2. GET CURRENT PROJECT FROM QUERY PARAM ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = parseInt(urlParams.get('id'));
+
+        const loadingDiv = document.getElementById('project-loading');
+        const detailsWrapper = document.getElementById('project-details-wrapper');
+
+        const projBadge = document.getElementById('proj-badge');
+        const projTitle = document.getElementById('proj-title');
+        const projDesc = document.getElementById('proj-desc');
+        const projTags = document.getElementById('proj-tags');
+        const simControls = document.getElementById('sim-controls-container');
+        const simResultVal = document.getElementById('sim-result-val');
+
+        // Theme sync
+        function initTheme() {
+            const currentTheme = localStorage.getItem('theme_mypro') || 'dark';
+            const themeToggler = document.getElementById('theme-toggler');
+            const icon = themeToggler.querySelector('i');
+            
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                icon.className = 'bi bi-sun';
+            } else {
+                document.body.classList.remove('dark-mode');
+                icon.className = 'bi bi-moon-stars';
+            }
+
+            themeToggler.addEventListener('click', () => {
+                const isDark = document.body.classList.toggle('dark-mode');
+                if (isDark) {
+                    localStorage.setItem('theme_mypro', 'dark');
+                    icon.className = 'bi bi-sun';
+                } else {
+                    localStorage.setItem('theme_mypro', 'light');
+                    icon.className = 'bi bi-moon-stars';
+                }
+            });
+        }
+
+        // Render project simulator details
+        function loadProjectSimulator() {
+            const project = projectsData.find(p => p.id === projectId);
+            
+            if (!project) {
+                loadingDiv.innerHTML = `
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size:40px; color:#ef4444;"></i>
+                    <p style="margin-top:12px; color:var(--text-main); font-weight:600;">Proyek Tidak Ditemukan</p>
+                    <p style="color:var(--text-muted); font-size:13px; margin-bottom: 20px;">Simulator untuk ID #${projectId} belum terintegrasi di portal ini.</p>
+                    <a href="./index.html#projects" class="back-btn"><i class="bi bi-arrow-left"></i> Kembali</a>
+                `;
+                return;
+            }
+
+            // Populate text
+            projBadge.textContent = project.category;
+            projBadge.className = `badge category-${project.category}`;
+            projTitle.textContent = project.displayName;
+            projDesc.textContent = project.description;
+            
+            // Tags
+            projTags.innerHTML = '';
+            project.tags.forEach(tag => {
+                projTags.innerHTML += `<span class="tag-pill">#${tag}</span>`;
+            });
+
+            // Simulator inputs
+            simControls.innerHTML = `
+                <div class="form-row">
+                    <label for="range-slider" id="slider-label">${project.label}: <span id="slider-output" style="font-weight:700;">${project.def}</span> ${project.unit}</label>
+                    <input type="range" id="range-slider" min="${project.min}" max="${project.max}" value="${project.def}">
+                </div>
+            `;
+
+            const slider = document.getElementById('range-slider');
+            const sliderOut = document.getElementById('slider-output');
+
+            // Calculation handler
+            function updateCalc() {
+                const val = parseFloat(slider.value);
+                sliderOut.textContent = val.toLocaleString();
+                simResultVal.textContent = project.calc(val);
+            }
+
+            slider.addEventListener('input', updateCalc);
+
+            // Initial calculation
+            updateCalc();
+
+            // Hide loading, show details
+            loadingDiv.style.display = 'none';
+            detailsWrapper.style.display = 'block';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            setTimeout(loadProjectSimulator, 400); // Small delay to feel smooth
+        });
+    </script>
+</body>
+</html>
