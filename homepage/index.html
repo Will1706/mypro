@@ -181,6 +181,7 @@
         }
 
         .navbar-floating {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -313,17 +314,66 @@
             border: none;
             color: var(--text-main);
             font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.25s ease;
+        }
+
+        .mobile-only-search {
+            display: none;
         }
 
         @media (max-width: 992px) {
+            .nav-menu-links {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: calc(100% + 12px);
+                left: 0;
+                right: 0;
+                background: var(--bg-navbar);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid var(--border-color);
+                border-radius: 24px;
+                padding: 24px;
+                gap: 20px;
+                box-shadow: var(--shadow-lg);
+                z-index: 999;
+                transform: translateY(-15px);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            }
 
-            .nav-menu-links,
+            .nav-menu-links.show {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .nav-menu-links .nav-link-item {
+                font-size: 16px;
+                width: 100%;
+                padding: 8px 0;
+            }
+
+            .nav-menu-links .nav-link-item::after {
+                bottom: 0;
+                left: 0;
+            }
+
             .nav-search {
                 display: none;
             }
 
             .mobile-hamburger {
                 display: block;
+            }
+
+            .mobile-only-search {
+                display: block;
+                max-width: 100%;
+                position: relative;
             }
         }
 
@@ -1384,6 +1434,11 @@
                         Starred <span id="stars-nav-badge"
                             style="font-size:11px; padding:1px 6px; border-radius:10px; background:var(--border-color); margin-left:4px;">0</span>
                     </a>
+                    <!-- Mobile Search Bar (Only visible inside hamburger menu) -->
+                    <div class="nav-search mobile-only-search">
+                        <input type="text" id="nav-search-bar-mobile" placeholder="Cari proyek...">
+                        <i class="bi bi-search"></i>
+                    </div>
                 </nav>
 
                 <div class="nav-actions">
@@ -2532,6 +2587,9 @@
         window.searchTagDirect = function (tagName) {
             switchPane('projects');
             searchInput.value = tagName;
+            navSearchInput.value = tagName;
+            const mobileNavSearch = document.getElementById('nav-search-bar-mobile');
+            if (mobileNavSearch) mobileNavSearch.value = tagName;
             renderProjects();
         };
 
@@ -2706,6 +2764,8 @@
         navSearchInput.addEventListener('input', () => {
             showAllProjects = false;
             searchInput.value = navSearchInput.value;
+            const mobileNavSearch = document.getElementById('nav-search-bar-mobile');
+            if (mobileNavSearch) mobileNavSearch.value = navSearchInput.value;
             switchPane('projects');
             renderProjects();
         });
@@ -2725,6 +2785,8 @@
             showAllProjects = false;
             searchInput.value = '';
             navSearchInput.value = '';
+            const mobileNavSearch = document.getElementById('nav-search-bar-mobile');
+            if (mobileNavSearch) mobileNavSearch.value = '';
             selectLanguage.value = 'all';
             selectSort.value = 'stars';
             activeCategory = 'all';
@@ -2818,17 +2880,89 @@
             document.getElementById('matrix-range').textContent = `${monthNames[startDate.getMonth()]} ${startDate.getFullYear()} - ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
         }
 
-        // --- 10. DECORATIVE MOCK STIMULI ---
-        document.getElementById('hamburger-menu').addEventListener('click', () => {
-            alert("Menu:\n- Projects\n- Activity Tracker\n- About Me\n- Bookmarks");
+        // --- 10. MOBILE MENU NAVIGATION & Hamburger logic ---
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const hamburgerIcon = hamburgerMenu.querySelector('i');
+        const navMenuLinks = document.querySelector('.nav-menu-links');
+        const mobileNavSearchInput = document.getElementById('nav-search-bar-mobile');
+
+        // Toggle Hamburger Menu
+        hamburgerMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navMenuLinks.classList.toggle('show');
+            const isOpen = navMenuLinks.classList.contains('show');
+            if (isOpen) {
+                hamburgerIcon.classList.remove('bi-list');
+                hamburgerIcon.classList.add('bi-x');
+            } else {
+                hamburgerIcon.classList.remove('bi-x');
+                hamburgerIcon.classList.add('bi-list');
+            }
         });
 
-        // --- 11. BOOTSTRAP INITIALIZATION ---
+        // Close menu when clicking navigation links on mobile
+        document.querySelectorAll('.nav-menu-links .nav-link-item').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenuLinks.classList.remove('show');
+                hamburgerIcon.classList.remove('bi-x');
+                hamburgerIcon.classList.add('bi-list');
+            });
+        });
+
+        // Close menu when clicking outside the navigation bar
+        document.addEventListener('click', (e) => {
+            const navbar = document.querySelector('.navbar-floating-container');
+            if (navbar && !navbar.contains(e.target)) {
+                navMenuLinks.classList.remove('show');
+                hamburgerIcon.classList.remove('bi-x');
+                hamburgerIcon.classList.add('bi-list');
+            }
+        });
+
+        // Mirror mobile search bar into main projects search
+        if (mobileNavSearchInput) {
+            mobileNavSearchInput.addEventListener('input', () => {
+                showAllProjects = false;
+                searchInput.value = mobileNavSearchInput.value;
+                navSearchInput.value = mobileNavSearchInput.value;
+                switchPane('projects');
+                renderProjects();
+            });
+        }
+
+        // --- 11. DYNAMIC STATS WIDGET CALCULATOR ---
+        function updateStatsCounters() {
+            const counts = {
+                all: projects.length,
+                electrical: 0,
+                testing: 0,
+                math: 0,
+                finance: 0,
+                edu: 0
+            };
+
+            projects.forEach(p => {
+                if (counts[p.category] !== undefined) {
+                    counts[p.category]++;
+                }
+            });
+
+            document.querySelectorAll('.stats-grid .stat-box').forEach(box => {
+                const cat = box.getAttribute('data-cat');
+                const numEl = box.querySelector('.stat-num');
+                if (numEl && counts[cat] !== undefined) {
+                    numEl.textContent = counts[cat];
+                }
+            });
+        }
+
+        // --- 12. BOOTSTRAP INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
             initThemeSystem();
             initLayout();
             generateMatrixGrid();
             renderEverything();
+            updateStatsCounters();
             initHashNavigation();
         });
     </script>

@@ -6,56 +6,317 @@
     <title>Kalkulator Hambatan Konduktor IEC</title>
     <link rel="icon" type="image/png" href="../icons/logo_iec.png"/>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <script>
+        // Set theme immediately to prevent flashing
+        (function() {
+            const currentTheme = localStorage.getItem('theme_mypro') || 'dark';
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
+
     <style>
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-title: 'Outfit', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+
+            /* Light Mode */
+            --bg-body: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(226, 232, 240, 0.8);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-accent: #4f46e5;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --readonly-bg: #f8fafc;
+        }
+
+        .dark-mode {
+            /* Dark Mode */
+            --bg-body: #030712;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(31, 41, 55, 0.6);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary-accent: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+            --input-bg: rgba(31, 41, 55, 0.5);
+            --input-border: rgba(55, 65, 81, 0.8);
+            --readonly-bg: rgba(31, 41, 55, 0.2);
+        }
+
         body {
-            transition: background-color 0.3s, color 0.3s;
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Decorative Background Orbs */
+        .orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .orb-1 {
+            background: var(--primary-accent);
+            top: -50px;
+            left: -50px;
+        }
+        
+        .orb-2 {
+            background: #7c3aed;
+            bottom: -50px;
+            right: -50px;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            border-radius: 24px;
+            transition: all 0.3s;
+        }
+
+        .input-premium {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-main);
+            border-radius: 12px;
+            padding: 10px 14px;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .input-premium:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .input-readonly {
+            background: var(--readonly-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 12px;
+            padding: 10px 14px;
+            width: 100%;
+            outline: none;
+            cursor: not-allowed;
+            font-size: 14px;
+        }
+
+        .label-premium {
+            font-family: var(--font-title);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: block;
+            letter-spacing: 0.3px;
+        }
+
+        .toggle-theme-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 16px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .toggle-theme-btn:hover {
+            transform: rotate(30deg) scale(1.05);
+            background: var(--text-muted);
+            color: var(--bg-body);
+        }
+
+        .standard-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 16px;
+            font-family: var(--font-title);
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .standard-tab.active {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+        
+        .standard-tab:not(.active) {
+            background: var(--readonly-bg);
+            color: var(--text-muted);
+        }
+        
+        .standard-tab:not(.active):hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
+            transform: translateY(-1px);
+        }
+
+        .btn-action-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 20px;
+            font-family: var(--font-title);
+            font-weight: 700;
+            font-size: 14px;
+            border-radius: 12px;
+            background: var(--primary-gradient);
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-action-primary:hover {
+            transform: translateY(-1.5px);
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-action-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            font-family: var(--font-title);
+            font-weight: 600;
+            font-size: 13px;
+            border-radius: 12px;
+            background: var(--readonly-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-action-secondary:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-1px);
+            background: var(--border-color);
+        }
+
+        .btn-action-danger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            font-family: var(--font-title);
+            font-weight: 600;
+            font-size: 13px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-action-danger:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: transparent;
+            transform: translateY(-1.5px);
+            box-shadow: 0 8px 20px -6px rgba(239, 68, 68, 0.4);
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4">
+<body class="min-h-screen p-4 flex items-center justify-center">
 
-    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
+    <!-- Decorative Background Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="w-full max-w-xl glass-card p-6 sm:p-8 my-6">
         
-        <h1 class="text-xl font-bold text-center text-gray-800 pb-4 mb-6 border-b border-gray-200">
-            Kalkulator Hambatan Konduktor IEC
-        </h1>
+        <!-- Header -->
+        <div class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200 dark:border-gray-800">
+            <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2" style="font-family: var(--font-title);">
+                <i class="bi bi-lightning-charge-fill text-indigo-500"></i> Kalkulator IEC
+            </h1>
+            <button class="toggle-theme-btn" id="theme-toggler" aria-label="Toggle Theme">
+                <i class="bi bi-moon-stars"></i>
+            </button>
+        </div>
 
         <div class="space-y-4">
             
             <div class="flex gap-4">
                 <div class="w-1/2">
-                    <label for="pembacaanAlat" class="block text-sm font-bold text-gray-700">Pembacaan Alat (mΩ)</label>
-                    <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="satuan mili ohm">
+                    <label for="pembacaanAlat" class="label-premium">Pembacaan Alat (mΩ)</label>
+                    <input type="text" inputmode="decimal" name="pembacaanAlat" id="pembacaanAlat" class="input-premium" placeholder="mili ohm">
                 </div>
                 <div class="w-1/2">
-                    <label for="panjang" class="block text-sm font-bold text-gray-700">Panjang (m)</label>
-                    <input type="text" inputmode="decimal" name="panjang" id="panjang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="satuan meter">
+                    <label for="panjang" class="label-premium">Panjang (m)</label>
+                    <input type="text" inputmode="decimal" name="panjang" id="panjang" class="input-premium" placeholder="meter">
                 </div>
             </div>
 
             <div class="flex gap-4">
                 <div class="w-1/2">
-                    <label for="suhu" class="block text-sm font-bold text-gray-700">Suhu (°C)</label>
-                    <input type="text" inputmode="decimal" name="suhu" id="suhu" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="derajat celsius">
+                    <label for="suhu" class="label-premium">Suhu (°C)</label>
+                    <input type="text" inputmode="decimal" name="suhu" id="suhu" class="input-premium" placeholder="derajat celsius">
                 </div>
                 <div class="w-1/2">
-                    <label for="faktorKoreksi" class="block text-sm font-bold text-gray-700">Faktor Koreksi</label>
-                    <input type="text" name="faktorKoreksi" id="faktorKoreksi" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="faktorKoreksi" class="label-premium">Faktor Koreksi</label>
+                    <input type="text" name="faktorKoreksi" id="faktorKoreksi" readonly class="input-readonly" placeholder="-">
                 </div>
             </div>
 
             <div class="flex gap-4 items-end">
                 <div class="w-1/3">
-                    <label for="konduktor" class="block text-sm font-bold text-gray-700">Konduktor</label>
-                    <select id="konduktor" name="konduktor" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="konduktor" class="label-premium">Konduktor</label>
+                    <select id="konduktor" name="konduktor" class="input-premium">
                         <option>CU</option>
                         <option>AL</option>
                         <option>TCU</option>
                     </select>
                 </div>
                 <div class="w-1/3">
-                    <label for="penampang" class="block text-sm font-bold text-gray-700">Penampang</label>
-                     <select id="penampang" name="penampang" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="penampang" class="label-premium">Penampang</label>
+                    <select id="penampang" name="penampang" class="input-premium">
               <option value="0,5">0,5 mm²</option>
               <option value="0,75">0,75 mm²</option>
               <option value="1,0">1,0 mm²</option>
@@ -89,49 +350,48 @@
                     </select>
                 </div>
                 <div class="w-1/3">
-                    <label for="spekMax" class="block text-sm font-bold text-gray-700">Spek. Maks</label>
-                    <input type="text" name="spekMax" id="spekMax" readonly class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="spekMax" class="label-premium">Spek. Maks (Ω/km)</label>
+                    <input type="text" name="spekMax" id="spekMax" readonly class="input-readonly" placeholder="-">
                 </div>
             </div>
 
-            <div class="pt-2">
-                <label for="hasilKalkulasi" class="block text-sm font-bold text-gray-700">Hasil Kalkulasi (Ω/km)</label>
-                <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 font-bold text-lg text-center">
+            <!-- Hasil Kalkulasi Card -->
+            <div class="p-5 rounded-2xl border border-dashed border-indigo-300 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/20 text-center space-y-2 mt-6">
+                <label for="hasilKalkulasi" class="label-premium text-indigo-600 dark:text-indigo-400 font-bold tracking-wide">HASIL KALKULASI</label>
+                <div class="flex items-baseline justify-center gap-1.5">
+                    <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly 
+                        class="bg-transparent border-none text-3xl font-extrabold text-center text-indigo-700 dark:text-indigo-400 outline-none w-full max-w-xs focus:ring-0" 
+                        style="font-family: var(--font-title); font-size: 2.25rem;" placeholder="-">
+                    <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">Ω/km</span>
+                </div>
+                <p id="pesanHasil" class="text-xs font-medium text-center h-5 transition-all duration-300"></p>
             </div>
 
-            <p id="pesanHasil" class="text-center text-sm h-5"></p>
-            
-            <div class="pt-4 flex flex-wrap gap-2">
-                 <a href="./iec_v2.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    IEC
-                </a>
-                <a href="./icea_v2.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    ICEA
-                </a>
-                <a href="./as_v2.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    AS/NZS
-                </a>
-                <a href="./spln_v2.html" class="flex-1 text-center min-w-min justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
-                    SPLN
-                </a>
+            <!-- Standard Selector Tabs -->
+            <div class="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                 <a href="./iec_v2.html" class="standard-tab active">IEC</a>
+                 <a href="./icea_v2.html" class="standard-tab">ICEA</a>
+                 <a href="./as_v2.html" class="standard-tab">AS/NZS</a>
+                 <a href="./spln_v2.html" class="standard-tab">SPLN</a>
             </div>
 
-            <div class="pt-2 flex gap-2">
-                <button type="button" onclick="history.back()" class="flex-1 justify-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Kembali
+            <!-- Navigation Controls -->
+            <div class="pt-2 grid grid-cols-3 gap-2">
+                <button type="button" onclick="history.back()" class="btn-action-secondary">
+                    <i class="bi bi-arrow-left"></i> <span>Kembali</span>
                 </button>
-                <button type="button" id="hapusBtn" class="flex-1 justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                    Hapus
+                <button type="button" id="hapusBtn" class="btn-action-danger">
+                    <i class="bi bi-trash"></i> <span>Hapus</span>
                 </button>
-                <a href="./index_kalkulator_hambatan.html" class="flex-1 text-center py-2 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Beranda
+                <a href="./index_kalkulator_hambatan.html" class="btn-action-secondary">
+                    <i class="bi bi-house"></i> <span>Beranda</span>
                 </a>
             </div>
 
         </div>
 
-        <footer class="text-center text-gray-500 text-sm mt-6 pt-4 border-t border-gray-200">
-            Williyanto Adi 2025
+        <footer class="text-center text-gray-400 dark:text-gray-600 text-xs mt-8 pt-4 border-t border-gray-200 dark:border-gray-800">
+            Williyanto Adi &copy; 2026
         </footer>
 
     </div>
@@ -764,6 +1024,32 @@
         });
         penampangSelect.addEventListener('change', updateSpekMax);
         hapusBtn.addEventListener('click', hapus);
+
+        // Theme toggler listener and initialization
+        const themeToggler = document.getElementById('theme-toggler');
+        if (themeToggler) {
+            const initTheme = () => {
+                const currentTheme = localStorage.getItem('theme_mypro') || 'dark';
+                const icon = themeToggler.querySelector('i');
+                if (currentTheme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    document.documentElement.classList.add('dark-mode');
+                    if (icon) icon.className = 'bi bi-sun-fill';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    document.documentElement.classList.remove('dark-mode');
+                    if (icon) icon.className = 'bi bi-moon-stars-fill';
+                }
+            };
+            themeToggler.addEventListener('click', () => {
+                const isDark = document.body.classList.toggle('dark-mode');
+                document.documentElement.classList.toggle('dark-mode', isDark);
+                localStorage.setItem('theme_mypro', isDark ? 'dark' : 'light');
+                const icon = themeToggler.querySelector('i');
+                if (icon) icon.className = isDark ? 'bi bi-sun-fill' : 'bi-moon-stars-fill';
+            });
+            initTheme();
+        }
 
         // Panggil fungsi inisialisasi
         updateFaktorKoreksi();
