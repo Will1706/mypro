@@ -13,10 +13,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
+    <script>
         // Set theme immediately to prevent flashing
         (function() {
             const currentTheme = localStorage.getItem('theme_mypro') || 'dark';
             if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark');
                 document.documentElement.classList.add('dark-mode');
             }
         })();
@@ -356,7 +363,7 @@
             </div>
 
             <!-- Hasil Kalkulasi Card -->
-            <div class="p-5 rounded-2xl border border-dashed border-indigo-300 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/20 text-center space-y-2 mt-6">
+            <div class="p-5 rounded-2xl border border-solid border-indigo-100 dark:border-indigo-900/50 bg-gradient-to-br from-indigo-50/80 to-blue-50/80 dark:from-indigo-950/30 dark:to-indigo-900/20 text-center space-y-2 mt-6 shadow-sm">
                 <label for="hasilKalkulasi" class="label-premium text-indigo-600 dark:text-indigo-400 font-bold tracking-wide">HASIL KALKULASI</label>
                 <div class="flex items-baseline justify-center gap-1.5">
                     <input type="text" name="hasilKalkulasi" id="hasilKalkulasi" readonly 
@@ -1033,16 +1040,19 @@
                 const icon = themeToggler.querySelector('i');
                 if (currentTheme === 'dark') {
                     document.body.classList.add('dark-mode');
+                    document.documentElement.classList.add('dark');
                     document.documentElement.classList.add('dark-mode');
                     if (icon) icon.className = 'bi bi-sun-fill';
                 } else {
                     document.body.classList.remove('dark-mode');
+                    document.documentElement.classList.remove('dark');
                     document.documentElement.classList.remove('dark-mode');
                     if (icon) icon.className = 'bi bi-moon-stars-fill';
                 }
             };
             themeToggler.addEventListener('click', () => {
                 const isDark = document.body.classList.toggle('dark-mode');
+                document.documentElement.classList.toggle('dark', isDark);
                 document.documentElement.classList.toggle('dark-mode', isDark);
                 localStorage.setItem('theme_mypro', isDark ? 'dark' : 'light');
                 const icon = themeToggler.querySelector('i');
